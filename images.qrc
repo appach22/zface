@@ -1,0 +1,17 @@
+<RCC>
+    <qresource prefix="/all" >
+        <file>res/xface_state_2.bmp</file>
+        <file>res/xface_state_1.bmp</file>
+        <file>res/record_16x16.png</file>
+        <file>res/xface_mainmenu.bmp</file>
+        <file>res/xface_storage.bmp</file>
+        <file>res/gain_play_dig.bmp</file>
+        <file>res/gain_play_line.bmp</file>
+        <file>res/gain_play_spk.bmp</file>
+        <file>res/gain_rec_dig.bmp</file>
+        <file>res/gain_rec_line.bmp</file>
+        <file>res/gain_rec_mic.bmp</file>
+        <file>res/gain_rec_phone.bmp</file>
+        <file>mainwindow.ui</file>
+    </qresource>
+</RCC>
