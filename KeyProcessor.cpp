@@ -2,7 +2,7 @@
 #include "mainwindow.h"
 
 namespace zface
-{
+ {
 
 KeyProcessor::KeyProcessor(MainWindow * _wnd)
 {
