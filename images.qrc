@@ -1,5 +1,5 @@
 <RCC>
-    <qresource prefix="/all" >
+    <qresource prefix="/all">
         <file>res/xface_state_2.bmp</file>
         <file>res/xface_state_1.bmp</file>
         <file>res/record_16x16.png</file>

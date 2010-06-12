@@ -11,6 +11,7 @@
 #include <QDebug>
 #include <QFileSystemWatcher>
 
+#include "ZSettingsModel.h"
 
 namespace Ui
 {
@@ -34,11 +35,18 @@ private:
     QImage img;
     QWidget * current;
     QDirModel files;
+    ZSettingsModel settings;
     QFileSystemWatcher * watcher;
     QTimer * gainTimer;
     int playGain;
 
     void SetWatcher(QModelIndex root);
+
+    void processMainPage(QKeyEvent * event);
+    void processBrowserPage(QKeyEvent * event);
+    void processSettingsPage(QKeyEvent * event);
+    void processParameterPage(QKeyEvent * event);
+    void processEncoders(QKeyEvent * event);
 
 private slots:
     void updateTime();

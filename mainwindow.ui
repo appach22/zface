@@ -200,7 +200,7 @@
        </sizepolicy>
       </property>
       <property name="currentIndex">
-       <number>2</number>
+       <number>3</number>
       </property>
       <widget class="QWidget" name="mainPage"/>
       <widget class="QWidget" name="browserPage">
@@ -244,59 +244,18 @@
          <number>0</number>
         </property>
         <item row="0" column="0">
-         <widget class="QListWidget" name="listWidget">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Ignored" vsizetype="Ignored">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
-          <item>
-           <property name="text">
-            <string>Параметры записи</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>Акустопуск</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>АРУ записи</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>Таймер</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>Защита от переполнения</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>Безопасность</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>Установить время</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>Прочие настройки
-&lt;h1&gt;ффф&lt;/h1&gt;</string>
-           </property>
-           <property name="flags">
-            <set>ItemIsSelectable|ItemIsEnabled</set>
-           </property>
-          </item>
-         </widget>
+         <widget class="QListView" name="settingsView"/>
         </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="paramPage">
+       <layout class="QGridLayout" name="paramLayout">
+        <property name="margin">
+         <number>0</number>
+        </property>
+        <property name="spacing">
+         <number>0</number>
+        </property>
        </layout>
       </widget>
      </widget>
@@ -354,6 +313,11 @@
               <horstretch>0</horstretch>
               <verstretch>0</verstretch>
              </sizepolicy>
+            </property>
+            <property name="font">
+             <font>
+              <family>Sans Serif</family>
+             </font>
             </property>
             <property name="text">
              <string>Своб.</string>

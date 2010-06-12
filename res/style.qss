@@ -1,0 +1,64 @@
+/*background-color: white;*/
+
+ QProgressBar {
+      border: 2px solid grey;
+      border-radius: 5px;
+ }
+            
+ QProgressBar::chunk {
+      background-color: #05B8CC;
+      width: 20px;
+ }
+
+ QProgressBar {
+     border: 2px solid grey;
+     border-radius: 5px;
+     text-align: center;
+ }
+ 
+QPushButton {
+     border: 2px solid #8f8f91;
+     border-radius: 6px;
+     background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
+                                       stop: 0 #f6f7fa, stop: 1 #dadbde);
+     min-width: 80px;
+ }
+
+ QPushButton:pressed {
+     background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
+                                       stop: 0 #dadbde, stop: 1 #f6f7fa);
+ }
+
+ QPushButton:flat {
+     border: none; /* для плоской кнопки границы нет */
+ }
+
+ QPushButton:default {
+     border-color: navy; /* делаем кнопку по умолчанию выпуклой */
+ }
+
+QRadioButton::indicator {
+     width: 30px;
+     height: 30px;
+}
+           
+QRadioButton {
+     border: 2px solid #8f8f91;
+     border-radius: 6px;
+     min-width: 80px;
+ }
+
+ QRadioButton:pressed {
+     background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
+                                       stop: 0 #dadbde, stop: 1 #f6f7fa);
+ }
+ 
+ QRadioButton:checked {
+     background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
+                                       stop: 0 #f6f7fa, stop: 1 #dadbde);
+ }
+
+ QRadioButton:default {
+     border-color: navy; 
+ }
+

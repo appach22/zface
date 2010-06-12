@@ -4,7 +4,16 @@
 TARGET = xface-qt
 TEMPLATE = app
 SOURCES += main.cpp \
-    mainwindow.cpp
-HEADERS += mainwindow.h
+    mainwindow.cpp \
+    ZSettingsModel.cpp \
+    ZSettingsNode.cpp \
+    ZSettingWidget.cpp \
+    ZAllSettings.cpp
+HEADERS += mainwindow.h \
+    ZSettingsModel.h \
+    ZSettingsNode.h \
+    ZSettingWidget.h \
+    ZAllSettings.h \
+    ZParameter.h
 FORMS += mainwindow.ui
 RESOURCES += images.qrc
