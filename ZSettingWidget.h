@@ -6,6 +6,8 @@
 #include <QWidget>
 #include <QtGui/QKeyEvent>
 #include <QtGui/QButtonGroup>
+#include <QtGui/QLabel>
+#include <QtGui/QProgressBar>
 
 class ZSettingWidget : public QWidget
 {
@@ -30,6 +32,8 @@ public slots:
 private:
 
     QButtonGroup * buttons;
+    QLabel * valueLabel;
+    QProgressBar * progress;
     SettingType type;
     ZSelectParameter selectData;
     ZValueParameter valueData;

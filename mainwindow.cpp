@@ -32,22 +32,6 @@ MainWindow::MainWindow(QWidget *parent)
     files.setSorting(QDir::Name | QDir::DirsFirst | QDir::IgnoreCase);
 
     ZSettingsNode * settingsRoot;
-//    ZSettingsNode * node = new ZSettingsNode(settingsRoot, tr("Setting 1"), ZSettingsNode::Node);
-//    ZSettingWidget * setting = new ZSettingWidget(ui->paramPage/*ui->pages->widget(3)*/);
-//    ZSelectParameter param("/aaa/bbb", "par", 1, QList<ZSelectParameterItem>()
-//                              << ZSelectParameterItem(0, "val 0")
-//                              << ZSelectParameterItem(1, "val 1")
-//                              << ZSelectParameterItem(2, "val 2")
-//                          );
-//    setting->setData(param);
-//    node->children.append(new ZSettingsNode(node, tr("Subsetting 11"), ZSettingsNode::Leaf, setting));
-//    node->children.append(new ZSettingsNode(node, tr("Subsetting 12"), ZSettingsNode::Leaf));
-//    settingsRoot->children.append(node);
-//    node = new ZSettingsNode(settingsRoot, tr("Setting 2"), ZSettingsNode::Node);
-//    node->children.append(new ZSettingsNode(node, tr("Subsetting 21"), ZSettingsNode::Leaf));
-//    node->children.append(new ZSettingsNode(node, tr("Subsetting 22"), ZSettingsNode::Leaf));
-//    settingsRoot->children.append(node);
-
     ZAllSettings::loadAllSettings("../settings-en.xml", ui->paramPage, &settingsRoot);
     settings.setRootNode(settingsRoot);
     ui->settingsView->setModel(&settings);
@@ -210,7 +194,10 @@ void MainWindow::processSettingsPage(QKeyEvent * event)
                 else
                 {
                     if (ui->paramLayout->count())
+                    {
+                        ui->paramLayout->itemAt(0)->widget()->hide();
                         ui->paramLayout->removeItem(ui->paramLayout->itemAt(0));
+                    }
                     ui->paramLayout->addWidget(node->widget, 0, 0, 1, 1);
                     ui->pages->setCurrentWidget(ui->paramPage);
                     node->widget->show();
