@@ -23,7 +23,7 @@ MainWindow::MainWindow(QWidget *parent)
     ui->gainPlayIcon->setStyleSheet("background-image: url(:/all/res/gain_play_spk.bmp);"
                                     "background-repeat: repeat-n;"
                                     "background-position: center;");
-    QFile file("../res/style.qss");
+    QFile file("res/style.qss");
     file.open(QFile::ReadOnly);
     QString styleSheet = QLatin1String(file.readAll());
     this->setStyleSheet(styleSheet);
@@ -32,7 +32,7 @@ MainWindow::MainWindow(QWidget *parent)
     files.setSorting(QDir::Name | QDir::DirsFirst | QDir::IgnoreCase);
 
     ZSettingsNode * settingsRoot;
-    ZAllSettings::loadAllSettings("../settings-en.xml", ui->paramPage, &settingsRoot);
+    ZAllSettings::loadAllSettings("settings-en.xml", ui->paramPage, &settingsRoot);
     settings.setRootNode(settingsRoot);
     ui->settingsView->setModel(&settings);
 
