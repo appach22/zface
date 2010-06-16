@@ -1,8 +1,8 @@
 # -------------------------------------------------
 # Project created by QtCreator 2010-03-18T23:31:55
 # -------------------------------------------------
-TARGET = xface-qt
-TEMPLATE = subdirs
+TARGET = zface
+TEMPLATE = app
 SOURCES += main.cpp \
     mainwindow.cpp \
     ZSettingsModel.cpp \
@@ -18,6 +18,4 @@ HEADERS += mainwindow.h \
 FORMS += mainwindow.ui
 RESOURCES += images.qrc
 
-LIBS += zkbd/libzkbd.a
-
-SUBDIRS = zkbd
+LIBS += ../zkbd/libzkbd.a
