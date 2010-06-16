@@ -19,3 +19,6 @@ FORMS += mainwindow.ui
 RESOURCES += images.qrc
 
 LIBS += ../zkbd/libzkbd.a
+
+target.path += $$[DESTDIR]/usr/bin
+INSTALLS += target
