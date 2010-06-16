@@ -17,3 +17,5 @@ HEADERS += mainwindow.h \
     ZParameter.h
 FORMS += mainwindow.ui
 RESOURCES += images.qrc
+
+LIBS += zkbd/libzkbd.a
