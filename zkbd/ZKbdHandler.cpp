@@ -1,3 +1,5 @@
+#if defined(Q_WS_QWS)
+
 #include "ZKbdHandler.h"
 #include <fcntl.h>
 #include <QDebug>
@@ -41,3 +43,5 @@ void ZKbdHandler::readKbdData(int _fd)
                         << "value=" << event.value
                         << ((event.value != 0) ? "(Down)" : "(Up)");
 }
+
+#endif

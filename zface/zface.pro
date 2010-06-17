@@ -8,17 +8,20 @@ SOURCES += main.cpp \
     ZSettingsModel.cpp \
     ZSettingsNode.cpp \
     ZSettingWidget.cpp \
-    ZAllSettings.cpp
+    ZAllSettings.cpp \
+    ZDbus.cpp
 HEADERS += mainwindow.h \
     ZSettingsModel.h \
     ZSettingsNode.h \
     ZSettingWidget.h \
     ZAllSettings.h \
-    ZParameter.h
+    ZParameter.h \
+    ZDbus.h
 FORMS += mainwindow.ui
 RESOURCES += images.qrc
-
 LIBS += ../zkbd/libzkbd.a
-
 target.path += $$[DESTDIR]/usr/bin
-INSTALLS += target
+#target.files += $TARGET
+configs.path = /etc/zface
+configs.files = settings-en.xml res/style.qss
+INSTALLS += target configs

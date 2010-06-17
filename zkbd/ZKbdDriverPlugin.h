@@ -1,3 +1,5 @@
+#if defined(Q_WS_QWS)
+
 #ifndef ZKBDDRIVERPLUGIN_H
 #define ZKBDDRIVERPLUGIN_H
 
@@ -15,3 +17,5 @@ public:
 };
 
 #endif // ZKBDDRIVERPLUGIN_H
+
+#endif

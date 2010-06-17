@@ -1,8 +1,10 @@
 #include <QtGui/QApplication>
 #include "mainwindow.h"
-#include <QtPlugin>
 
+#if defined(Q_WS_QWS)
+#include <QtPlugin>
 Q_IMPORT_PLUGIN(zkbd)
+#endif
 
 int main(int argc, char *argv[])
 {

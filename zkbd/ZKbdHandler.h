@@ -1,3 +1,5 @@
+#if defined(Q_WS_QWS)
+
 #ifndef ZKBDHANDLER_H
 #define ZKBDHANDLER_H
 
@@ -29,3 +31,5 @@ private slots:
 };
 
 #endif // ZKBDHANDLER_H
+
+#endif

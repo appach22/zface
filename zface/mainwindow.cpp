@@ -23,7 +23,13 @@ MainWindow::MainWindow(QWidget *parent)
     ui->gainPlayIcon->setStyleSheet("background-image: url(:/all/res/gain_play_spk.bmp);"
                                     "background-repeat: repeat-n;"
                                     "background-position: center;");
+#if defined(Q_OS_WIN)
+    QFile file("../res/style.qss");
+#elif defined(Q_WS_QWS)
+    QFile file("/etc/zface/style.qss");
+#elif defined(Q_OS_UNIX)
     QFile file("res/style.qss");
+#endif
     file.open(QFile::ReadOnly);
     QString styleSheet = QLatin1String(file.readAll());
     this->setStyleSheet(styleSheet);

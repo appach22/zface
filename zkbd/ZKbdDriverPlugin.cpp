@@ -1,3 +1,5 @@
+#if defined(Q_WS_QWS)
+
 #include "ZKbdDriverPlugin.h"
 #include "ZKbdHandler.h"
 
@@ -28,3 +30,5 @@ QWSKeyboardHandler * ZKbdDriverPlugin::create(const QString & driver, const QStr
 }
 
 Q_EXPORT_PLUGIN2(zkbd, ZKbdDriverPlugin)
+
+#endif
