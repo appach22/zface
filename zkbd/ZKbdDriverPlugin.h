@@ -1,3 +1,4 @@
+#include <qconfig.h>
 #if defined(Q_WS_QWS)
 
 #ifndef ZKBDDRIVERPLUGIN_H
