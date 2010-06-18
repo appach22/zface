@@ -131,7 +131,7 @@ void MainWindow::processMainPage(QKeyEvent * event)
             break;
         case Qt::Key_Down   :
             ui->pages->setCurrentWidget(ui->browserPage);
-            ui->filesView->setFocus();
+            ui->filesView->setEditFocus(true);
             break;
         case Qt::Key_Return :
             break;
@@ -140,7 +140,7 @@ void MainWindow::processMainPage(QKeyEvent * event)
             while (ui->settingsView->rootIndex().isValid())
                 ui->settingsView->setRootIndex(ui->settingsView->rootIndex().parent());
             ui->pages->setCurrentWidget(ui->settingsPage);
-            ui->settingsView->setFocus();
+            ui->settingsView->setEditFocus(true);
             // Чтобы элемент сразу выделился
             ui->settingsView->setCurrentIndex(settings.index(0, 0, ui->settingsView->rootIndex()));
             break;
@@ -162,7 +162,7 @@ void MainWindow::processBrowserPage(QKeyEvent * event)
                 SetWatcher(ui->filesView->currentIndex());
                 ui->filesView->setRootIndex(ui->filesView->currentIndex());
                 files.refresh(files.parent(ui->filesView->currentIndex()));
-                ui->filesView->setFocus();
+                ui->filesView->setEditFocus(true);
             }
             break;
         case Qt::Key_Left :
@@ -171,7 +171,7 @@ void MainWindow::processBrowserPage(QKeyEvent * event)
                 ui->filesView->setRootIndex(files.parent(ui->filesView->rootIndex()));
                 SetWatcher(ui->filesView->rootIndex());
                 files.refresh(ui->filesView->rootIndex());
-                ui->filesView->setFocus();
+                ui->filesView->setEditFocus(true);
             }
             break;
     }
@@ -226,8 +226,9 @@ void MainWindow::processParameterPage(QKeyEvent * event)
     switch (event->key())
     {
         case Qt::Key_Escape :
-        case Qt::Key_Return :
+        case Qt::Key_Select :
             ui->pages->setCurrentWidget(ui->settingsPage);
+            ui->settingsView->setEditFocus(true);
             break;
     }
 }

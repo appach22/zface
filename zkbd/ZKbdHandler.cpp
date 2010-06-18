@@ -39,10 +39,43 @@ void ZKbdHandler::readKbdData(int _fd)
         qDebug() << "incomplete read: " << n << " bytes";
         return;
     }
-    qDebug() << "keypressed: type=" << event.type
-                        << "code=" << event.code
-                        << "value=" << event.value
-                        << ((event.value != 0) ? "(Down)" : "(Up)");
+//    qDebug() << "keypressed: type=" << event.type
+//                        << "code=" << event.code
+//                        << "value=" << event.value
+//                        << ((event.value != 0) ? "(Down)" : "(Up)");
+
+    Qt::KeyboardModifiers modifiers = Qt::NoModifier;
+    int unicode = 0xffff;
+    int key_code = 0;
+
+    switch (event.code)
+    {
+        case 105 :
+            key_code = Qt::Key_Left;
+            break;
+        case 106 :
+            key_code = Qt::Key_Right;
+            break;
+        case 103 :
+            key_code = Qt::Key_Up;
+            break;
+        case 108 :
+            key_code = Qt::Key_Down;
+            break;
+        case 28 :
+            key_code = Qt::Key_Select;
+            break;
+        case 1 :
+            key_code = Qt::Key_Escape;
+            break;
+        case 63 :
+            key_code = Qt::Key_F5;
+            break;
+        default :
+            return;
+    }
+
+    processKeyEvent(unicode, key_code, modifiers, event.value!=0, false);
 }
 
 #endif

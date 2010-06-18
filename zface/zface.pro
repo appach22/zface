@@ -17,6 +17,9 @@ HEADERS += mainwindow.h \
     ZAllSettings.h \
     ZParameter.h \
     ZDbus.h
+
+DEFINES += QT_KEYPAD_NAVIGATION
+
 FORMS += mainwindow.ui
 RESOURCES += images.qrc
 LIBS += ../zkbd/libzkbd.a

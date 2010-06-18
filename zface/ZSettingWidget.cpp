@@ -44,7 +44,7 @@ void ZSettingWidget::setData(const ZSelectParameter & _data)
         if (selectData.value == selectData.items[i].value)
         {
             radio->setChecked(true);
-            radio->setFocus();
+            radio->setEditFocus(true);
         }
     }
     boxLayout->addStretch(1);
@@ -92,7 +92,7 @@ void ZSettingWidget::keyPressEvent(QKeyEvent * event)
     int value;
     switch (event->key())
     {
-        case Qt::Key_Return :
+        case Qt::Key_Select :
             path = selectData.path;
             if (type == Select)
                 value = selectData.items[buttons->checkedId()].value;
