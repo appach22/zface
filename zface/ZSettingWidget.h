@@ -8,6 +8,20 @@
 #include <QtGui/QButtonGroup>
 #include <QtGui/QLabel>
 #include <QtGui/QProgressBar>
+#include <QtGui/QGroupBox>
+
+
+class ZSettingGroupBox : public QGroupBox
+{
+Q_OBJECT
+
+public:
+    explicit ZSettingGroupBox(QWidget *parent = 0);
+
+protected:
+    void keyPressEvent(QKeyEvent * event);
+};
+
 
 class ZSettingWidget : public QWidget
 {
@@ -24,14 +38,18 @@ public:
 
 protected:
     void keyPressEvent(QKeyEvent * event);
+    void showEvent(QShowEvent * event);
+    bool eventFilter(QObject *obj, QEvent *event);
 
 signals:
 
-public slots:
+private slots:
 
 private:
 
     QButtonGroup * buttons;
+    ZSettingGroupBox * box;
+    QWidget * progressContainer;
     QLabel * valueLabel;
     QProgressBar * progress;
     SettingType type;

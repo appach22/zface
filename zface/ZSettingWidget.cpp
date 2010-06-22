@@ -1,8 +1,29 @@
 #include <QtGui/QVBoxLayout>
-#include <QtGui/QGroupBox>
 #include <QtGui/QRadioButton>
+#include <QCoreApplication>
 
 #include "ZSettingWidget.h"
+
+#include <QDebug>
+
+
+ZSettingGroupBox::ZSettingGroupBox(QWidget *parent) :
+    QGroupBox(parent)
+{
+}
+
+void ZSettingGroupBox::keyPressEvent(QKeyEvent *event)
+{
+    qDebug() << "SSS";
+    switch (event->key())
+    {
+        case Qt::Key_Select :
+            return;
+        default:
+            QGroupBox::keyPressEvent(event);
+    }
+}
+
 
 ZSettingWidget::ZSettingWidget(QWidget *parent) :
     QWidget(parent)
@@ -26,10 +47,9 @@ void ZSettingWidget::setData(const ZSelectParameter & _data)
     caption->setAlignment(Qt::AlignCenter);
     caption->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Fixed);
     mainLayout->addWidget(caption);
-    QGroupBox * box = new QGroupBox(this);
+    box = new ZSettingGroupBox(this);
     box->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
     mainLayout->addWidget(box);
-    //box->setFocus();
 
     QVBoxLayout * boxLayout = new QVBoxLayout(box);
     boxLayout->setContentsMargins(4, 4, 4, 4);
@@ -42,10 +62,8 @@ void ZSettingWidget::setData(const ZSelectParameter & _data)
         buttons->addButton(radio, i);
         boxLayout->addWidget(radio);
         if (selectData.value == selectData.items[i].value)
-        {
             radio->setChecked(true);
-            radio->setEditFocus(true);
-        }
+        radio->installEventFilter(this);
     }
     boxLayout->addStretch(1);
 }
@@ -66,19 +84,19 @@ void ZSettingWidget::setData(const ZValueParameter & _data)
     caption->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Fixed);
     mainLayout->addWidget(caption);
 
-    QWidget * widget = new QWidget(this);
-    widget->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
-    mainLayout->addWidget(widget);
+    progressContainer = new QWidget(this);
+    progressContainer->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
+    mainLayout->addWidget(progressContainer);
 
-    QVBoxLayout * valueLayout = new QVBoxLayout(widget);
+    QVBoxLayout * valueLayout = new QVBoxLayout(progressContainer);
     valueLayout->addStretch(1);
 
-    valueLabel = new QLabel(widget);
+    valueLabel = new QLabel(progressContainer);
     valueLabel->setAlignment(Qt::AlignCenter);
     valueLabel->setText(QString("%1 ").arg(valueData.value) + valueData.unit);
     valueLayout->addWidget(valueLabel, 0, Qt::AlignCenter);
 
-    progress = new QProgressBar(widget);
+    progress = new QProgressBar(progressContainer);
     progress->setMinimum(valueData.range.first);
     progress->setMaximum(valueData.range.second);
     progress->setValue(valueData.value);
@@ -95,21 +113,25 @@ void ZSettingWidget::keyPressEvent(QKeyEvent * event)
         case Qt::Key_Select :
             path = selectData.path;
             if (type == Select)
-                value = selectData.items[buttons->checkedId()].value;
+            {
+                for (int i = 0; i < selectData.items.count(); ++i)
+                    if (buttons->button(i)->hasFocus())
+                    {
+                        value = selectData.value = selectData.items[i].value;
+                        buttons->button(i)->setChecked(true);
+                    }
+            }
             else if (type == Value)
-                value = progress->value();
+                value = selectData.value = progress->value();
             //ZDbus::setParameter(path, value);
-            hide();
-            break;
-        case Qt::Key_Escape :
-            hide();
             break;
         case Qt::Key_Left :
             if (type == Value)
             {
-                progress->setValue(++valueData.value);
+                progress->setValue(--valueData.value);
                 valueLabel->setText(QString("%1 ").arg(valueData.value) + valueData.unit);
             }
+            break;
         case Qt::Key_Right :
             if (type == Value)
             {
@@ -121,4 +143,32 @@ void ZSettingWidget::keyPressEvent(QKeyEvent * event)
     QWidget::keyPressEvent(event);
 }
 
+void ZSettingWidget::showEvent(QShowEvent * event)
+{
+    if (type == Select)
+    {
+        for (int i = 0; i < selectData.items.count(); ++i)
+            if (selectData.value == selectData.items[i].value)
+            {
+                buttons->buttons()[i]->setChecked(true);
+                buttons->buttons()[i]->setFocus();
+            }
+        box->setEditFocus(true);
+    }
+    else if (type == Value)
+    {
+        progress->setFocus();
+        progressContainer->setEditFocus(true);
+    }
+}
 
+bool ZSettingWidget::eventFilter(QObject *, QEvent *event)
+{
+    if (event->type() == QEvent::KeyPress)
+        if (static_cast<QKeyEvent *>(event)->key() == Qt::Key_Select)
+        {
+            QCoreApplication::sendEvent(this, event);
+            return true;
+        }
+    return false;
+}

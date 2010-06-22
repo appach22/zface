@@ -48,17 +48,20 @@ QRadioButton {
      min-width: 80px;
  }
 
- QRadioButton:pressed {
+ /*QRadioButton:pressed {
      background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
                                        stop: 0 #dadbde, stop: 1 #f6f7fa);
- }
+ }*/
  
  QRadioButton:checked {
      background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
-                                       stop: 0 #f6f7fa, stop: 1 #dadbde);
+                                       stop: 0 #f6f7fa, stop: 1 #aaabae);
  }
 
  QRadioButton:default {
      border-color: navy; 
  }
 
+QRadioButton::focus {
+    border-color: #99f151;
+}

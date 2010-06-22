@@ -38,7 +38,13 @@ MainWindow::MainWindow(QWidget *parent)
     files.setSorting(QDir::Name | QDir::DirsFirst | QDir::IgnoreCase);
 
     ZSettingsNode * settingsRoot;
+#if defined(Q_OS_WIN)
+    ZAllSettings::loadAllSettings("../res/settings-en.xml", ui->paramPage, &settingsRoot);
+#elif defined(Q_WS_QWS)
+    ZAllSettings::loadAllSettings("/etc/zface/settings-en.xml", ui->paramPage, &settingsRoot);
+#elif defined(Q_OS_UNIX)
     ZAllSettings::loadAllSettings("settings-en.xml", ui->paramPage, &settingsRoot);
+#endif
     settings.setRootNode(settingsRoot);
     ui->settingsView->setModel(&settings);
 
@@ -100,6 +106,7 @@ void MainWindow::keyPressEvent(QKeyEvent * event)
             processParameterPage(event);
             break;
     }
+    //QMainWindow::keyPressEvent(event);
 }
 
 void MainWindow::SetWatcher(QModelIndex root)
