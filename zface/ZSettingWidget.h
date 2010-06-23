@@ -11,18 +11,6 @@
 #include <QtGui/QGroupBox>
 
 
-class ZSettingGroupBox : public QGroupBox
-{
-Q_OBJECT
-
-public:
-    explicit ZSettingGroupBox(QWidget *parent = 0);
-
-protected:
-    void keyPressEvent(QKeyEvent * event);
-};
-
-
 class ZSettingWidget : public QWidget
 {
 Q_OBJECT
@@ -48,7 +36,7 @@ private slots:
 private:
 
     QButtonGroup * buttons;
-    ZSettingGroupBox * box;
+    QGroupBox * box;
     QWidget * progressContainer;
     QLabel * valueLabel;
     QProgressBar * progress;

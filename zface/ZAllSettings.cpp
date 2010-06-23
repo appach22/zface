@@ -69,12 +69,13 @@ void ZAllSettings::getParameter(QXmlStreamReader & _xml, ZSettingsNode * _parent
 {
     QXmlStreamAttributes attrs = _xml.attributes();
 
-    QString path = attrs.value("path").toString();
-    //int value = ZDbus::getParam(path);
+    QString category = attrs.value("category").toString();
+    QString name = attrs.value("name").toString();
+    //int value = ZDbus::getParam(category, name);
     if (attrs.value("type").toString().toLower() == "value")
     {
         QPair<int, int> range = QPair<int, int>(attrs.value("min").toString().toInt(), attrs.value("max").toString().toInt());
-        ZValueParameter param = ZValueParameter(path, _parentNode->name, /*value*/0, range, attrs.value("unit").toString());
+        ZValueParameter param = ZValueParameter(category, name, _parentNode->name, /*value*/0, range, attrs.value("unit").toString());
         ZSettingWidget * setting = new ZSettingWidget(paramContainer);
         setting->setData(param);
         _parentNode->SetWidget(setting);
@@ -82,7 +83,8 @@ void ZAllSettings::getParameter(QXmlStreamReader & _xml, ZSettingsNode * _parent
     else if (attrs.value("type").toString().toLower() == "select")
     {
         ZSelectParameter param;
-        param.path = path;
+        param.category = category;
+        param.name = name;
         param.value = /*value*/0;
         param.visualName = _parentNode->name;
         _xml.readNext();

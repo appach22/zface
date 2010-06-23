@@ -18,6 +18,8 @@ HEADERS += mainwindow.h \
     ZParameter.h \
     ZDbus.h
 
+QT += dbus
+
 DEFINES += QT_KEYPAD_NAVIGATION
 
 FORMS += mainwindow.ui

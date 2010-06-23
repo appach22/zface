@@ -9,6 +9,8 @@ Q_OBJECT
 public:
     explicit ZDbus(QObject *parent = 0);
 
+    static bool setParameter(QString _category, QString _name, int _value);
+
 signals:
 
 public slots:

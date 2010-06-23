@@ -3,26 +3,9 @@
 #include <QCoreApplication>
 
 #include "ZSettingWidget.h"
+#include "ZDbus.h"
 
 #include <QDebug>
-
-
-ZSettingGroupBox::ZSettingGroupBox(QWidget *parent) :
-    QGroupBox(parent)
-{
-}
-
-void ZSettingGroupBox::keyPressEvent(QKeyEvent *event)
-{
-    qDebug() << "SSS";
-    switch (event->key())
-    {
-        case Qt::Key_Select :
-            return;
-        default:
-            QGroupBox::keyPressEvent(event);
-    }
-}
 
 
 ZSettingWidget::ZSettingWidget(QWidget *parent) :
@@ -47,7 +30,7 @@ void ZSettingWidget::setData(const ZSelectParameter & _data)
     caption->setAlignment(Qt::AlignCenter);
     caption->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Fixed);
     mainLayout->addWidget(caption);
-    box = new ZSettingGroupBox(this);
+    box = new QGroupBox(this);
     box->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
     mainLayout->addWidget(box);
 
@@ -97,8 +80,10 @@ void ZSettingWidget::setData(const ZValueParameter & _data)
     valueLayout->addWidget(valueLabel, 0, Qt::AlignCenter);
 
     progress = new QProgressBar(progressContainer);
+    progress->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Fixed);
     progress->setMinimum(valueData.range.first);
     progress->setMaximum(valueData.range.second);
+    progress->setFormat(QString("%v ") + valueData.unit);
     progress->setValue(valueData.value);
     valueLayout->addWidget(progress, 0, Qt::AlignCenter);
     valueLayout->addStretch(1);
@@ -106,37 +91,56 @@ void ZSettingWidget::setData(const ZValueParameter & _data)
 
 void ZSettingWidget::keyPressEvent(QKeyEvent * event)
 {
-    QString path;
+    QString category, name;
     int value;
     switch (event->key())
     {
         case Qt::Key_Select :
-            path = selectData.path;
+            // Получаем новое значение параметра
+            category = selectData.category;
+            name = selectData.name;
             if (type == Select)
             {
                 for (int i = 0; i < selectData.items.count(); ++i)
                     if (buttons->button(i)->hasFocus())
-                    {
-                        value = selectData.value = selectData.items[i].value;
-                        buttons->button(i)->setChecked(true);
-                    }
+                        value = selectData.items[i].value;
             }
             else if (type == Value)
-                value = selectData.value = progress->value();
-            //ZDbus::setParameter(path, value);
+                value = progress->value();
+
+            // Сохраняем значение параметра
+            if (ZDbus::setParameter(category, name, value))
+            {
+                // Если значение успешно сохранено - обновляем Gui
+                if (type == Select)
+                {
+                    for (int i = 0; i < selectData.items.count(); ++i)
+                        if (buttons->button(i)->hasFocus())
+                            buttons->button(i)->setChecked(true);
+                    selectData.value = value;
+                }
+                else if (type == Value)
+                    valueData.value = value;
+            }
+            else
+                qDebug() << "Error setting parameter: " << category << name << value;
             break;
-        case Qt::Key_Left :
+        case Qt::Key_Down :
             if (type == Value)
             {
-                progress->setValue(--valueData.value);
+                if (valueData.value > valueData.range.first)
+                    progress->setValue(--valueData.value);
                 valueLabel->setText(QString("%1 ").arg(valueData.value) + valueData.unit);
+                progress->repaint();
             }
             break;
-        case Qt::Key_Right :
+        case Qt::Key_Up :
             if (type == Value)
             {
-                progress->setValue(++valueData.value);
+                if (valueData.value < valueData.range.second)
+                    progress->setValue(++valueData.value);
                 valueLabel->setText(QString("%1 ").arg(valueData.value) + valueData.unit);
+                progress->repaint();
             }
             break;
     }
