@@ -2,9 +2,27 @@
 
 #include <QtDBus/QtDBus>
 
+
 ZDbus::ZDbus(QObject *parent) :
     QObject(parent)
 {
+}
+
+void ZDbus::startAliveTimer(int _interval)
+{
+    aliveTimer = new QTimer(this);
+    connect(aliveTimer, SIGNAL(timeout()), this, SLOT(sendAlive()));
+    aliveTimer->start(_interval);
+}
+
+void ZDbus::sendAlive()
+{
+    QDBusMessage aliveMessage = QDBusMessage::createSignal("/alive", "com.speechpro.HeartBeats", "zfaceAlive");
+#ifdef Q_WS_QWS
+    QDBusConnection::systemBus().send(aliveMessage);
+#else
+    QDBusConnection::sessionBus().send(aliveMessage);
+#endif
 }
 
 bool ZDbus::setParameter(QString _category, QString _name, int _value)

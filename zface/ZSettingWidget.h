@@ -38,7 +38,6 @@ private:
     QButtonGroup * buttons;
     QGroupBox * box;
     QWidget * progressContainer;
-    QLabel * valueLabel;
     QProgressBar * progress;
     SettingType type;
     ZSelectParameter selectData;

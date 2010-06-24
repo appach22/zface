@@ -3,6 +3,7 @@
 
 #include "ZSettingWidget.h"
 #include "ZAllSettings.h"
+#include "ZDbus.h"
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent, Qt::FramelessWindowHint), ui(new Ui::MainWindow)
@@ -47,6 +48,9 @@ MainWindow::MainWindow(QWidget *parent)
 #endif
     settings.setRootNode(settingsRoot);
     ui->settingsView->setModel(&settings);
+
+    ZDbus * zdbus = new ZDbus;
+    zdbus->startAliveTimer(10000);
 
     watcher = NULL;
     playGain = 20;

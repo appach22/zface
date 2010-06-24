@@ -72,15 +72,11 @@ void ZSettingWidget::setData(const ZValueParameter & _data)
     mainLayout->addWidget(progressContainer);
 
     QVBoxLayout * valueLayout = new QVBoxLayout(progressContainer);
+    valueLayout->setSizeConstraint(QLayout::SetNoConstraint);
     valueLayout->addStretch(1);
 
-    valueLabel = new QLabel(progressContainer);
-    valueLabel->setAlignment(Qt::AlignCenter);
-    valueLabel->setText(QString("%1 ").arg(valueData.value) + valueData.unit);
-    valueLayout->addWidget(valueLabel, 0, Qt::AlignCenter);
-
     progress = new QProgressBar(progressContainer);
-    progress->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Fixed);
+    progress->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
     progress->setMinimum(valueData.range.first);
     progress->setMaximum(valueData.range.second);
     progress->setFormat(QString("%v ") + valueData.unit);
@@ -91,22 +87,27 @@ void ZSettingWidget::setData(const ZValueParameter & _data)
 
 void ZSettingWidget::keyPressEvent(QKeyEvent * event)
 {
+    // TODO: приводить selectData и valueData к ZParameter
     QString category, name;
     int value;
     switch (event->key())
     {
         case Qt::Key_Select :
             // Получаем новое значение параметра
-            category = selectData.category;
-            name = selectData.name;
             if (type == Select)
             {
+                category = selectData.category;
+                name = selectData.name;
                 for (int i = 0; i < selectData.items.count(); ++i)
                     if (buttons->button(i)->hasFocus())
                         value = selectData.items[i].value;
             }
             else if (type == Value)
+            {
+                category = valueData.category;
+                name = valueData.name;
                 value = progress->value();
+            }
 
             // Сохраняем значение параметра
             if (ZDbus::setParameter(category, name, value))
@@ -130,8 +131,6 @@ void ZSettingWidget::keyPressEvent(QKeyEvent * event)
             {
                 if (valueData.value > valueData.range.first)
                     progress->setValue(--valueData.value);
-                valueLabel->setText(QString("%1 ").arg(valueData.value) + valueData.unit);
-                progress->repaint();
             }
             break;
         case Qt::Key_Up :
@@ -139,8 +138,6 @@ void ZSettingWidget::keyPressEvent(QKeyEvent * event)
             {
                 if (valueData.value < valueData.range.second)
                     progress->setValue(++valueData.value);
-                valueLabel->setText(QString("%1 ").arg(valueData.value) + valueData.unit);
-                progress->repaint();
             }
             break;
     }
