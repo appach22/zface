@@ -1,34 +1,56 @@
+<zface>
+
+<mixer>
+    <setting type="leaf" name="Источник записи">
+            <param type="select" category="Main" name="Mixer.Input">
+                    <item name="встр. микрофоны"  value="0" />
+                    <item name="линейный вход"    value="1" />
+                    <item name="телефонная линия" value="2" />
+                    <item name="цифровой вход"    value="3" />
+            </param>
+    </setting>
+    <setting type="leaf" name="Выход воспроизвед-я">
+            <param type="select" category="Main" name="Mixer.Output">
+                    <item name="линейный выход"   value="0" />
+                    <item name="динамик/наушники" value="1" />
+                    <item name="цифровой выход"   value="2" />
+            </param>
+    </setting>
+</mixer>
+
 <settings>
-<setting type="node" name="Setting 1">
-	<setting type="leaf" name="Subsetting 11">
-                <param type="select" category="Main" name="Test.Param.1">
-			<item name="value 1" value="1" />
-			<item name="value 2" value="2" />
-			<item name="value 3" value="3" />
-			<item name="value 0" value="0" />
-		</param>
-	</setting>
-	<setting type="leaf" name="Subsetting 12">
-                <param type="select" category="Main" name="Test.Param.2">
-			<item name="value 1" value="1" />
-			<item name="value 0" value="0" />
-			<item name="value 3" value="3" />
-		</param>
-	</setting>
-</setting>
-<setting type="node" name="Setting 2">
-	<setting type="leaf" name="Subsetting 21">
-                <param type="value" category="Main" name="Test.Param.3" min="0" max="100" unit="dB" />
-	</setting>
-	<setting type="leaf" name="Subsetting 22">
-                <param type="select" category="Main" name="Test.Param.4">
-			<item name="value 0" value="0" />
-			<item name="value 2" value="2" />
-			<item name="value 3" value="3" />
-			<item name="value 4" value="4" />
-			<item name="value 5" value="5" />
-			<item name="value 6" value="6" />
-		</param>
-	</setting>
-</setting>
+    <setting type="node" name="Setting 1">
+            <setting type="leaf" name="Subsetting 11">
+                    <param type="select" category="Main" name="Test.Param.1">
+                            <item name="value 1" value="1" />
+                            <item name="value 2" value="2" />
+                            <item name="value 3" value="3" />
+                            <item name="value 0" value="0" />
+                    </param>
+            </setting>
+            <setting type="leaf" name="Subsetting 12">
+                    <param type="select" category="Main" name="Test.Param.2">
+                            <item name="value 1" value="1" />
+                            <item name="value 0" value="0" />
+                            <item name="value 3" value="3" />
+                    </param>
+            </setting>
+    </setting>
+    <setting type="node" name="Setting 2">
+            <setting type="leaf" name="Subsetting 21">
+                    <param type="value" category="Main" name="Test.Param.3" min="0" max="100" unit="dB" />
+            </setting>
+            <setting type="leaf" name="Subsetting 22">
+                    <param type="select" category="Main" name="Test.Param.4">
+                            <item name="value 0" value="0" />
+                            <item name="value 2" value="2" />
+                            <item name="value 3" value="3" />
+                            <item name="value 4" value="4" />
+                            <item name="value 5" value="5" />
+                            <item name="value 6" value="6" />
+                    </param>
+            </setting>
+    </setting>
 </settings>
+
+</zface>

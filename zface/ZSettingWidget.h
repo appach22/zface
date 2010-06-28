@@ -21,8 +21,8 @@ public:
 
     explicit ZSettingWidget(QWidget *parent = 0);
 
-    void setData(const ZSelectParameter & _data);
-    void setData(const ZValueParameter & _data);
+    void setData(ZSelectParameter * _data);
+    void setData(ZValueParameter * _data);
 
 protected:
     void keyPressEvent(QKeyEvent * event);
@@ -40,8 +40,10 @@ private:
     QWidget * progressContainer;
     QProgressBar * progress;
     SettingType type;
-    ZSelectParameter selectData;
-    ZValueParameter valueData;
+    int cachedValue;
+    ZParameter * data;
+    //ZSelectParameter selectData;
+    //ZValueParameter valueData;
 };
 
 #endif // ZSETTINGWIDGET_H

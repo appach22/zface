@@ -6,6 +6,7 @@
 
 #include <QWidget>
 #include <QtXml/QXmlStreamReader>
+#include <QMap>
 
 /*struct ZSettingsTree
 {
@@ -20,15 +21,16 @@ class ZAllSettings
 public:
 /*    ZAllSettings();
 
-    static QMap<QString, ZParameter> allParameters;
-
     static QList<ZSettingsTree> settingsTree;*/
 
-    static void loadAllSettings(const QString & _xmlFileName, QWidget * _paramContainer, ZSettingsNode ** _settingsRoot);
+    static void loadAllSettings(const QString & _xmlFileName, QWidget * _paramContainer, const QString & _rootTag, ZSettingsNode ** _settingsRoot);
+
+    static void setParameter(const QString & _name, int _value);
 
 private:
 
     static QWidget * paramContainer;
+    //static ZParameter * findParameter(ZSettingsNode * _rootNode, const QString & _category, const QString & _name);
     static void getSetting(QXmlStreamReader & _xml, ZSettingsNode * _parentNode);
     static void getParameter(QXmlStreamReader & _xml, ZSettingsNode * _parentNode);
 

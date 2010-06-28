@@ -1,11 +1,18 @@
 #include "ZDbus.h"
 
-#include <QtDBus/QtDBus>
+#ifdef Q_WS_QWS
+    QDBusConnection ZDbus::bus = QDBusConnection::systemBus();
+#else
+    QDBusConnection ZDbus::bus = QDBusConnection::sessionBus();
+#endif
 
+ZDbus * zdbus = new ZDbus();
 
 ZDbus::ZDbus(QObject *parent) :
     QObject(parent)
 {
+    bus.connect("", "", "com.speechpro.GainChangedEvents", "GainChanged", this, SLOT(receiveGain(QString, QString, QString)));
+    bus.connect("", "", "com.speechpro.ParamChangedEvents", "ParamChanged", this, SLOT(receiveParam(QString, QString, QString)));
 }
 
 void ZDbus::startAliveTimer(int _interval)
@@ -18,22 +25,14 @@ void ZDbus::startAliveTimer(int _interval)
 void ZDbus::sendAlive()
 {
     QDBusMessage aliveMessage = QDBusMessage::createSignal("/alive", "com.speechpro.HeartBeats", "zfaceAlive");
-#ifdef Q_WS_QWS
-    QDBusConnection::systemBus().send(aliveMessage);
-#else
-    QDBusConnection::sessionBus().send(aliveMessage);
-#endif
+    bus.send(aliveMessage);
 }
 
-bool ZDbus::setParameter(QString _category, QString _name, int _value)
+bool ZDbus::setParameter(const QString & _category, const QString & _name, int _value)
 {
     QDBusMessage method = QDBusMessage::createMethodCall("com.speechpro.zvar", "/", "com.speechpro.ParamChangeRequests", "ChangeParam");
     method << _category << _name << QString("%1").arg(_value);
-#ifdef Q_WS_QWS
-    QDBusMessage reply = QDBusConnection::systemBus().call(method, QDBus::Block, 3000);
-#else
-    QDBusMessage reply = QDBusConnection::sessionBus().call(method, QDBus::Block, 3000);
-#endif
+    QDBusMessage reply = bus.call(method, QDBus::Block, 3000);
     if (reply.type() == QDBusMessage::ErrorMessage)
         return false;
     if (reply.arguments().count() < 2)
@@ -42,4 +41,37 @@ bool ZDbus::setParameter(QString _category, QString _name, int _value)
     int res;
     res = reply.arguments()[1].toInt(&ok);
     return (ok && !res);
+}
+
+bool ZDbus::getParameter(const QString & _category, const QString & _name, int * _value)
+{
+    QDBusMessage method = QDBusMessage::createMethodCall("com.speechpro.zvar", "/", "com.speechpro.ParamsRequests", "RequestParam");
+    method << _category << _name;
+    QDBusMessage reply = bus.call(method, QDBus::Block, 3000);
+    if (reply.type() == QDBusMessage::ErrorMessage)
+        return false;
+    if (reply.arguments().count() < 1)
+        return false;
+    bool ok;
+    *_value = reply.arguments()[0].toInt(&ok);
+    if (ok)
+        emit paramChanged(_name, reply.arguments()[0].toString());
+    return ok;
+}
+
+void ZDbus::sendRotaryEvent(const QString & _event, const QString & _action)
+{
+    QDBusMessage rotaryMessage = QDBusMessage::createSignal("/", "com.speechpro.EncodersEvents", _event);
+    rotaryMessage << _action;
+    bus.send(rotaryMessage);
+}
+
+void ZDbus::receiveGain(const QString, const QString _gain, const QString _value)
+{
+    emit gainChanged(_gain, _value);
+}
+
+void ZDbus::receiveParam(const QString, const QString _param, const QString _value)
+{
+    emit paramChanged(_param, _value);
 }

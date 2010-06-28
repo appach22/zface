@@ -39,14 +39,11 @@ void ZKbdHandler::readKbdData(int _fd)
         qDebug() << "incomplete read: " << n << " bytes";
         return;
     }
-//    qDebug() << "keypressed: type=" << event.type
-//                        << "code=" << event.code
-//                        << "value=" << event.value
-//                        << ((event.value != 0) ? "(Down)" : "(Up)");
 
     Qt::KeyboardModifiers modifiers = Qt::NoModifier;
     int unicode = 0xffff;
     int key_code = 0;
+    int i;
 
     switch (event.code)
     {
@@ -70,8 +67,44 @@ void ZKbdHandler::readKbdData(int _fd)
             break;
         case 63 :
             key_code = Qt::Key_F5;
+            // Игнорируем автоповтор для кнопки записи
+            if (event.value == 2)
+                return;
+            break;
+        case 0 :
+            // Обрабатываем энкодеры
+            if (!event.value)
+                return;
+            // Определяем, от какого энкодера пришел event
+            for (i = 0; inputsFds[i] != _fd && i < inputsCount; ++i){}
+            if (event.value > 0)
+            {
+                if (inputsNames[i] == "rotary0")
+                    key_code = Qt::Key_E;
+                else if (inputsNames[i] == "rotary1")
+                    key_code = Qt::Key_Q;
+                else if (inputsNames[i] == "rotary2")
+                    key_code = Qt::Key_W;
+                else
+                    return;
+            }
+            else if (event.value < 0)
+            {
+                if (inputsNames[i] == "rotary0")
+                    key_code = Qt::Key_C;
+                else if (inputsNames[i] == "rotary1")
+                    key_code = Qt::Key_Z;
+                else if (inputsNames[i] == "rotary2")
+                    key_code = Qt::Key_X;
+                else
+                    return;
+            }
             break;
         default :
+            qDebug() << "keypressed: type=" << event.type
+                                << "code=" << event.code
+                                << "value=" << event.value
+                                << ((event.value != 0) ? "(Down)" : "(Up)");
             return;
     }
 

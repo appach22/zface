@@ -1,5 +1,6 @@
 #include "ZAllSettings.h"
 #include "ZSettingWidget.h"
+#include "ZDbus.h"
 
 #include <QFile>
 
@@ -7,8 +8,9 @@
 #include <QDir>
 
 QWidget * ZAllSettings::paramContainer;
+QMap<QString, int> allValues;
 
-void ZAllSettings::loadAllSettings(const QString & _xmlFileName, QWidget * _paramContainer, ZSettingsNode ** _settingsRoot)
+void ZAllSettings::loadAllSettings(const QString & _xmlFileName, QWidget * _paramContainer, const QString & _rootTag, ZSettingsNode ** _settingsRoot)
 {
     qDebug() << QDir::currentPath();
 
@@ -21,17 +23,26 @@ void ZAllSettings::loadAllSettings(const QString & _xmlFileName, QWidget * _para
     QXmlStreamReader xml(file);
     *_settingsRoot = new ZSettingsNode(0, QObject::tr(""), ZSettingsNode::Node);
 
+    bool rootTagDetected = false;
     while (!xml.atEnd() && !xml.hasError())
     {
         xml.readNext();
-        if (xml.isStartElement() && xml.name().toString().toLower() == "setting")
+        if (xml.isStartElement() && xml.name().toString() == _rootTag)
+            rootTagDetected = true;
+        else if (xml.isStartElement() && rootTagDetected && xml.name().toString().toLower() == "setting")
             getSetting(xml, *_settingsRoot);
+        else if (xml.isEndElement() && xml.name().toString() == _rootTag)
+            break;
     }
 
     if (xml.hasError())
         qDebug() << "XML error!";
 }
 
+void ZAllSettings::setParameter(const QString & _name, int _value)
+{
+    allValues[_name] = _value;
+}
 
 void ZAllSettings::getSetting(QXmlStreamReader & _xml, ZSettingsNode * _parentNode)
 {
@@ -71,22 +82,23 @@ void ZAllSettings::getParameter(QXmlStreamReader & _xml, ZSettingsNode * _parent
 
     QString category = attrs.value("category").toString();
     QString name = attrs.value("name").toString();
-    //int value = ZDbus::getParam(category, name);
+    int value;
+    if (zdbus->getParameter(category, name, &value))
+        allValues[name] = value;
     if (attrs.value("type").toString().toLower() == "value")
     {
         QPair<int, int> range = QPair<int, int>(attrs.value("min").toString().toInt(), attrs.value("max").toString().toInt());
-        ZValueParameter param = ZValueParameter(category, name, _parentNode->name, /*value*/0, range, attrs.value("unit").toString());
+        ZValueParameter * param = new ZValueParameter(category, name, _parentNode->name, range, attrs.value("unit").toString());
         ZSettingWidget * setting = new ZSettingWidget(paramContainer);
         setting->setData(param);
         _parentNode->SetWidget(setting);
     }
     else if (attrs.value("type").toString().toLower() == "select")
     {
-        ZSelectParameter param;
-        param.category = category;
-        param.name = name;
-        param.value = /*value*/0;
-        param.visualName = _parentNode->name;
+        ZSelectParameter * param = new ZSelectParameter();
+        param->category = category;
+        param->name = name;
+        param->visualName = _parentNode->name;
         _xml.readNext();
         while (!_xml.atEnd() && !_xml.hasError())
         {
@@ -95,7 +107,7 @@ void ZAllSettings::getParameter(QXmlStreamReader & _xml, ZSettingsNode * _parent
             else if (_xml.isStartElement() && _xml.name().toString().toLower() == "item")
             {
                 attrs = _xml.attributes();
-                param.items.append(ZSelectParameterItem(attrs.value("value").toString().toInt(), attrs.value("name").toString()));
+                param->items.append(ZSelectParameterItem(attrs.value("value").toString().toInt(), attrs.value("name").toString()));
             }
             _xml.readNext();
         }

@@ -10,6 +10,7 @@
 #include <QTime>
 #include <QDebug>
 #include <QFileSystemWatcher>
+#include <QtGui/QListView>
 
 #include "ZSettingsModel.h"
 
@@ -27,7 +28,6 @@ public:
     ~MainWindow();
 
 protected:
-    void paintEvent(QPaintEvent *event);
     void keyPressEvent(QKeyEvent * event);
 
 private:
@@ -36,23 +36,26 @@ private:
     QWidget * current;
     QDirModel files;
     ZSettingsModel settings;
+    ZSettingsModel mixer;
     QFileSystemWatcher * watcher;
     QTimer * gainTimer;
-    int playGain;
+    QListView * currentView;
+    QWidget * currentPage;
 
     void SetWatcher(QModelIndex root);
 
     void processMainPage(QKeyEvent * event);
     void processBrowserPage(QKeyEvent * event);
-    void processSettingsPage(QKeyEvent * event);
+    void processSettingsPage(QKeyEvent * event, QListView * view);
     void processParameterPage(QKeyEvent * event);
-    void processEncoders(QKeyEvent * event);
+    bool processEncoders(QKeyEvent * event);
 
 private slots:
     void updateTime();
     void hideGain();
     void refreshPath();
-
+    void gainChanged(QString _gain, QString _value);
+    void paramChanged(QString _param, QString _value);
 };
 
 #endif // MAINWINDOW_H

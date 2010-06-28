@@ -38,23 +38,32 @@ MainWindow::MainWindow(QWidget *parent)
     ui->filesView->setModel(&files);
     files.setSorting(QDir::Name | QDir::DirsFirst | QDir::IgnoreCase);
 
+    zdbus->startAliveTimer(10000);
+    connect(zdbus, SIGNAL(gainChanged(QString, QString)), SLOT(gainChanged(QString, QString)));
+    connect(zdbus, SIGNAL(paramChanged(QString, QString)), SLOT(paramChanged(QString, QString)));
+
     ZSettingsNode * settingsRoot;
+    ZSettingsNode * mixerRoot;
 #if defined(Q_OS_WIN)
-    ZAllSettings::loadAllSettings("../res/settings-en.xml", ui->paramPage, &settingsRoot);
+    ZAllSettings::loadAllSettings("../res/settings-en.xml", ui->paramPage, "settings", &settingsRoot);
+    ZAllSettings::loadAllSettings("../res/settings-en.xml", ui->paramPage, "mixer", &mixerRoot);
 #elif defined(Q_WS_QWS)
-    ZAllSettings::loadAllSettings("/etc/zface/settings-en.xml", ui->paramPage, &settingsRoot);
+    ZAllSettings::loadAllSettings("/etc/zface/settings-en.xml", ui->paramPage, "settings", &settingsRoot);
+    ZAllSettings::loadAllSettings("/etc/zface/settings-en.xml", ui->paramPage, "mixer", &mixerRoot);
 #elif defined(Q_OS_UNIX)
-    ZAllSettings::loadAllSettings("settings-en.xml", ui->paramPage, &settingsRoot);
+    ZAllSettings::loadAllSettings("settings-en.xml", ui->paramPage, "settings", &settingsRoot);
+    ZAllSettings::loadAllSettings("settings-en.xml", ui->paramPage, "mixer", &mixerRoot);
 #endif
     settings.setRootNode(settingsRoot);
     ui->settingsView->setModel(&settings);
+    mixer.setRootNode(mixerRoot);
+    ui->mixerView->setModel(&mixer);
 
-    ZDbus * zdbus = new ZDbus;
-    zdbus->startAliveTimer(10000);
+    ui->gainRecLeftProgress->setFormat(tr("%v dB"));
+    ui->gainRecRightProgress->setFormat(tr("%v dB"));
+    ui->gainPlayProgress->setFormat(tr("%v dB"));
 
     watcher = NULL;
-    playGain = 20;
-    ui->gainPlayProgress->setValue(playGain);
     //SetWatcher(ui->filesView->currentIndex());
     //connect(ui->filesView, SIGNAL(entered(QModelIndex))
     QTimer * timer = new QTimer(this);
@@ -82,18 +91,11 @@ void MainWindow::hideGain()
     ui->statusPages->setCurrentWidget(ui->mainStatus);
 }
 
-void MainWindow::paintEvent(QPaintEvent *event)
-{
-}
-
 void MainWindow::keyPressEvent(QKeyEvent * event)
 {
-    qDebug() << "Key!!!";
-    if (event->key() == Qt::Key_Plus || event->key() == Qt::Key_Minus)
-    {
-        processEncoders(event);
+    //qDebug() << "Key!!!";
+    if (processEncoders(event))
         return;
-    }
 
     switch(ui->pages->currentIndex())
     {
@@ -104,9 +106,12 @@ void MainWindow::keyPressEvent(QKeyEvent * event)
             processBrowserPage(event);
             break;
         case 2 :
-            processSettingsPage(event);
+            processSettingsPage(event, ui->settingsView);
             break;
         case 3 :
+            processSettingsPage(event, ui->mixerView);
+            break;
+        case 4 :
             processParameterPage(event);
             break;
     }
@@ -144,7 +149,16 @@ void MainWindow::processMainPage(QKeyEvent * event)
             ui->pages->setCurrentWidget(ui->browserPage);
             ui->filesView->setEditFocus(true);
             break;
-        case Qt::Key_Return :
+        case Qt::Key_Select :
+            // Идем наверх
+            while (ui->mixerView->rootIndex().isValid())
+                ui->mixerView->setRootIndex(ui->mixerView->rootIndex().parent());
+            ui->pages->setCurrentWidget(ui->mixerPage);
+            ui->mixerView->setEditFocus(true);
+            // Чтобы элемент сразу выделился
+            ui->mixerView->setCurrentIndex(mixer.index(0, 0, ui->mixerView->rootIndex()));
+            currentView = ui->mixerView;
+            currentPage = ui->mixerPage;
             break;
         case Qt::Key_Right :
             // Идем наверх
@@ -154,6 +168,8 @@ void MainWindow::processMainPage(QKeyEvent * event)
             ui->settingsView->setEditFocus(true);
             // Чтобы элемент сразу выделился
             ui->settingsView->setCurrentIndex(settings.index(0, 0, ui->settingsView->rootIndex()));
+            currentView = ui->settingsView;
+            currentPage = ui->settingsPage;
             break;
         case Qt::Key_Left :
             break;
@@ -188,7 +204,7 @@ void MainWindow::processBrowserPage(QKeyEvent * event)
     }
 }
 
-void MainWindow::processSettingsPage(QKeyEvent * event)
+void MainWindow::processSettingsPage(QKeyEvent * event, QListView * view)
 {
     switch (event->key())
     {
@@ -196,16 +212,16 @@ void MainWindow::processSettingsPage(QKeyEvent * event)
             ui->pages->setCurrentWidget(ui->mainPage);
             break;
         case Qt::Key_Right :
-            if (ui->settingsView->currentIndex().isValid())
+            if (view->currentIndex().isValid())
             {
-                ZSettingsNode * node = static_cast<ZSettingsNode *>(ui->settingsView->currentIndex().internalPointer());
+                ZSettingsNode * node = static_cast<ZSettingsNode *>(view->currentIndex().internalPointer());
                 if (node->type == ZSettingsNode::Node)
                 {
-                    QModelIndex ind = ui->settingsView->currentIndex().child(0,0);
+                    QModelIndex ind = view->currentIndex().child(0,0);
                     if (ind.isValid())
                     {
-                        ui->settingsView->setRootIndex(ui->settingsView->currentIndex());
-                        ui->settingsView->setCurrentIndex(ind);
+                        view->setRootIndex(view->currentIndex());
+                        view->setCurrentIndex(ind);
                     }
                 }
                 else
@@ -222,11 +238,11 @@ void MainWindow::processSettingsPage(QKeyEvent * event)
             }
             break;
         case Qt::Key_Left :
-            QModelIndex ind = ui->settingsView->rootIndex();
+            QModelIndex ind = view->rootIndex();
             if (ind.isValid())
             {
-                ui->settingsView->setRootIndex(ind.parent());
-                ui->settingsView->setCurrentIndex(ind);
+                view->setRootIndex(ind.parent());
+                view->setCurrentIndex(ind);
             }
             break;
     }
@@ -238,35 +254,66 @@ void MainWindow::processParameterPage(QKeyEvent * event)
     {
         case Qt::Key_Escape :
         case Qt::Key_Select :
-            ui->pages->setCurrentWidget(ui->settingsPage);
-            ui->settingsView->setEditFocus(true);
+            ui->pages->setCurrentWidget(currentPage);
+            currentView->setEditFocus(true);
             break;
     }
 }
 
-void MainWindow::processEncoders(QKeyEvent * event)
+bool MainWindow::processEncoders(QKeyEvent * event)
 {
     switch (event->key())
     {
-        case Qt::Key_Plus :
+        case Qt::Key_E :
             if (ui->statusPages->currentIndex() != 1)
                 ui->statusPages->setCurrentWidget(ui->gainPlayStatus);
-            if (playGain < 100)
-            {
-                ui->gainPlayProgress->setValue(++playGain);
-                ui->gainPlayValue->setText(QString::number(playGain));
-            }
-            gainTimer->start(1000);
+            zdbus->sendRotaryEvent("PlayEncoder", "+");
             break;
-        case Qt::Key_Minus :
+        case Qt::Key_C :
             if (ui->statusPages->currentIndex() != 1)
                 ui->statusPages->setCurrentWidget(ui->gainPlayStatus);
-            if (playGain > 0)
-            {
-                ui->gainPlayProgress->setValue(--playGain);
-                ui->gainPlayValue->setText(QString::number(playGain));
-            }
-            gainTimer->start(1000);
+            zdbus->sendRotaryEvent("PlayEncoder", "-");
             break;
+        case Qt::Key_Q :
+            if (ui->statusPages->currentIndex() != 2)
+                ui->statusPages->setCurrentWidget(ui->gainRecStatus);
+            zdbus->sendRotaryEvent("LeftRecEncoder", "+");
+            break;
+        case Qt::Key_Z :
+            if (ui->statusPages->currentIndex() != 2)
+                ui->statusPages->setCurrentWidget(ui->gainRecStatus);
+            zdbus->sendRotaryEvent("LeftRecEncoder", "-");
+            break;
+        case Qt::Key_W :
+            if (ui->statusPages->currentIndex() != 2)
+                ui->statusPages->setCurrentWidget(ui->gainRecStatus);
+            zdbus->sendRotaryEvent("RightRecEncoder", "+");
+            break;
+        case Qt::Key_X :
+            if (ui->statusPages->currentIndex() != 2)
+                ui->statusPages->setCurrentWidget(ui->gainRecStatus);
+            zdbus->sendRotaryEvent("RightRecEncoder", "-");
+            break;
+        default:
+            return false;
     }
+
+    gainTimer->start(1000);
+    return true;
+}
+
+void MainWindow::gainChanged(QString _gain, QString _value)
+{
+    if (_gain.contains("Left_gain"))
+        ui->gainRecLeftProgress->setValue(_value.toInt());
+    else if (_gain.contains("Right_gain"))
+        ui->gainRecRightProgress->setValue(_value.toInt());
+    else if (_gain.contains(".Gain"))
+        ui->gainPlayProgress->setValue(_value.toInt());
+}
+
+void MainWindow::paramChanged(QString _param, QString _value)
+{
+    qDebug() << "paramChanged " << _param << ": " << _value;
+    //if (_param == "")
 }

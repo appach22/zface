@@ -7,6 +7,7 @@
 
 #include <QDebug>
 
+extern QMap<QString, int> allValues;
 
 ZSettingWidget::ZSettingWidget(QWidget *parent) :
     QWidget(parent)
@@ -15,10 +16,12 @@ ZSettingWidget::ZSettingWidget(QWidget *parent) :
     hide();
 }
 
-void ZSettingWidget::setData(const ZSelectParameter & _data)
+void ZSettingWidget::setData(ZSelectParameter * _data)
 {
     type = Select;
-    selectData = _data;
+    //selectData = _data;
+    data = _data;
+    cachedValue = allValues[data->name];
     //QSizePolicy sizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
     setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
     QVBoxLayout * mainLayout = new QVBoxLayout(this);
@@ -26,7 +29,7 @@ void ZSettingWidget::setData(const ZSelectParameter & _data)
     mainLayout->setContentsMargins(0, 0, 0, 0);
 
     QLabel * caption = new QLabel(this);
-    caption->setText(_data.visualName);
+    caption->setText(data->visualName);
     caption->setAlignment(Qt::AlignCenter);
     caption->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Fixed);
     mainLayout->addWidget(caption);
@@ -38,57 +41,57 @@ void ZSettingWidget::setData(const ZSelectParameter & _data)
     boxLayout->setContentsMargins(4, 4, 4, 4);
     buttons = new QButtonGroup(box);
 
-    for (int i = 0; i < _data.items.count(); ++i)
+    for (int i = 0; i < dynamic_cast<ZSelectParameter *>(data)->items.count(); ++i)
     {
         QRadioButton * radio = new QRadioButton(box);
-        radio->setText(selectData.items[i].name);
+        radio->setText(dynamic_cast<ZSelectParameter *>(data)->items[i].name);
         buttons->addButton(radio, i);
         boxLayout->addWidget(radio);
-        if (selectData.value == selectData.items[i].value)
+        if (cachedValue == dynamic_cast<ZSelectParameter *>(data)->items[i].value)
             radio->setChecked(true);
         radio->installEventFilter(this);
     }
     boxLayout->addStretch(1);
 }
 
-void ZSettingWidget::setData(const ZValueParameter & _data)
+void ZSettingWidget::setData(ZValueParameter * _data)
 {
     type = Value;
-    valueData = _data;
-
+    data = _data;
+    cachedValue = allValues[data->name];
     setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
     QVBoxLayout * mainLayout = new QVBoxLayout(this);
     mainLayout->setSpacing(0);
     mainLayout->setContentsMargins(0, 0, 0, 0);
 
     QLabel * caption = new QLabel(this);
-    caption->setText(_data.visualName);
+    caption->setText(data->visualName);
     caption->setAlignment(Qt::AlignCenter);
     caption->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Fixed);
     mainLayout->addWidget(caption);
 
     progressContainer = new QWidget(this);
-    progressContainer->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
+    //progressContainer->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
+    progressContainer->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     mainLayout->addWidget(progressContainer);
 
     QVBoxLayout * valueLayout = new QVBoxLayout(progressContainer);
-    valueLayout->setSizeConstraint(QLayout::SetNoConstraint);
+    //valueLayout->setSizeConstraint(QLayout::SetNoConstraint);
     valueLayout->addStretch(1);
 
     progress = new QProgressBar(progressContainer);
     progress->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
-    progress->setMinimum(valueData.range.first);
-    progress->setMaximum(valueData.range.second);
-    progress->setFormat(QString("%v ") + valueData.unit);
-    progress->setValue(valueData.value);
+    progress->setMinimum(dynamic_cast<ZValueParameter *>(data)->range.first);
+    progress->setMaximum(dynamic_cast<ZValueParameter *>(data)->range.second);
+    progress->setFormat(QString("%v ") + dynamic_cast<ZValueParameter *>(data)->unit);
+    progress->setValue(allValues[data->name]);
     valueLayout->addWidget(progress, 0, Qt::AlignCenter);
     valueLayout->addStretch(1);
+    qDebug() << progress->width() << " " << ((QWidget*)progress->parent())->width();
 }
 
 void ZSettingWidget::keyPressEvent(QKeyEvent * event)
 {
-    // TODO: приводить selectData и valueData к ZParameter
-    QString category, name;
     int value;
     switch (event->key())
     {
@@ -96,60 +99,53 @@ void ZSettingWidget::keyPressEvent(QKeyEvent * event)
             // Получаем новое значение параметра
             if (type == Select)
             {
-                category = selectData.category;
-                name = selectData.name;
-                for (int i = 0; i < selectData.items.count(); ++i)
+                for (int i = 0; i < dynamic_cast<ZSelectParameter *>(data)->items.count(); ++i)
                     if (buttons->button(i)->hasFocus())
-                        value = selectData.items[i].value;
+                        value = dynamic_cast<ZSelectParameter *>(data)->items[i].value;
             }
             else if (type == Value)
-            {
-                category = valueData.category;
-                name = valueData.name;
                 value = progress->value();
-            }
 
             // Сохраняем значение параметра
-            if (ZDbus::setParameter(category, name, value))
+            if (zdbus->setParameter(data->category, data->name, value))
             {
                 // Если значение успешно сохранено - обновляем Gui
                 if (type == Select)
                 {
-                    for (int i = 0; i < selectData.items.count(); ++i)
+                    for (int i = 0; i < dynamic_cast<ZSelectParameter *>(data)->items.count(); ++i)
                         if (buttons->button(i)->hasFocus())
                             buttons->button(i)->setChecked(true);
-                    selectData.value = value;
                 }
-                else if (type == Value)
-                    valueData.value = value;
+                cachedValue = allValues[data->name] = value;
             }
             else
-                qDebug() << "Error setting parameter: " << category << name << value;
+                qDebug() << "Error setting parameter: " << data->category << data->name << value;
             break;
         case Qt::Key_Down :
             if (type == Value)
             {
-                if (valueData.value > valueData.range.first)
-                    progress->setValue(--valueData.value);
+                if (cachedValue > dynamic_cast<ZValueParameter *>(data)->range.first)
+                    progress->setValue(--cachedValue);
             }
             break;
         case Qt::Key_Up :
             if (type == Value)
             {
-                if (valueData.value < valueData.range.second)
-                    progress->setValue(++valueData.value);
+                if (cachedValue < dynamic_cast<ZValueParameter *>(data)->range.second)
+                    progress->setValue(++cachedValue);
             }
             break;
     }
     QWidget::keyPressEvent(event);
 }
 
-void ZSettingWidget::showEvent(QShowEvent * event)
+void ZSettingWidget::showEvent(QShowEvent *)
 {
+    cachedValue = allValues[data->name];
     if (type == Select)
     {
-        for (int i = 0; i < selectData.items.count(); ++i)
-            if (selectData.value == selectData.items[i].value)
+        for (int i = 0; i < dynamic_cast<ZSelectParameter *>(data)->items.count(); ++i)
+            if (cachedValue == dynamic_cast<ZSelectParameter *>(data)->items[i].value)
             {
                 buttons->buttons()[i]->setChecked(true);
                 buttons->buttons()[i]->setFocus();
@@ -158,6 +154,7 @@ void ZSettingWidget::showEvent(QShowEvent * event)
     }
     else if (type == Value)
     {
+        progress->setValue(cachedValue);
         progress->setFocus();
         progressContainer->setEditFocus(true);
     }
