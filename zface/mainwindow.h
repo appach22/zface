@@ -29,6 +29,7 @@ public:
 
 protected:
     void keyPressEvent(QKeyEvent * event);
+    bool eventFilter(QObject *obj, QEvent *event);
 
 private:
     Ui::MainWindow *ui;
@@ -41,6 +42,7 @@ private:
     QTimer * gainTimer;
     QListView * currentView;
     QWidget * currentPage;
+    QModelIndex rootIndex;
 
     void SetWatcher(QModelIndex root);
 

@@ -228,6 +228,12 @@
           <property name="lineWidth">
            <number>0</number>
           </property>
+          <property name="horizontalScrollBarPolicy">
+           <enum>Qt::ScrollBarAlwaysOff</enum>
+          </property>
+          <property name="textElideMode">
+           <enum>Qt::ElideNone</enum>
+          </property>
           <property name="viewMode">
            <enum>QListView::ListMode</enum>
           </property>

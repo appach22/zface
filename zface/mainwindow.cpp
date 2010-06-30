@@ -36,7 +36,11 @@ MainWindow::MainWindow(QWidget *parent)
     this->setStyleSheet(styleSheet);
 
     ui->filesView->setModel(&files);
+    ui->filesView->installEventFilter(this);
     files.setSorting(QDir::Name | QDir::DirsFirst | QDir::IgnoreCase);
+    files.setResolveSymlinks(false);
+    files.setNameFilters(QStringList() << "*.wav");
+    files.setFilter(QDir::AllDirs | QDir::NoDotAndDotDot | QDir::Files);
 
     zdbus->startAliveTimer(10000);
     connect(zdbus, SIGNAL(gainChanged(QString, QString)), SLOT(gainChanged(QString, QString)));
@@ -124,7 +128,6 @@ void MainWindow::SetWatcher(QModelIndex root)
         delete watcher;
 
     watcher = new QFileSystemWatcher(this);
-    qDebug() << "Watching " << files.fileInfo(root).absoluteFilePath();
     watcher->addPath(files.fileInfo(root).absoluteFilePath());
     connect(watcher, SIGNAL(directoryChanged(const QString &)), SLOT(refreshPath()));
 }
@@ -135,7 +138,6 @@ void MainWindow::refreshPath()
     files.refresh(files.parent(ui->filesView->rootIndex()));
 }
 
-
 //-------------------------------------------------------------------------------------------
 
 void MainWindow::processMainPage(QKeyEvent * event)
@@ -145,9 +147,14 @@ void MainWindow::processMainPage(QKeyEvent * event)
         case Qt::Key_Escape :
             ui->pages->setCurrentWidget(ui->mainPage);
             break;
-        case Qt::Key_Down   :
-            ui->pages->setCurrentWidget(ui->browserPage);
-            ui->filesView->setEditFocus(true);
+        case Qt::Key_Down :
+            {
+                ui->filesView->setRootIndex(files.index("/tmp/sound"));
+                rootIndex = ui->filesView->rootIndex();
+                ui->filesView->setCurrentIndex(files.index(0, 0, rootIndex));
+                ui->pages->setCurrentWidget(ui->browserPage);
+                ui->filesView->setEditFocus(true);
+            }
             break;
         case Qt::Key_Select :
             // Идем наверх
@@ -180,26 +187,27 @@ void MainWindow::processBrowserPage(QKeyEvent * event)
 {
     switch (event->key())
     {
-        case Qt::Key_Escape :
-            ui->pages->setCurrentWidget(ui->mainPage);
-            break;
-        case Qt::Key_Right :
+        case Qt::Key_Select :
             if (files.fileInfo(ui->filesView->currentIndex()).isDir())
             {
                 SetWatcher(ui->filesView->currentIndex());
                 ui->filesView->setRootIndex(ui->filesView->currentIndex());
-                files.refresh(files.parent(ui->filesView->currentIndex()));
+                ui->filesView->setCurrentIndex(ui->filesView->rootIndex().child(0, 0));
+                files.refresh(ui->filesView->rootIndex());
                 ui->filesView->setEditFocus(true);
             }
             break;
-        case Qt::Key_Left :
-            if (files.parent(ui->filesView->rootIndex()).isValid())
+        case Qt::Key_Escape :
+            if (files.parent(ui->filesView->rootIndex()).isValid() && ui->filesView->rootIndex() != rootIndex)
             {
+                ui->filesView->setCurrentIndex(ui->filesView->rootIndex());
                 ui->filesView->setRootIndex(files.parent(ui->filesView->rootIndex()));
                 SetWatcher(ui->filesView->rootIndex());
                 files.refresh(ui->filesView->rootIndex());
                 ui->filesView->setEditFocus(true);
             }
+            else
+                ui->pages->setCurrentWidget(ui->mainPage);
             break;
     }
 }
@@ -315,5 +323,70 @@ void MainWindow::gainChanged(QString _gain, QString _value)
 void MainWindow::paramChanged(QString _param, QString _value)
 {
     qDebug() << "paramChanged " << _param << ": " << _value;
-    //if (_param == "")
+    int value = _value.toInt();
+
+    if (_param == "Mixer.Input")
+    {
+        switch (value)
+        {
+            case 0 :
+                ui->gainRecIcon->setStyleSheet("background-image: url(:/all/res/gain_rec_mic.bmp);"
+                                               "background-repeat: repeat-n;"
+                                               "background-position: center;");
+                break;
+            case 1 :
+                ui->gainRecIcon->setStyleSheet("background-image: url(:/all/res/gain_rec_line.bmp);"
+                                               "background-repeat: repeat-n;"
+                                               "background-position: center;");
+                break;
+            case 2 :
+                ui->gainRecIcon->setStyleSheet("background-image: url(:/all/res/gain_rec_phone.bmp);"
+                                               "background-repeat: repeat-n;"
+                                               "background-position: center;");
+                break;
+            case 3 :
+                ui->gainRecIcon->setStyleSheet("background-image: url(:/all/res/gain_rec_dig.bmp);"
+                                               "background-repeat: repeat-n;"
+                                               "background-position: center;");
+                break;
+        }
+    }
+
+    if (_param == "Mixer.Output")
+    {
+        switch (value)
+        {
+            case 0 :
+                ui->gainPlayIcon->setStyleSheet("background-image: url(:/all/res/gain_play_line.bmp);"
+                                                "background-repeat: repeat-n;"
+                                                "background-position: center;");
+                break;
+            case 1 :
+                ui->gainPlayIcon->setStyleSheet("background-image: url(:/all/res/gain_play_spk.bmp);"
+                                                "background-repeat: repeat-n;"
+                                                "background-position: center;");
+                break;
+            case 2 :
+                ui->gainPlayIcon->setStyleSheet("background-image: url(:/all/res/gain_play_dig.bmp);"
+                                                "background-repeat: repeat-n;"
+                                                "background-position: center;");
+                break;
+        }
+    }
+
+    if (_param == "Mixer.Through_channel")
+    {
+    }
 }
+
+bool MainWindow::eventFilter(QObject *obj, QEvent *event)
+{
+    if (event->type() == QEvent::KeyPress)
+        if (static_cast<QKeyEvent *>(event)->key() == Qt::Key_Select)
+        {
+            QCoreApplication::sendEvent(this, event);
+            return true;
+        }
+    return false;
+}
+

@@ -16,6 +16,19 @@
                     <item name="цифровой выход"   value="2" />
             </param>
     </setting>
+    <setting type="leaf" name="Сквозной канал">
+            <param type="select" category="Temp" name="Mixer.Through_channel">
+                    <item name="отключен" value="0" />
+                    <item name="включен"  value="1" />
+            </param>
+    </setting>
+    <setting type="leaf" name="Стерео на динамике">
+            <param type="select" category="Main" name="Mixer.Channels_to_speaker">
+                    <item name="микшируется"        value="0" />
+                    <item name="левый стереоканал"  value="1" />
+                    <item name="правый стереоканал" value="2" />
+            </param>
+    </setting>
 </mixer>
 
 <settings>
