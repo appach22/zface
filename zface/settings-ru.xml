@@ -1,0 +1,302 @@
+<zface>
+    <mixer>
+        <setting type="leaf" name="Источник записи">
+                <param type="select" category="Main" name="Mixer.Input">
+                        <item name="встр. микрофоны"  value="0" />
+                        <item name="линейный вход"    value="1" />
+                        <item name="телефонная линия" value="2" />
+                        <item name="цифровой вход"    value="3" />
+                </param>
+        </setting>
+        <setting type="leaf" name="Выход воспроизвед-я">
+                <param type="select" category="Main" name="Mixer.Output">
+                        <item name="линейный выход"   value="0" />
+                        <item name="динамик/наушники" value="1" />
+                        <item name="цифровой выход"   value="2" />
+                </param>
+        </setting>
+        <setting type="leaf" name="Сквозной канал">
+                <param type="select" category="Temp" name="Mixer.Through_channel">
+                        <item name="отключен"   value="0" />
+                        <item name="включен"    value="1" />
+                </param>
+        </setting>
+        <setting type="leaf" name="Стерео на динамике">
+                <param type="select" category="Main" name="Mixer.Channels_to_speaker">
+                        <item name="микшируется"        value="0" />
+                        <item name="левый стереоканал"  value="1" />
+                        <item name="правый стереоканал" value="2" />
+                </param>
+        </setting>
+        <setting type="leaf" name="Режим лин-го входа">
+                <param type="select" category="Main" name="Mixer.Input.Analog.Mode">
+                        <item name="микрофонный"        value="0" />
+                        <item name="линейный"           value="1" />
+                </param>
+        </setting>
+        <setting type="leaf" name="Сигнал лин-го входа">
+                <param type="select" category="Main" name="Mixer.Input.Analog.Signal_kind">
+                        <item name="дифференциальный"   value="0" />
+                        <item name="асимметричный"      value="1" />
+                </param>
+        </setting>
+    </mixer>
+
+    <filters>
+        <setting type="node" name="Широкополосный фильтр">
+                <setting type="leaf" name="Состояние">
+                        <param type="select" category="Filters" name="Broadband_filter.Enabled">
+                                <item name="отключен"   value="0" />
+                                <item name="включен"    value="1" />
+                        </param>
+                </setting>
+                <setting type="leaf" name="Подавление">
+                        <param type="value" category="Filters" name="Broadband_filter.Supression" min="3" max="21" step="3" unit="дБ" />
+                </setting>
+                <setting type="leaf" name="Низкие частоты">
+                        <param type="select" category="Filters" name="Broadband_filter.LowBandNoise">
+                                <item name="отключены"  value="0" />
+                                <item name="включены"   value="1" />
+                        </param>
+                </setting>   
+                <setting type="leaf" name="Реверберация">
+                        <param type="select" category="Filters" name="Broadband_filter.Reverberation">
+                                <item name="отключена"  value="0" />
+                                <item name="включена"   value="1" />
+                        </param>
+                </setting>
+                <setting type="leaf" name="Вычитаемый шум">
+                        <param type="select" category="Filters" name="Broadband_filter.Residual">
+                                <item name="отключен"   value="0" />
+                                <item name="включен"    value="1" />
+                        </param>
+                </setting>
+        </setting>
+        <setting type="node" name="Фильтр тональных помех">
+                <setting type="leaf" name="Состояние">
+                        <param type="select" category="Filters" name="HarmonicReject_filter.Enabled">
+                                <item name="отключен"   value="0" />
+                                <item name="включен"    value="1" />
+                        </param>
+                </setting>
+        </setting>
+        <setting type="node" name="Эквалайзер">
+                <setting type="leaf" name="Состояние">
+                        <param type="select" category="Filters" name="EQ_filter.Enabled">
+                                <item name="отключен"   value="0" />
+                                <item name="включен"    value="1" />
+                        </param>
+                </setting>
+                <setting type="leaf" name="Тип">
+                        <param type="select" category="Filters" name="EQ_filter.Type">
+                                <item name="адаптивный"         value="0" />
+                                <item name="параметрический"    value="1" />
+                        </param>
+                </setting>
+                <setting type="leaf" name="НЧ_дБ">
+                        <param type="value" category="Filters" name="EQ_filter.LF" min="-6" max="6" step="1" unit="дБ" />
+                </setting>
+                <setting type="leaf" name="ВЧ_дБ">
+                        <param type="value" category="Filters" name="EQ_filter.HF" min="-6" max="6" step="1" unit="дБ" />
+                </setting>
+        </setting>
+        <setting type="node" name="Фильтр импульсных помех">
+                <setting type="leaf" name="Состояние">
+                        <param type="select" category="Filters" name="Declicker_filter.Enabled">
+                                <item name="отключен"   value="0" />
+                                <item name="включен"    value="1" />
+                        </param>
+                </setting>
+                <setting type="leaf" name="Порог">
+                        <param type="value" category="Filters" name="Declicker_filter.Threshold" min="0" max="10" step="1" unit="дБ" />
+                </setting>
+        </setting>
+        <setting type="node" name="АРУ">
+                <setting type="leaf" name="Состояние">
+                        <param type="select" category="Filters" name="LevelEnhancement_filter.Enabled">
+                                <item name="отключен"   value="0" />
+                                <item name="включен"    value="1" />
+                        </param>
+                </setting>
+        </setting>
+        <setting type="node" name="Фильтр стерео">
+                <setting type="leaf" name="Состояние">
+                        <param type="select" category="Filters" name="ReferenceNoise_filter.Enabled">
+                                <item name="отключен"   value="0" />
+                                <item name="включен"    value="1" />
+                        </param>
+                </setting>
+                <setting type="leaf" name="Сигнал канала">
+                        <param type="select" category="Filters" name="ReferenceNoise_filter.ReferenceChannel">
+                                <item name="опорного"   value="0" />
+                                <item name="основного"  value="1" />
+                        </param>
+                </setting>
+                <setting type="leaf" name="Задержка">
+                        <param type="value" category="Filters" name="ReferenceNoise_filter.TimeDelay" min="0" max="10" step="1" unit="мс" />
+                </setting>
+                <setting type="leaf" name="Подавление">
+                        <param type="value" category="Filters" name="ReferenceNoise_filter.Supression" min="3" max="21" step="3" unit="дБ" />
+                </setting>
+        </setting>
+        <setting type="node" name="Сдвиг каналов (псевдо-стерео)">
+                <setting type="leaf" name="Состояние">
+                        <param type="select" category="Filters" name="Pseudo_filter.Enabled">
+                                <item name="отключен"   value="0" />
+                                <item name="включен"    value="1" />
+                        </param>
+                </setting>
+                <setting type="leaf" name="Задержка">
+                        <param type="value" category="Filters" name="Pseudo_filter.Delay" min="0" max="20" step="1" unit="мс" />
+                </setting>
+        </setting>
+        <setting type="node" name="Морфер">
+                <setting type="leaf" name="Состояние">
+                        <param type="select" category="Filters" name="Voice_changer_filter.Enabled">
+                                <item name="отключен"   value="0" />
+                                <item name="включен"    value="1" />
+                        </param>
+                </setting>
+                <setting type="leaf" name="Голос">
+                        <param type="select" category="Filters" name="Voice_changer_filter.Voice">
+                                <item name="женский"    value="0" />
+                                <item name="мужской"    value="1" />
+                        </param>
+                </setting>
+        </setting>
+    </filters>
+
+    <settings>
+        <setting type="node" name="Парметры записи">
+                <setting type="leaf" name="Частота дискрет-ции">
+                        <param type="select" category="Main" name="Recorder.Sample_rate">
+                                <item name="8 кГц"      value="0" />
+                                <item name="16 кГц"     value="1" />
+                                <item name="44.1 кГц"   value="2" />
+                        </param>
+                </setting>
+                <setting type="leaf" name="Разрядность">
+                        <param type="select" category="Main" name="Recorder.Sample_size">
+                                <item name="16 бит"     value="0" />
+                                <item name="24 бита"    value="1" />
+                        </param>
+                </setting>
+                <setting type="leaf" name="Сжатие">
+                        <param type="select" category="Main" name="Recorder.Compression">
+                                <item name="PCM"        value="0" />
+                                <item name="muLaw"      value="1" />
+                        </param>
+                </setting>
+                <setting type="leaf" name="Ограничение длит-ти">
+                        <param type="select" category="Main" name="Recorder.Record_duration_limit">
+                                <item name="30 минут"   value="0" />
+                                <item name="1 час"      value="1" />
+                                <item name="3 часа"     value="2" />
+                                <item name="5 часов"    value="3" />
+                        </param>
+                </setting>
+                <setting type="leaf" name="Разделение каналов">
+                        <param type="select" category="Main" name="Recorder.Channels">
+                                <item name="моно"       value="0" />
+                                <item name="стерео"     value="1" />
+                        </param>
+                </setting>
+                <setting type="leaf" name="Записывать файлы">
+                        <param type="select" category="Main" name="Recorder.Record_files">
+                                <item name="исходные"   value="0" />
+                                <item name="очищенные"  value="1" />
+                                <item name="оба"        value="2" />
+                        </param>
+                </setting>
+        </setting>
+        <setting type="node" name="Акустопуск">
+                <setting type="leaf" name="Состояние">
+                        <param type="select" category="Main" name="Recorder.Acoustic.Enabled">
+                                <item name="отключен"   value="0" />
+                                <item name="включен"    value="1" />
+                        </param>
+                </setting>
+                <setting type="leaf" name="Порог старта">
+                        <param type="value" category="Main" name="Recorder.Acoustic.Start_threshold" min="0" max="72" step="1" unit="дБ" />
+                </setting>
+                <setting type="leaf" name="Задержка старта">
+                        <param type="value" category="Main" name="Recorder.Acoustic.Start_delay" min="30" max="200" step="10" unit="мс" />
+                </setting>
+                <setting type="leaf" name="Порог стопа">
+                        <param type="value" category="Main" name="Recorder.Acoustic.Stop_threshold" min="0" max="72" step="1" unit="дБ" />
+                </setting>
+                <setting type="leaf" name="Задержка стопа">
+                        <param type="value" category="Main" name="Recorder.Acoustic.Start_delay" min="0.5" max="10.0" step="0.1" unit="с" />
+                </setting>
+        </setting>
+        <setting type="node" name="Таймер записи">
+                <setting type="leaf" name="Состояние">
+                        <param type="select" category="Main" name="Recorder.Timer.Enabled">
+                                <item name="отключен"   value="0" />
+                                <item name="включен"    value="1" />
+                        </param>
+                </setting>
+                <!-- время старта и длительность записи должны быть здесь -->
+                <setting type="leaf" name="Регулярность записи">
+                        <param type="select" category="Main" name="Recorder.Timer.Repeat">
+                                <item name="однажды"    value="0" />
+                                <item name="ежедневно"  value="1" />
+                        </param>
+                </setting>
+        </setting>
+        <setting type="node" name="Защита от переполн.">
+                <setting type="leaf" name="Автоудаление старых">
+                        <param type="select" category="Main" name="Overflow_guardAuto_delete_old">
+                                <item name="отключено"  value="0" />
+                                <item name="включено"   value="1" />
+                        </param>
+                </setting>
+                <setting type="leaf" name="Автоочистка корзины">
+                        <param type="select" category="Main" name="Overflow_guardAuto_clean_trash">
+                                <item name="отключена"  value="0" />
+                                <item name="включена"   value="1" />
+                        </param>
+                </setting>
+        </setting>
+        <setting type="node" name="Безопасность">
+                <setting type="leaf" name="Автоблок-ка кнопок">
+                        <param type="select" category="Main" name="Security.Keyboard_lock.Auto_lock">
+                                <item name="отключена"  value="0" />
+                                <item name="30 секунд"  value="1" />
+                                <item name="1 минута"   value="2" />
+                                <item name="2 минуты"   value="3" />
+                        </param>
+                </setting>
+                <setting type="leaf" name="Защита ПИН-кодом">
+                        <param type="select" category="Main" name="Security.Protection.Enabled">
+                                <item name="отключена"  value="0" />
+                                <item name="включена"   value="1" />
+                        </param>
+                </setting>
+                <!-- изменить пин-код должен быть здесь -->
+        </setting>
+        <!-- дата и время должны быть здесь -->
+        <setting type="node" name="Прочие настройки">
+                <setting type="leaf" name="Отключ-е подсветки">
+                        <param type="select" category="Main" name="Display.Backlight.Auto_turn_off">
+                                <item name="не отключается" value="0" />
+                                <item name="15 секунд"      value="1" />
+                                <item name="30 секунд"      value="2" />
+                                <item name="1 минута"       value="3" />
+                        </param>
+                </setting>
+                <setting type="leaf" name="Светодиоды уровня">
+                        <param type="select" category="Main" name="Recorder.Enable_LEDs">
+                                <item name="отключены"  value="0" />
+                                <item name="включены"   value="1" />
+                        </param>
+                </setting>
+                <setting type="leaf" name="Режим подключ-я USB">
+                        <param type="select" category="Main" name="USB.Connected_OS">
+                                <item name="Кард-ридер"     value="0" />
+                                <item name="Web-интерфейс"  value="1" />
+                        </param>
+                </setting>
+        </setting>
+    </settings>
+</zface>

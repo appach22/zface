@@ -3,7 +3,20 @@
 
 #include "ZSettingWidget.h"
 #include "ZAllSettings.h"
-#include "ZDbus.h"
+
+// FIXME: брать этот файл из исходников
+#include "zplay-common.h"
+
+QString fileOpenErrors[9] = {QObject::tr("Неизвестная ошибка!"),
+                             "",
+                             QObject::tr("Неподдерживаемый формат файла!"),
+                             QObject::tr("Ошибка чтения файла!"),
+                             QObject::tr("Не является WAV-файлом!"),
+                             QObject::tr("Не хватает памяти для открытия файла!"),
+                             QObject::tr("Ошибка при инициализации MP3!"),
+                             QObject::tr("Ошибка при открытии MP3-файла!"),
+                             QObject::tr("Неподдерживаемый формат MP3-файла!")
+                            };
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent, Qt::FramelessWindowHint), ui(new Ui::MainWindow)
@@ -49,14 +62,14 @@ MainWindow::MainWindow(QWidget *parent)
     ZSettingsNode * settingsRoot;
     ZSettingsNode * mixerRoot;
 #if defined(Q_OS_WIN)
-    ZAllSettings::loadAllSettings("../res/settings-en.xml", ui->paramPage, "settings", &settingsRoot);
-    ZAllSettings::loadAllSettings("../res/settings-en.xml", ui->paramPage, "mixer", &mixerRoot);
+    ZAllSettings::loadAllSettings("../res/settings-ru.xml", ui->paramPage, "settings", &settingsRoot);
+    ZAllSettings::loadAllSettings("../res/settings-ru.xml", ui->paramPage, "mixer", &mixerRoot);
 #elif defined(Q_WS_QWS)
-    ZAllSettings::loadAllSettings("/etc/zface/settings-en.xml", ui->paramPage, "settings", &settingsRoot);
-    ZAllSettings::loadAllSettings("/etc/zface/settings-en.xml", ui->paramPage, "mixer", &mixerRoot);
+    ZAllSettings::loadAllSettings("/etc/zface/settings-ru.xml", ui->paramPage, "settings", &settingsRoot);
+    ZAllSettings::loadAllSettings("/etc/zface/settings-ru.xml", ui->paramPage, "mixer", &mixerRoot);
 #elif defined(Q_OS_UNIX)
-    ZAllSettings::loadAllSettings("settings-en.xml", ui->paramPage, "settings", &settingsRoot);
-    ZAllSettings::loadAllSettings("settings-en.xml", ui->paramPage, "mixer", &mixerRoot);
+    ZAllSettings::loadAllSettings("settings-ru.xml", ui->paramPage, "settings", &settingsRoot);
+    ZAllSettings::loadAllSettings("settings-ru.xml", ui->paramPage, "mixer", &mixerRoot);
 #endif
     settings.setRootNode(settingsRoot);
     ui->settingsView->setModel(&settings);
@@ -66,6 +79,8 @@ MainWindow::MainWindow(QWidget *parent)
     ui->gainRecLeftProgress->setFormat(tr("%v dB"));
     ui->gainRecRightProgress->setFormat(tr("%v dB"));
     ui->gainPlayProgress->setFormat(tr("%v dB"));
+
+    ui->fileOpsList->installEventFilter(this);
 
     watcher = NULL;
     //SetWatcher(ui->filesView->currentIndex());
@@ -117,6 +132,9 @@ void MainWindow::keyPressEvent(QKeyEvent * event)
             break;
         case 4 :
             processParameterPage(event);
+            break;
+        case 5 :
+            processPlayPage(event);
             break;
     }
     //QMainWindow::keyPressEvent(event);
@@ -196,6 +214,33 @@ void MainWindow::processBrowserPage(QKeyEvent * event)
                 files.refresh(ui->filesView->rootIndex());
                 ui->filesView->setEditFocus(true);
             }
+            else
+            {
+                if (!zdbus->sendOpenFileRequest(files.fileInfo(ui->filesView->currentIndex()).absoluteFilePath(), &currentFileInfo))
+                    qDebug() << fileOpenErrors[0];
+                else
+                {
+                    if (currentFileInfo.openStatus != XPLAY_OPEN_OK)
+                        qDebug() << fileOpenErrors[currentFileInfo.openStatus];
+                    else
+                    {
+                        qDebug() << currentFileInfo.sampleSize << " " << currentFileInfo.sampleRate << " " << currentFileInfo.duration;
+                        ui->fileNameLabel->setText(files.fileName(ui->filesView->currentIndex()));
+                        QString info = QString("%1").arg(currentFileInfo.sampleSize) + " " + trUtf8("бит") + ", " +
+                                       QString("%1").arg(currentFileInfo.sampleRate / 1000) + " " + trUtf8("кГц") + ", ";
+                        if (currentFileInfo.channels == 1)
+                            info += trUtf8("моно");
+                        else if (currentFileInfo.channels == 2)
+                            info += trUtf8("стерео");
+                        ui->fileInfoLabel->setText(info);
+                        ui->playProgress->setValue(0);
+                        ui->pages->setCurrentWidget(ui->playPage);
+                        ui->fileOpsList->setEditFocus(true);
+                        ui->fileOpsList->setCurrentRow(0);
+                        currentPlayState = Stopped;
+                    }
+                }
+            }
             break;
         case Qt::Key_Escape :
             if (files.parent(ui->filesView->rootIndex()).isValid() && ui->filesView->rootIndex() != rootIndex)
@@ -266,6 +311,42 @@ void MainWindow::processParameterPage(QKeyEvent * event)
             currentView->setEditFocus(true);
             break;
     }
+}
+
+void MainWindow::processPlayPage(QKeyEvent * event)
+{
+    switch (event->key())
+    {
+        case Qt::Key_Escape :
+            ui->pages->setCurrentWidget(ui->browserPage);
+            ui->filesView->setEditFocus(true);
+            break;
+        case Qt::Key_Select :
+            processFileOps();
+            break;
+    }
+}
+
+void MainWindow::processFileOps()
+{
+    switch (ui->fileOpsList->currentRow())
+    {
+        case 0 :
+        {
+            switch (currentPlayState)
+            {
+                case Stopped :
+                case Paused :
+                    zdbus->sendPlayEvent("StartPlay");
+                    break;
+                case Playing :
+                    zdbus->sendPlayEvent("StartPlay");
+                    break;
+            }
+            break;
+        }
+    }
+
 }
 
 bool MainWindow::processEncoders(QKeyEvent * event)

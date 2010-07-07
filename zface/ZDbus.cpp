@@ -66,6 +66,41 @@ void ZDbus::sendRotaryEvent(const QString & _event, const QString & _action)
     bus.send(rotaryMessage);
 }
 
+void ZDbus::sendPlayEvent(const QString & _event)
+{
+    QDBusMessage playMessage = QDBusMessage::createSignal("/", "com.speechpro.PlayControl", _event);
+    bus.send(playMessage);
+}
+
+
+bool  ZDbus::sendOpenFileRequest(const QString & _fileName, SoundFileInfo * _info)
+{
+    QDBusMessage method = QDBusMessage::createMethodCall("com.speechpro.zplay", "/", "com.speechpro.PlayControl", "OpenFile");
+    method << _fileName;
+    QDBusMessage reply = bus.call(method, QDBus::Block, 3000);
+    if (reply.type() == QDBusMessage::ErrorMessage)
+        return false;
+    bool ok;
+    _info->openStatus = reply.arguments()[0].toInt(&ok);
+    if (!ok)
+        return ok;
+    if (reply.arguments().count() > 1)
+    {
+        _info->duration = reply.arguments()[1].toInt(&ok);
+        if (!ok) return ok;
+        _info->sampleSize = reply.arguments()[2].toInt(&ok);
+        if (!ok) return ok;
+        _info->channels = reply.arguments()[3].toInt(&ok);
+        if (!ok) return ok;
+        _info->sampleRate = reply.arguments()[4].toInt(&ok);
+        if (!ok) return ok;
+    }
+    if (reply.arguments().count() > 5)
+        _info->tags = reply.arguments()[5].toString();
+
+    return true;
+}
+
 void ZDbus::receiveGain(const QString, const QString _gain, const QString _value)
 {
     emit gainChanged(_gain, _value);

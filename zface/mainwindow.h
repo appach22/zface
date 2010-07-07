@@ -13,6 +13,8 @@
 #include <QtGui/QListView>
 
 #include "ZSettingsModel.h"
+#include "ZDbus.h"
+
 
 namespace Ui
 {
@@ -22,6 +24,13 @@ namespace Ui
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
+
+    enum PlayState
+    {
+        Stopped,
+        Playing,
+        Paused
+    };
 
 public:
     MainWindow(QWidget *parent = 0);
@@ -43,6 +52,8 @@ private:
     QListView * currentView;
     QWidget * currentPage;
     QModelIndex rootIndex;
+    SoundFileInfo currentFileInfo;
+    PlayState currentPlayState;
 
     void SetWatcher(QModelIndex root);
 
@@ -50,7 +61,9 @@ private:
     void processBrowserPage(QKeyEvent * event);
     void processSettingsPage(QKeyEvent * event, QListView * view);
     void processParameterPage(QKeyEvent * event);
+    void processPlayPage(QKeyEvent * event);
     bool processEncoders(QKeyEvent * event);
+    void processFileOps();
 
 private slots:
     void updateTime();

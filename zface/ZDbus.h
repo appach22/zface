@@ -5,6 +5,17 @@
 #include <QTimer>
 #include <QtDBus/QtDBus>
 
+struct SoundFileInfo
+{
+    int openStatus;
+    int channels;
+    int duration;
+    int sampleSize;
+    int sampleRate;
+    QString tags;
+};
+
+
 class ZDbus : public QObject
 {
 Q_OBJECT
@@ -17,6 +28,8 @@ public:
     bool getParameter(const QString & _category, const QString & _name, int * _value);
 
     void sendRotaryEvent(const QString & _event, const QString & _action);
+    void sendPlayEvent(const QString & _event);
+    bool sendOpenFileRequest(const QString & _fileName, SoundFileInfo * _info);
 
 signals:
 
