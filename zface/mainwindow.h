@@ -27,9 +27,26 @@ class MainWindow : public QMainWindow
 
     enum PlayState
     {
-        Stopped,
-        Playing,
-        Paused
+        PlayStopped,
+        PlayPlaying,
+        PlayPaused
+    };
+
+    // TODO: брать из params.h
+    enum RecordingState
+    {
+        RecStopped,
+        RecStarted,
+        RecStartedAccu,
+        RecWaitingAccu,
+        RecStoppedForced
+    };
+
+    enum SDState
+    {
+        SDOK,
+        NotConnected,
+        NotFormatted
     };
 
 public:
@@ -54,6 +71,7 @@ private:
     QModelIndex rootIndex;
     SoundFileInfo currentFileInfo;
     PlayState currentPlayState;
+    SDState currentSDState;
 
     void SetWatcher(QModelIndex root);
 
@@ -71,6 +89,10 @@ private slots:
     void refreshPath();
     void gainChanged(QString _gain, QString _value);
     void paramChanged(QString _param, QString _value);
+    void recDurationChanged(int _duration);
+    void playStateChanged(int _state);
+    void playPositionChanged(int _position);
+
 };
 
 #endif // MAINWINDOW_H

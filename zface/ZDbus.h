@@ -36,6 +36,10 @@ signals:
     // FIXME: это для теста. Переделать параметры в int.
     void gainChanged(const QString _gain, const QString _value);
     void paramChanged(const QString _param, const QString _value);
+    void playStateChanged(int _state);
+    void playPositionChanged(int _position);
+    void recDurationChanged(int _duration);
+
 
 public slots:
 
@@ -45,6 +49,9 @@ private slots:
 
     void receiveGain(const QString, const QString _gain, const QString _value);
     void receiveParam(const QString, const QString _param, const QString _value);
+    void receivePlayState(int _state);
+    void receivePlayPosition(int _position);
+    void receiveRecDuration(int _duration);
 
 private:
     QTimer * aliveTimer;

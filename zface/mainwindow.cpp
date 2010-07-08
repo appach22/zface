@@ -37,6 +37,7 @@ MainWindow::MainWindow(QWidget *parent)
     ui->gainPlayIcon->setStyleSheet("background-image: url(:/all/res/gain_play_spk.bmp);"
                                     "background-repeat: repeat-n;"
                                     "background-position: center;");
+    ui->recording->setStyleSheet("background-color: red; color: white;");
 #if defined(Q_OS_WIN)
     QFile file("../res/style.qss");
 #elif defined(Q_WS_QWS)
@@ -58,6 +59,15 @@ MainWindow::MainWindow(QWidget *parent)
     zdbus->startAliveTimer(10000);
     connect(zdbus, SIGNAL(gainChanged(QString, QString)), SLOT(gainChanged(QString, QString)));
     connect(zdbus, SIGNAL(paramChanged(QString, QString)), SLOT(paramChanged(QString, QString)));
+    connect(zdbus, SIGNAL(recDurationChanged(int)), SLOT(recDurationChanged(int)));
+    connect(zdbus, SIGNAL(playStateChanged(int)), SLOT(playStateChanged(int)));
+    connect(zdbus, SIGNAL(playPositionChanged(int)), SLOT(playPositionChanged(int)));
+    int val;
+    zdbus->getParameter("Temp", "Recorder.State", &val);
+    zdbus->getParameter("Temp", "Storage.Connected", &val);
+    zdbus->getParameter("Temp", "Storage.Formatted", &val);
+    zdbus->getParameter("Temp", "Storage.Capacity", &val);
+    zdbus->getParameter("Temp", "Storage.Free_space", &val);
 
     ZSettingsNode * settingsRoot;
     ZSettingsNode * mixerRoot;
@@ -234,10 +244,14 @@ void MainWindow::processBrowserPage(QKeyEvent * event)
                             info += trUtf8("стерео");
                         ui->fileInfoLabel->setText(info);
                         ui->playProgress->setValue(0);
+                        ui->playProgressLabel->setText(QString("0:00:00 / %1:%2:%3")
+                                                        .arg(currentFileInfo.duration / 3600)
+                                                        .arg(currentFileInfo.duration % 3600 / 60, 2, 10, QChar('0'))
+                                                        .arg(currentFileInfo.duration % 60, 2, 10, QChar('0')));
                         ui->pages->setCurrentWidget(ui->playPage);
                         ui->fileOpsList->setEditFocus(true);
                         ui->fileOpsList->setCurrentRow(0);
-                        currentPlayState = Stopped;
+                        currentPlayState = PlayStopped;
                     }
                 }
             }
@@ -318,6 +332,7 @@ void MainWindow::processPlayPage(QKeyEvent * event)
     switch (event->key())
     {
         case Qt::Key_Escape :
+            zdbus->sendPlayEvent("StopPlay");
             ui->pages->setCurrentWidget(ui->browserPage);
             ui->filesView->setEditFocus(true);
             break;
@@ -335,12 +350,12 @@ void MainWindow::processFileOps()
         {
             switch (currentPlayState)
             {
-                case Stopped :
-                case Paused :
+                case PlayStopped :
+                case PlayPaused :
                     zdbus->sendPlayEvent("StartPlay");
                     break;
-                case Playing :
-                    zdbus->sendPlayEvent("StartPlay");
+                case PlayPlaying :
+                    zdbus->sendPlayEvent("PausePlay");
                     break;
             }
             break;
@@ -458,6 +473,82 @@ void MainWindow::paramChanged(QString _param, QString _value)
     if (_param == "Mixer.Through_channel")
     {
     }
+
+    if (_param == "Recorder.State")
+    {
+        switch (value)
+        {
+            case RecStopped :
+            case RecStoppedForced :
+                ui->recording->hide();
+                ui->recordingWidget->setStyleSheet("background-image: none");
+                break;
+            case RecStarted :
+            case RecStartedAccu :
+                ui->recordingDurationLabel->setText("0:00:00");
+                ui->recording->show();
+                ui->recordingWidget->setStyleSheet("background-image: url(:/all/res/record_16x16.png);"
+                                                   "background-repeat: repeat-n;");
+                break;
+        }
+    }
+
+    if (_param == "Storage.Connected")
+    {
+        if (!value)
+        {
+            currentSDState = NotConnected;
+            ui->cardErrorLabel->setText(trUtf8("Вставьте\nSD-карту!"));
+            ui->cardInfoWidget->hide();
+            ui->cardErrorLabel->show();
+        }
+        else if (currentSDState != NotFormatted)
+        {
+            ui->cardErrorLabel->hide();
+            ui->cardInfoWidget->show();
+            currentSDState = SDOK;
+        }
+    }
+
+    if (_param == "Storage.Formatted")
+    {
+        if (!value && currentSDState != NotConnected)
+        {
+            currentSDState = NotFormatted;
+            ui->cardErrorLabel->setText(trUtf8("SD-карта не\nотформатирована!"));
+            ui->cardInfoWidget->hide();
+            ui->cardErrorLabel->show();
+        }
+        else if (value && currentSDState != NotConnected)
+        {
+            ui->cardErrorLabel->hide();
+            ui->cardInfoWidget->show();
+            currentSDState = SDOK;
+        }
+    }
+
+    if (_param == "Storage.Free_space")
+    {
+        if (value >= 1000)
+        {
+            value /= 1000;
+            ui->measureFree->setText(trUtf8("Гб"));
+        }
+        else
+            ui->measureFree->setText(trUtf8("Мб"));
+        ui->valueFree->setText(QString("%1").arg(value));
+    }
+    if (_param == "Storage.Capacity")
+    {
+        if (value >= 1000)
+        {
+            value /= 1000;
+            ui->measureTotal->setText(trUtf8("Гб"));
+        }
+        else
+            ui->measureTotal->setText(trUtf8("Мб"));
+        ui->valueTotal->setText(QString("%1").arg(value));
+    }
 }
 
 bool MainWindow::eventFilter(QObject *obj, QEvent *event)
@@ -471,3 +562,35 @@ bool MainWindow::eventFilter(QObject *obj, QEvent *event)
     return false;
 }
 
+void MainWindow::recDurationChanged(int _duration)
+{
+    ui->recordingDurationLabel->setText(
+            QString("%1:%2:%3").arg(_duration / 3600).arg(_duration % 3600 / 60, 2, 10, QChar('0')).arg(_duration % 60, 2, 10, QChar('0')));
+}
+
+void MainWindow::playStateChanged(int _state)
+{
+    switch (_state)
+    {
+        case PlayPaused :
+        case PlayStopped :
+            ui->fileOpsList->item(0)->setText(trUtf8("Воспроизвести"));
+            break;
+        case PlayPlaying :
+            ui->fileOpsList->item(0)->setText(trUtf8("Остановить воспр-е"));
+            break;
+    }
+    currentPlayState = static_cast<PlayState>(_state);
+}
+
+void MainWindow::playPositionChanged(int _position)
+{
+    ui->playProgressLabel->setText(QString("%1:%2:%3 / %4:%5:%6")
+                                    .arg(_position / 3600)
+                                    .arg(_position % 3600 / 60, 2, 10, QChar('0'))
+                                    .arg(_position % 60, 2, 10, QChar('0'))
+                                    .arg(currentFileInfo.duration / 3600)
+                                    .arg(currentFileInfo.duration % 3600 / 60, 2, 10, QChar('0'))
+                                    .arg(currentFileInfo.duration % 60, 2, 10, QChar('0')));
+    ui->playProgress->setValue(_position * ui->playProgress->maximum() / currentFileInfo.duration);
+}
