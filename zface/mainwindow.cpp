@@ -7,15 +7,15 @@
 // FIXME: брать этот файл из исходников
 #include "zplay-common.h"
 
-QString fileOpenErrors[9] = {QObject::tr("Неизвестная ошибка!"),
+QString fileOpenErrors[9] = {QObject::trUtf8("Неизвестная ошибка!"),
                              "",
-                             QObject::tr("Неподдерживаемый формат файла!"),
-                             QObject::tr("Ошибка чтения файла!"),
-                             QObject::tr("Не является WAV-файлом!"),
-                             QObject::tr("Не хватает памяти для открытия файла!"),
-                             QObject::tr("Ошибка при инициализации MP3!"),
-                             QObject::tr("Ошибка при открытии MP3-файла!"),
-                             QObject::tr("Неподдерживаемый формат MP3-файла!")
+                             QObject::trUtf8("Неподдерживаемый формат файла!"),
+                             QObject::trUtf8("Ошибка чтения файла!"),
+                             QObject::trUtf8("Не является WAV-файлом!"),
+                             QObject::trUtf8("Не хватает памяти для открытия файла!"),
+                             QObject::trUtf8("Ошибка при инициализации MP3!"),
+                             QObject::trUtf8("Ошибка при открытии MP3-файла!"),
+                             QObject::trUtf8("Неподдерживаемый формат MP3-файла!")
                             };
 
 MainWindow::MainWindow(QWidget *parent)
@@ -227,11 +227,17 @@ void MainWindow::processBrowserPage(QKeyEvent * event)
             else
             {
                 if (!zdbus->sendOpenFileRequest(files.fileInfo(ui->filesView->currentIndex()).absoluteFilePath(), &currentFileInfo))
-                    qDebug() << fileOpenErrors[0];
+                {
+                    QMessageBox::warning(this, "", fileOpenErrors[0], QMessageBox::Ok, QMessageBox::Ok);
+                    ui->filesView->setEditFocus(true);
+                }
                 else
                 {
                     if (currentFileInfo.openStatus != XPLAY_OPEN_OK)
-                        qDebug() << fileOpenErrors[currentFileInfo.openStatus];
+                    {
+                        QMessageBox::warning(this, "", fileOpenErrors[currentFileInfo.openStatus], QMessageBox::Ok, QMessageBox::Ok);
+                        ui->filesView->setEditFocus(true);
+                    }
                     else
                     {
                         qDebug() << currentFileInfo.sampleSize << " " << currentFileInfo.sampleRate << " " << currentFileInfo.duration;
@@ -592,5 +598,6 @@ void MainWindow::playPositionChanged(int _position)
                                     .arg(currentFileInfo.duration / 3600)
                                     .arg(currentFileInfo.duration % 3600 / 60, 2, 10, QChar('0'))
                                     .arg(currentFileInfo.duration % 60, 2, 10, QChar('0')));
-    ui->playProgress->setValue(_position * ui->playProgress->maximum() / currentFileInfo.duration);
+    if (currentFileInfo.duration)
+        ui->playProgress->setValue(_position * ui->playProgress->maximum() / currentFileInfo.duration);
 }

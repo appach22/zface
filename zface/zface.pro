@@ -9,14 +9,16 @@ SOURCES += main.cpp \
     ZSettingsNode.cpp \
     ZSettingWidget.cpp \
     ZAllSettings.cpp \
-    ZDbus.cpp
+    ZDbus.cpp \
+    zfacedecoration.cpp
 HEADERS += mainwindow.h \
     ZSettingsModel.h \
     ZSettingsNode.h \
     ZSettingWidget.h \
     ZAllSettings.h \
     ZParameter.h \
-    ZDbus.h
+    ZDbus.h \
+    zfacedecoration.h
 
 QT += dbus
 

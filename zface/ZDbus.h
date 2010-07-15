@@ -52,6 +52,8 @@ private slots:
     void receivePlayState(int _state);
     void receivePlayPosition(int _position);
     void receiveRecDuration(int _duration);
+    void receiveUserNotify(int _code);
+    void receiveUserError(int _code);
 
 private:
     QTimer * aliveTimer;
