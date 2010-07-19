@@ -4,8 +4,9 @@
 #include "ZSettingWidget.h"
 #include "ZAllSettings.h"
 
-// FIXME: брать этот файл из исходников
+// FIXME: брать эти файлы из исходников
 #include "zplay-common.h"
+#include "dbus_constants.h"
 
 QString fileOpenErrors[9] = {QObject::trUtf8("Неизвестная ошибка!"),
                              "",
@@ -17,6 +18,21 @@ QString fileOpenErrors[9] = {QObject::trUtf8("Неизвестная ошибк�
                              QObject::trUtf8("Ошибка при открытии MP3-файла!"),
                              QObject::trUtf8("Неподдерживаемый формат MP3-файла!")
                             };
+
+QString userMessages[__NUMBER_OF_ASYNC_MESSAGES] = {"",
+                                                    QObject::trUtf8("Нет места на SD-карте!"),
+                                                    QObject::trUtf8("Параметр будет применен к следующему старту записи/сквозного канала."),
+                                                    QObject::trUtf8("Включен сквозной канал - параметр будет применен позже."),
+                                                    QObject::trUtf8("SD-карта защищена от записи!"),
+                                                    QObject::trUtf8("Изменился источник записи! Запись и сквозной канал остановлены!"),
+                                                    "",
+                                                    QObject::trUtf8("SD-карта используется."),
+                                                    QObject::trUtf8("Ошибка форматирования!"),
+                                                    QObject::trUtf8("Форматирование успешно завершено."),
+                                                    "",
+                                                    "",
+                                                    QObject::trUtf8("SD-карта не готова!")
+                                                   };
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent, Qt::FramelessWindowHint), ui(new Ui::MainWindow)
@@ -62,6 +78,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(zdbus, SIGNAL(recDurationChanged(int)), SLOT(recDurationChanged(int)));
     connect(zdbus, SIGNAL(playStateChanged(int)), SLOT(playStateChanged(int)));
     connect(zdbus, SIGNAL(playPositionChanged(int)), SLOT(playPositionChanged(int)));
+    connect(zdbus, SIGNAL(messageForUser(unsigned int, int)), SLOT(messageForUser(unsigned int, int)));
     int val;
     zdbus->getParameter("Temp", "Recorder.State", &val);
     zdbus->getParameter("Temp", "Storage.Connected", &val);
@@ -103,6 +120,10 @@ MainWindow::MainWindow(QWidget *parent)
     gainTimer = new QTimer(this);
     connect(gainTimer, SIGNAL(timeout()), SLOT(hideGain()));
 
+    message = 0;
+    messageTimer.setSingleShot(true);
+    messageTimer.setInterval(3000);
+    connect(&messageTimer, SIGNAL(timeout()), SLOT(removeMessageBox()));
 }
 
 MainWindow::~MainWindow()
@@ -600,4 +621,38 @@ void MainWindow::playPositionChanged(int _position)
                                     .arg(currentFileInfo.duration % 60, 2, 10, QChar('0')));
     if (currentFileInfo.duration)
         ui->playProgress->setValue(_position * ui->playProgress->maximum() / currentFileInfo.duration);
+}
+
+void MainWindow::messageForUser(unsigned int _code, int _type)
+{
+    QString messageText = userMessages[_code];
+    if (messageText.isEmpty())
+        messageText = trUtf8("Неизвестный номер сообщения: ") + QString("%1").arg(_code);
+
+    if (message)
+        delete message;
+    else
+        focusedWidget = QApplication::focusWidget();
+    message = new QMessageBox(this);
+    message->setText(messageText);
+    message->setStandardButtons(QMessageBox::Ok);
+    if (_type == 0)
+        message->setIcon(QMessageBox::Warning);
+    else if (_type == 1)
+        message->setIcon(QMessageBox::Critical);
+    messageTimer.start();
+    message->exec();
+    if (focusedWidget)
+        focusedWidget->setEditFocus(true);
+}
+
+void MainWindow::removeMessageBox()
+{
+    if (message)
+    {
+        delete message;
+        message = 0;
+        if (focusedWidget)
+            focusedWidget->setEditFocus(true);
+    }
 }

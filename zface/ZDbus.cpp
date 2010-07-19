@@ -16,6 +16,8 @@ ZDbus::ZDbus(QObject *parent) :
     bus.connect("", "", "com.speechpro.PlayStateEvents", "PlayStateEvent", this, SLOT(receivePlayState(int)));
     bus.connect("", "", "com.speechpro.PlayPositionEvents", "PositionChanged", this, SLOT(receivePlayPosition(int)));
     bus.connect("", "", "com.speechpro.RecDurationEvents", "RecDuration", this, SLOT(receiveRecDuration(int)));
+    bus.connect("", "", "com.speechpro.MessageForUser", "Notify", this, SLOT(receiveUserNotify(unsigned int)));
+    //bus.connect("", "", "com.speechpro.MessageForUser", "Error", this, SLOT(receiveUserError(int)));
 }
 
 void ZDbus::startAliveTimer(int _interval)
@@ -127,5 +129,15 @@ void ZDbus::receivePlayPosition(int _position)
 void ZDbus::receiveRecDuration(int _duration)
 {
     emit recDurationChanged(_duration);
+}
+
+void ZDbus::receiveUserNotify(unsigned int _code)
+{
+    emit messageForUser(_code, 0);
+}
+
+void ZDbus::receiveUserError(unsigned int _code)
+{
+    emit messageForUser(_code, 1);
 }
 

@@ -39,6 +39,7 @@ signals:
     void playStateChanged(int _state);
     void playPositionChanged(int _position);
     void recDurationChanged(int _duration);
+    void messageForUser(unsigned int _code, int _type);
 
 
 public slots:
@@ -52,8 +53,8 @@ private slots:
     void receivePlayState(int _state);
     void receivePlayPosition(int _position);
     void receiveRecDuration(int _duration);
-    void receiveUserNotify(int _code);
-    void receiveUserError(int _code);
+    void receiveUserNotify(unsigned int _code);
+    void receiveUserError(unsigned int _code);
 
 private:
     QTimer * aliveTimer;

@@ -72,6 +72,9 @@ private:
     SoundFileInfo currentFileInfo;
     PlayState currentPlayState;
     SDState currentSDState;
+    QMessageBox * message;
+    QWidget * focusedWidget;
+    QTimer messageTimer;
 
     void SetWatcher(QModelIndex root);
 
@@ -92,6 +95,8 @@ private slots:
     void recDurationChanged(int _duration);
     void playStateChanged(int _state);
     void playPositionChanged(int _position);
+    void messageForUser(unsigned int _code, int _type);
+    void removeMessageBox();
 
 };
 
