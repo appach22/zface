@@ -6,6 +6,8 @@
     QDBusConnection ZDbus::bus = QDBusConnection::sessionBus();
 #endif
 
+extern QMap<QString, int> allValues;
+
 ZDbus * zdbus = new ZDbus();
 
 ZDbus::ZDbus(QObject *parent) :
@@ -60,7 +62,10 @@ bool ZDbus::getParameter(const QString & _category, const QString & _name, int *
     bool ok;
     *_value = reply.arguments()[0].toInt(&ok);
     if (ok)
+    {
+        allValues[_name] = *_value;
         emit paramChanged(_name, reply.arguments()[0].toString());
+    }
     return ok;
 }
 

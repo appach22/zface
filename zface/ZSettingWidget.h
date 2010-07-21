@@ -23,6 +23,8 @@ public:
 
     void setData(ZSelectParameter * _data);
     void setData(ZValueParameter * _data);
+    ZParameter * getData();
+    QString getValue();
 
 protected:
     void keyPressEvent(QKeyEvent * event);

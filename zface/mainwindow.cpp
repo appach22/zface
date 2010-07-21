@@ -3,6 +3,7 @@
 
 #include "ZSettingWidget.h"
 #include "ZAllSettings.h"
+#include "ZParamDelegate.h"
 
 // FIXME: брать эти файлы из исходников
 #include "zplay-common.h"
@@ -86,35 +87,46 @@ MainWindow::MainWindow(QWidget *parent)
     zdbus->getParameter("Temp", "Storage.Capacity", &val);
     zdbus->getParameter("Temp", "Storage.Free_space", &val);
 
-    ZSettingsNode * settingsRoot;
-    ZSettingsNode * mixerRoot;
+    settings.setRootNode(&settingsRoot);
+    ui->settingsView->setModel(&settings);
+    mixer.setRootNode(&mixerRoot);
+    ui->mixerView->setModel(&mixer);
+    filters.setRootNode(&filtersRoot);
+    ui->filtersView->setModel(&filters);
+
 #if defined(Q_OS_WIN)
     ZAllSettings::loadAllSettings("../res/settings-ru.xml", ui->paramPage, "settings", &settingsRoot);
     ZAllSettings::loadAllSettings("../res/settings-ru.xml", ui->paramPage, "mixer", &mixerRoot);
+    ZAllSettings::loadAllSettings("../res/settings-ru.xml", ui->paramPage, "filters", &filtersRoot);
 #elif defined(Q_WS_QWS)
     ZAllSettings::loadAllSettings("/etc/zface/settings-ru.xml", ui->paramPage, "settings", &settingsRoot);
     ZAllSettings::loadAllSettings("/etc/zface/settings-ru.xml", ui->paramPage, "mixer", &mixerRoot);
+    ZAllSettings::loadAllSettings("/etc/zface/settings-ru.xml", ui->paramPage, "filters", &filtersRoot);
 #elif defined(Q_OS_UNIX)
     ZAllSettings::loadAllSettings("settings-ru.xml", ui->paramPage, "settings", &settingsRoot);
     ZAllSettings::loadAllSettings("settings-ru.xml", ui->paramPage, "mixer", &mixerRoot);
+    ZAllSettings::loadAllSettings("settings-ru.xml", ui->paramPage, "filters", &filtersRoot);
 #endif
-    settings.setRootNode(settingsRoot);
-    ui->settingsView->setModel(&settings);
-    mixer.setRootNode(mixerRoot);
-    ui->mixerView->setModel(&mixer);
+
+    ZParamDelegate * paramDelegate = new ZParamDelegate(this);
+    ui->settingsView->installEventFilter(this);
+    ui->settingsView->setItemDelegate(paramDelegate);
+    ui->mixerView->installEventFilter(this);
+    ui->mixerView->setItemDelegate(paramDelegate);
+    ui->filtersView->installEventFilter(this);
+    ui->filtersView->setItemDelegate(paramDelegate);
+    ui->fileOpsList->installEventFilter(this);
 
     ui->gainRecLeftProgress->setFormat(tr("%v dB"));
     ui->gainRecRightProgress->setFormat(tr("%v dB"));
     ui->gainPlayProgress->setFormat(tr("%v dB"));
-
-    ui->fileOpsList->installEventFilter(this);
 
     watcher = NULL;
     //SetWatcher(ui->filesView->currentIndex());
     //connect(ui->filesView, SIGNAL(entered(QModelIndex))
     QTimer * timer = new QTimer(this);
     connect(timer, SIGNAL(timeout()), SLOT(updateTime()));
-    timer->start(500);
+    timer->start(1000);
     updateTime();
 
     gainTimer = new QTimer(this);
@@ -133,7 +145,7 @@ MainWindow::~MainWindow()
 
 void MainWindow::updateTime()
 {
-    ui->clockLabel->setText(QTime::currentTime().toString("mm:ss"));
+    ui->clockLabel->setText(QTime::currentTime().toString("hh:mm"));
 }
 
 void MainWindow::hideGain()
@@ -162,9 +174,12 @@ void MainWindow::keyPressEvent(QKeyEvent * event)
             processSettingsPage(event, ui->mixerView);
             break;
         case 4 :
-            processParameterPage(event);
+            processSettingsPage(event, ui->filtersView);
             break;
         case 5 :
+            processParameterPage(event);
+            break;
+        case 6 :
             processPlayPage(event);
             break;
     }
@@ -228,6 +243,15 @@ void MainWindow::processMainPage(QKeyEvent * event)
             currentPage = ui->settingsPage;
             break;
         case Qt::Key_Left :
+            // Идем наверх
+            while (ui->filtersView->rootIndex().isValid())
+                ui->filtersView->setRootIndex(ui->filtersView->rootIndex().parent());
+            ui->pages->setCurrentWidget(ui->filtersPage);
+            ui->filtersView->setEditFocus(true);
+            // Чтобы элемент сразу выделился
+            ui->filtersView->setCurrentIndex(filters.index(0, 0, ui->filtersView->rootIndex()));
+            currentView = ui->filtersView;
+            currentPage = ui->filtersPage;
             break;
     }
 }
@@ -248,17 +272,11 @@ void MainWindow::processBrowserPage(QKeyEvent * event)
             else
             {
                 if (!zdbus->sendOpenFileRequest(files.fileInfo(ui->filesView->currentIndex()).absoluteFilePath(), &currentFileInfo))
-                {
-                    QMessageBox::warning(this, "", fileOpenErrors[0], QMessageBox::Ok, QMessageBox::Ok);
-                    ui->filesView->setEditFocus(true);
-                }
+                    showMessage(QMessageBox::Warning, fileOpenErrors[0]);
                 else
                 {
                     if (currentFileInfo.openStatus != XPLAY_OPEN_OK)
-                    {
-                        QMessageBox::warning(this, "", fileOpenErrors[currentFileInfo.openStatus], QMessageBox::Ok, QMessageBox::Ok);
-                        ui->filesView->setEditFocus(true);
-                    }
+                        showMessage(QMessageBox::Warning, fileOpenErrors[currentFileInfo.openStatus]);
                     else
                     {
                         qDebug() << currentFileInfo.sampleSize << " " << currentFileInfo.sampleRate << " " << currentFileInfo.duration;
@@ -302,10 +320,11 @@ void MainWindow::processSettingsPage(QKeyEvent * event, QListView * view)
 {
     switch (event->key())
     {
-        case Qt::Key_Escape :
-            ui->pages->setCurrentWidget(ui->mainPage);
-            break;
-        case Qt::Key_Right :
+//        case Qt::Key_Escape :
+//            ui->pages->setCurrentWidget(ui->mainPage);
+//            break;
+//        case Qt::Key_Right :
+        case Qt::Key_Select:
             if (view->currentIndex().isValid())
             {
                 ZSettingsNode * node = static_cast<ZSettingsNode *>(view->currentIndex().internalPointer());
@@ -331,13 +350,15 @@ void MainWindow::processSettingsPage(QKeyEvent * event, QListView * view)
                 }
             }
             break;
-        case Qt::Key_Left :
+        case Qt::Key_Escape :
             QModelIndex ind = view->rootIndex();
             if (ind.isValid())
             {
                 view->setRootIndex(ind.parent());
                 view->setCurrentIndex(ind);
             }
+            else
+                ui->pages->setCurrentWidget(ui->mainPage);
             break;
     }
 }
@@ -439,6 +460,11 @@ void MainWindow::gainChanged(QString _gain, QString _value)
         ui->gainRecLeftProgress->setValue(_value.toInt());
     else if (_gain.contains("Right_gain"))
         ui->gainRecRightProgress->setValue(_value.toInt());
+    else if (_gain.contains("Phone.Gain"))
+    {
+        ui->gainRecLeftProgress->setValue(_value.toInt());
+        ui->gainRecRightProgress->setValue(_value.toInt());
+    }
     else if (_gain.contains(".Gain"))
         ui->gainPlayProgress->setValue(_value.toInt());
 }
@@ -450,58 +476,83 @@ void MainWindow::paramChanged(QString _param, QString _value)
 
     if (_param == "Mixer.Input")
     {
+        int gain;
         switch (value)
         {
             case 0 :
                 ui->gainRecIcon->setStyleSheet("background-image: url(:/all/res/gain_rec_mic.bmp);"
                                                "background-repeat: repeat-n;"
                                                "background-position: center;");
+                if (zdbus->getParameter("Main", "Mixer.Input.Mic.Left_gain", &gain))
+                    ui->gainRecLeftProgress->setValue(gain);
+                if (zdbus->getParameter("Main", "Mixer.Input.Mic.Right_gain", &gain))
+                    ui->gainRecRightProgress->setValue(gain);
                 break;
             case 1 :
                 ui->gainRecIcon->setStyleSheet("background-image: url(:/all/res/gain_rec_line.bmp);"
                                                "background-repeat: repeat-n;"
                                                "background-position: center;");
+                if (zdbus->getParameter("Main", "Mixer.Input.Analog.Left_gain", &gain))
+                    ui->gainRecLeftProgress->setValue(gain);
+                if (zdbus->getParameter("Main", "Mixer.Input.Analog.Right_gain", &gain))
+                    ui->gainRecRightProgress->setValue(gain);
                 break;
             case 2 :
                 ui->gainRecIcon->setStyleSheet("background-image: url(:/all/res/gain_rec_phone.bmp);"
                                                "background-repeat: repeat-n;"
                                                "background-position: center;");
+                if (zdbus->getParameter("Main", "Mixer.Input.Phone.Gain", &gain))
+                {
+                    ui->gainRecLeftProgress->setValue(gain);
+                    ui->gainRecRightProgress->setValue(gain);
+                }
                 break;
             case 3 :
                 ui->gainRecIcon->setStyleSheet("background-image: url(:/all/res/gain_rec_dig.bmp);"
                                                "background-repeat: repeat-n;"
                                                "background-position: center;");
+                if (zdbus->getParameter("Main", "Mixer.Input.DigitalIn.Left_gain", &gain))
+                    ui->gainRecLeftProgress->setValue(gain);
+                if (zdbus->getParameter("Main", "Mixer.Input.DigitalIn.Right_gain", &gain))
+                    ui->gainRecRightProgress->setValue(gain);
                 break;
         }
     }
 
-    if (_param == "Mixer.Output")
+    else if (_param == "Mixer.Output")
     {
+        int gain;
         switch (value)
         {
             case 0 :
                 ui->gainPlayIcon->setStyleSheet("background-image: url(:/all/res/gain_play_line.bmp);"
                                                 "background-repeat: repeat-n;"
                                                 "background-position: center;");
+                if (zdbus->getParameter("Main", "Mixer.Output.LineOut.Gain", &gain))
+                    ui->gainPlayProgress->setValue(gain);
                 break;
             case 1 :
                 ui->gainPlayIcon->setStyleSheet("background-image: url(:/all/res/gain_play_spk.bmp);"
                                                 "background-repeat: repeat-n;"
                                                 "background-position: center;");
+                if (zdbus->getParameter("Main", "Mixer.Output.Speaker.Gain", &gain))
+                    ui->gainPlayProgress->setValue(gain);
                 break;
             case 2 :
                 ui->gainPlayIcon->setStyleSheet("background-image: url(:/all/res/gain_play_dig.bmp);"
                                                 "background-repeat: repeat-n;"
                                                 "background-position: center;");
+                if (zdbus->getParameter("Main", "Mixer.Output.DigitalOut.Gain", &gain))
+                    ui->gainPlayProgress->setValue(gain);
                 break;
         }
     }
 
-    if (_param == "Mixer.Through_channel")
+    else if (_param == "Mixer.Through_channel")
     {
     }
 
-    if (_param == "Recorder.State")
+    else if (_param == "Recorder.State")
     {
         switch (value)
         {
@@ -520,7 +571,7 @@ void MainWindow::paramChanged(QString _param, QString _value)
         }
     }
 
-    if (_param == "Storage.Connected")
+    else if (_param == "Storage.Connected")
     {
         if (!value)
         {
@@ -537,7 +588,7 @@ void MainWindow::paramChanged(QString _param, QString _value)
         }
     }
 
-    if (_param == "Storage.Formatted")
+    else if (_param == "Storage.Formatted")
     {
         if (!value && currentSDState != NotConnected)
         {
@@ -554,27 +605,46 @@ void MainWindow::paramChanged(QString _param, QString _value)
         }
     }
 
-    if (_param == "Storage.Free_space")
+    else if (_param == "Storage.Free_space")
     {
+        float val = value;
         if (value >= 1000)
         {
-            value /= 1000;
+            val /= 1000.;
             ui->measureFree->setText(trUtf8("Гб"));
         }
         else
             ui->measureFree->setText(trUtf8("Мб"));
-        ui->valueFree->setText(QString("%1").arg(value));
+        ui->valueFree->setText(QString("%1").arg(val, 0, 'f', 1));
     }
-    if (_param == "Storage.Capacity")
+    else if (_param == "Storage.Capacity")
     {
+        float val = value;
         if (value >= 1000)
         {
-            value /= 1000;
+            val /= 1000.;
             ui->measureTotal->setText(trUtf8("Гб"));
         }
         else
             ui->measureTotal->setText(trUtf8("Мб"));
-        ui->valueTotal->setText(QString("%1").arg(value));
+        ui->valueTotal->setText(QString("%1").arg(val, 0, 'f', 1));
+    }
+
+    else if (_param == "Recorder.Sample_size")
+    {
+        ui->sampleSizeLabel->setText(settings.valueByName(_param));
+    }
+    else if (_param == "Recorder.Compression")
+    {
+        ui->compressionLabel->setText(settings.valueByName(_param));
+    }
+    else if (_param == "Recorder.Sample_rate")
+    {
+        ui->sampleRateLabel->setText(settings.valueByName(_param));
+    }
+    else if (_param == "Recorder.Channels")
+    {
+        ui->channelsLabel->setText(settings.valueByName(_param));
     }
 }
 
@@ -628,18 +698,22 @@ void MainWindow::messageForUser(unsigned int _code, int _type)
     QString messageText = userMessages[_code];
     if (messageText.isEmpty())
         messageText = trUtf8("Неизвестный номер сообщения: ") + QString("%1").arg(_code);
+    if (_type == 0)
+        showMessage(QMessageBox::Warning, messageText);
+    else if (_type == 1)
+        showMessage(QMessageBox::Critical, messageText);
+}
 
+void MainWindow::showMessage(QMessageBox::Icon _type, const QString & _message)
+{
     if (message)
         delete message;
     else
         focusedWidget = QApplication::focusWidget();
     message = new QMessageBox(this);
-    message->setText(messageText);
+    message->setText(_message);
     message->setStandardButtons(QMessageBox::Ok);
-    if (_type == 0)
-        message->setIcon(QMessageBox::Warning);
-    else if (_type == 1)
-        message->setIcon(QMessageBox::Critical);
+    message->setIcon(_type);
     messageTimer.start();
     message->exec();
     if (focusedWidget)

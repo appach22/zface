@@ -10,7 +10,8 @@ SOURCES += main.cpp \
     ZSettingWidget.cpp \
     ZAllSettings.cpp \
     ZDbus.cpp \
-    zfacedecoration.cpp
+    zfacedecoration.cpp \
+    ZParamDelegate.cpp
 HEADERS += mainwindow.h \
     ZSettingsModel.h \
     ZSettingsNode.h \
@@ -18,17 +19,18 @@ HEADERS += mainwindow.h \
     ZAllSettings.h \
     ZParameter.h \
     ZDbus.h \
-    zfacedecoration.h
-
+    zfacedecoration.h \
+    ZParamDelegate.h
 QT += dbus
-
 DEFINES += QT_KEYPAD_NAVIGATION
-
 FORMS += mainwindow.ui
 RESOURCES += images.qrc
 LIBS += ../zkbd/libzkbd.a
 target.path += $$[DESTDIR]/usr/bin
-#target.files += $TARGET
+
+# target.files += $TARGET
 configs.path = /etc/zface
-configs.files = settings-en.xml res/style.qss
-INSTALLS += target configs
+configs.files = settings-ru.xml \
+    res/style.qss
+INSTALLS += target \
+    configs

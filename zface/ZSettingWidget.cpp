@@ -90,6 +90,13 @@ void ZSettingWidget::setData(ZValueParameter * _data)
     qDebug() << progress->width() << " " << ((QWidget*)progress->parent())->width();
 }
 
+
+ZParameter * ZSettingWidget::getData()
+{
+    return data;
+}
+
+
 void ZSettingWidget::keyPressEvent(QKeyEvent * event)
 {
     int value;
@@ -169,4 +176,20 @@ bool ZSettingWidget::eventFilter(QObject *, QEvent *event)
             return true;
         }
     return false;
+}
+
+QString ZSettingWidget::getValue()
+{
+    if (type == Select)
+    {
+        ZSelectParameter * param = dynamic_cast<ZSelectParameter *>(data);
+        cachedValue = allValues[param->name];
+        for (int i = 0; i < param->items.count(); ++i)
+            if (cachedValue == param->items[i].value)
+                return param->items[i].name;
+    }
+    else if (type == Value)
+        return QString("%1 ").arg(allValues[data->name]) + dynamic_cast<ZValueParameter *>(data)->unit;
+
+    return "";
 }

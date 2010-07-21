@@ -1,4 +1,5 @@
 #include "ZSettingsNode.h"
+#include <QDebug>
 
 ZSettingsNode::ZSettingsNode(ZSettingsNode * _parent, const QString & _name, Type _type, QWidget * _widget)
 {
@@ -6,6 +7,7 @@ ZSettingsNode::ZSettingsNode(ZSettingsNode * _parent, const QString & _name, Typ
     type = _type;
     parent = _parent;
     widget = _widget;
+    qDebug() << "created " << this << " with parent " << parent;
     if (parent)
         parent->children.append(this);
 }

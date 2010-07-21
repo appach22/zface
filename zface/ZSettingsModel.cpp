@@ -1,4 +1,6 @@
 #include "ZSettingsModel.h"
+#include "ZParameter.h"
+#include "ZSettingWidget.h"
 #include <QDebug>
 
 ZSettingsModel::ZSettingsModel(QObject *parent) :
@@ -9,14 +11,14 @@ ZSettingsModel::ZSettingsModel(QObject *parent) :
 
 ZSettingsModel::~ZSettingsModel()
 {
-    delete rootNode;
+    delete *rootNode;
 }
 
-void ZSettingsModel::setRootNode(ZSettingsNode * _node)
+void ZSettingsModel::setRootNode(ZSettingsNode ** _node)
 {
     //delete rootNode;
     rootNode = _node;
-    qDebug() << "root " << rootNode->name;
+    qDebug() << "node " << &rootNode << " points to " << rootNode << "that points to " << *rootNode;
     reset();
 }
 
@@ -36,7 +38,7 @@ ZSettingsNode * ZSettingsModel::nodeFromIndex(const QModelIndex & index) const
     if (index.isValid())
         return static_cast<ZSettingsNode *>(index.internalPointer());
     else
-        return rootNode;
+        return *rootNode;
 }
 
 int ZSettingsModel::rowCount(const QModelIndex & parent) const
@@ -82,4 +84,51 @@ QVariant ZSettingsModel::data(const QModelIndex & index, int role) const
     return QVariant();
 }
 
-bool addNode(const QString & _name, ZSettingsNode::Type _type, QWidget * _widget);
+//bool addNode(const QString & _name, ZSettingsNode::Type _type, QWidget * _widget);
+
+QString ZSettingsModel::valueByName(const QString & _name)
+{
+    valueFound = false;
+    qDebug() << "0 searching in node " << &rootNode << " points to " << rootNode << "that points to " << *rootNode;
+    valueByName(_name, *rootNode);
+    if (valueFound)
+        return foundValue;
+    else
+        return "";
+}
+
+void ZSettingsModel::valueByName(const QString & _name, ZSettingsNode * _root)
+{
+    if (valueFound)
+        return;
+    if (!_root)
+    {
+        qDebug() << "ZZZZZZZZZZZ";
+        return;
+    }
+    qDebug() << _root->name;
+    if (!_root->children.count())
+    {
+        qDebug() << "1";
+        ZParameter * param = dynamic_cast<ZSettingWidget *>(_root->widget)->getData();
+        qDebug() << "2";
+        if (param->name == _name)
+        {
+            qDebug() << "3";
+            foundValue = dynamic_cast<ZSettingWidget *>(_root->widget)->getValue();
+            valueFound = true;
+            return;
+        }
+        qDebug() << "4";
+    }
+    else
+    {
+        qDebug() << "5\n\n" << _root->children.count();
+        for (int i = 0; i < _root->children.count(); ++i)
+        {
+            qDebug() << "6 ";
+            valueByName(_name, _root->children[i]);
+        }
+    }
+}
+

@@ -64,6 +64,7 @@ private:
     QDirModel files;
     ZSettingsModel settings;
     ZSettingsModel mixer;
+    ZSettingsModel filters;
     QFileSystemWatcher * watcher;
     QTimer * gainTimer;
     QListView * currentView;
@@ -75,6 +76,10 @@ private:
     QMessageBox * message;
     QWidget * focusedWidget;
     QTimer messageTimer;
+    ZSettingsNode * settingsRoot;
+    ZSettingsNode * mixerRoot;
+    ZSettingsNode * filtersRoot;
+
 
     void SetWatcher(QModelIndex root);
 
@@ -85,6 +90,7 @@ private:
     void processPlayPage(QKeyEvent * event);
     bool processEncoders(QKeyEvent * event);
     void processFileOps();
+    void showMessage(QMessageBox::Icon _type, const QString & _message);
 
 private slots:
     void updateTime();

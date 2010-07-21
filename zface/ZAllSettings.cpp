@@ -21,7 +21,9 @@ void ZAllSettings::loadAllSettings(const QString & _xmlFileName, QWidget * _para
     paramContainer = _paramContainer;
 
     QXmlStreamReader xml(file);
+    qDebug() << "replace pointer value " << *_settingsRoot << " at " << _settingsRoot << " with value ";
     *_settingsRoot = new ZSettingsNode(0, QObject::tr(""), ZSettingsNode::Node);
+    qDebug() << *_settingsRoot;
 
     bool rootTagDetected = false;
     while (!xml.atEnd() && !xml.hasError())
@@ -83,8 +85,6 @@ void ZAllSettings::getParameter(QXmlStreamReader & _xml, ZSettingsNode * _parent
     QString category = attrs.value("category").toString();
     QString name = attrs.value("name").toString();
     int value;
-    if (zdbus->getParameter(category, name, &value))
-        allValues[name] = value;
     if (attrs.value("type").toString().toLower() == "value")
     {
         QPair<int, int> range = QPair<int, int>(attrs.value("min").toString().toInt(), attrs.value("max").toString().toInt());
@@ -92,6 +92,8 @@ void ZAllSettings::getParameter(QXmlStreamReader & _xml, ZSettingsNode * _parent
         ZSettingWidget * setting = new ZSettingWidget(paramContainer);
         setting->setData(param);
         _parentNode->SetWidget(setting);
+
+        zdbus->getParameter(category, name, &value);
     }
     else if (attrs.value("type").toString().toLower() == "select")
     {
@@ -114,5 +116,7 @@ void ZAllSettings::getParameter(QXmlStreamReader & _xml, ZSettingsNode * _parent
         ZSettingWidget * setting = new ZSettingWidget(paramContainer);
         setting->setData(param);
         _parentNode->SetWidget(setting);
+
+        zdbus->getParameter(category, name, &value);
     }
 }
