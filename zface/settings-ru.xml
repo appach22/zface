@@ -275,7 +275,9 @@
                 </setting>
                 <!-- изменить пин-код должен быть здесь -->
         </setting>
-        <!-- дата и время должны быть здесь -->
+        <setting type="leaf" name="Дата и время">
+                <param type="custom" category="" name="DateTime" />
+        </setting>
         <setting type="node" name="Прочие настройки">
                 <setting type="leaf" name="Отключ-е подсветки">
                         <param type="select" category="Main" name="Display.Backlight.Auto_turn_off">

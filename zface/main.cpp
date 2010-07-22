@@ -16,6 +16,9 @@ int main(int argc, char *argv[])
     ZFaceDecoration *decoration = new ZFaceDecoration();
     a.qwsSetDecoration(decoration);
 #endif
+#if defined(QT_KEYPAD_NAVIGATION)
+    a.setNavigationMode(Qt::NavigationModeKeypadDirectional);
+#endif
     MainWindow w;
     w.show();
     return a.exec();

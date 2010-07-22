@@ -369,7 +369,11 @@
          <number>0</number>
         </property>
         <item row="0" column="0">
-         <widget class="QListView" name="settingsView"/>
+         <widget class="QListView" name="settingsView">
+          <property name="frameShape">
+           <enum>QFrame::NoFrame</enum>
+          </property>
+         </widget>
         </item>
        </layout>
       </widget>
@@ -382,7 +386,11 @@
          <number>0</number>
         </property>
         <item row="0" column="0">
-         <widget class="QListView" name="mixerView"/>
+         <widget class="QListView" name="mixerView">
+          <property name="frameShape">
+           <enum>QFrame::NoFrame</enum>
+          </property>
+         </widget>
         </item>
        </layout>
       </widget>
@@ -395,7 +403,11 @@
          <number>0</number>
         </property>
         <item row="0" column="0">
-         <widget class="QListView" name="filtersView"/>
+         <widget class="QListView" name="filtersView">
+          <property name="frameShape">
+           <enum>QFrame::NoFrame</enum>
+          </property>
+         </widget>
         </item>
        </layout>
       </widget>
@@ -510,11 +522,6 @@
              </item>
              <item>
               <property name="text">
-               <string>Использовать фильтры</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
                <string>Очистить и сохранить</string>
               </property>
              </item>
@@ -606,6 +613,16 @@
         </item>
        </layout>
       </widget>
+     </widget>
+    </item>
+    <item>
+     <widget class="Line" name="line">
+      <property name="frameShadow">
+       <enum>QFrame::Plain</enum>
+      </property>
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
      </widget>
     </item>
     <item>

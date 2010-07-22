@@ -79,6 +79,7 @@ private:
     ZSettingsNode * settingsRoot;
     ZSettingsNode * mixerRoot;
     ZSettingsNode * filtersRoot;
+    QMessageBox * confirmMessage;
 
 
     void SetWatcher(QModelIndex root);

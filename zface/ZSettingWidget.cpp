@@ -90,6 +90,16 @@ void ZSettingWidget::setData(ZValueParameter * _data)
     qDebug() << progress->width() << " " << ((QWidget*)progress->parent())->width();
 }
 
+void ZSettingWidget::setData(ZValueParameter * _data, ZCustomWidget * _customProcessor)
+{
+    type = Custom;
+    customProcessor = _customProcessor;
+    data = _data;
+    QGridLayout * mainLayout = new QGridLayout(this);
+    mainLayout->setSpacing(0);
+    mainLayout->setContentsMargins(0, 0, 0, 0);
+    mainLayout->addWidget(_customProcessor, 0, 0);
+}
 
 ZParameter * ZSettingWidget::getData()
 {
@@ -142,6 +152,17 @@ void ZSettingWidget::keyPressEvent(QKeyEvent * event)
                     progress->setValue(++cachedValue);
             }
             break;
+        case Qt::Key_Left :
+            if (type == Select)
+                buttons->button(0)->setFocus();
+            break;
+        case Qt::Key_Right :
+            if (type == Select)
+            {
+                int count = buttons->buttons().count();
+                buttons->button(count - 1)->setFocus();
+            }
+            break;
     }
     QWidget::keyPressEvent(event);
 }
@@ -190,6 +211,8 @@ QString ZSettingWidget::getValue()
     }
     else if (type == Value)
         return QString("%1 ").arg(allValues[data->name]) + dynamic_cast<ZValueParameter *>(data)->unit;
+    else if (type == Custom)
+        return customProcessor->getValue();
 
     return "";
 }

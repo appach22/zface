@@ -1,6 +1,7 @@
 #include "ZAllSettings.h"
 #include "ZSettingWidget.h"
 #include "ZDbus.h"
+#include "ZDateTimeDialog.h"
 
 #include <QFile>
 
@@ -12,7 +13,7 @@ QMap<QString, int> allValues;
 
 void ZAllSettings::loadAllSettings(const QString & _xmlFileName, QWidget * _paramContainer, const QString & _rootTag, ZSettingsNode ** _settingsRoot)
 {
-    qDebug() << QDir::currentPath();
+    //qDebug() << QDir::currentPath();
 
     QFile * file = new QFile(_xmlFileName);
     if (!file->open(QIODevice::ReadOnly | QIODevice::Text))
@@ -21,9 +22,7 @@ void ZAllSettings::loadAllSettings(const QString & _xmlFileName, QWidget * _para
     paramContainer = _paramContainer;
 
     QXmlStreamReader xml(file);
-    qDebug() << "replace pointer value " << *_settingsRoot << " at " << _settingsRoot << " with value ";
     *_settingsRoot = new ZSettingsNode(0, QObject::tr(""), ZSettingsNode::Node);
-    qDebug() << *_settingsRoot;
 
     bool rootTagDetected = false;
     while (!xml.atEnd() && !xml.hasError())
@@ -118,5 +117,15 @@ void ZAllSettings::getParameter(QXmlStreamReader & _xml, ZSettingsNode * _parent
         _parentNode->SetWidget(setting);
 
         zdbus->getParameter(category, name, &value);
+    }
+    else if (attrs.value("type").toString().toLower() == "custom")
+    {
+        ZValueParameter * param = new ZValueParameter(/*category, name, _parentNode->name, QPair<int, int>(), attrs.value("unit").toString()*/);
+        ZSettingWidget * setting = new ZSettingWidget(paramContainer);
+        ZCustomWidget * customWidget;
+        if (name == "DateTime")
+            customWidget = new ZDateTimeDialog(setting);
+        setting->setData(param, customWidget);
+        _parentNode->SetWidget(setting);
     }
 }

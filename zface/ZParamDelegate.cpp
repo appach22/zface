@@ -20,6 +20,8 @@ QSize ZParamDelegate::sizeHint(const QStyleOptionViewItem & option, const QModel
     QSize s = QStyledItemDelegate::sizeHint(option, index);
     if (node->type == ZSettingsNode::Leaf)
         return QSize(s.width(), s.height() * 2);
+    else
+        return QSize(s.width(), s.height() * 1.5);
 
     return s;
 }
@@ -43,7 +45,7 @@ void ZParamDelegate::paint(QPainter * painter, const QStyleOptionViewItem & opti
             QSize s = QStyledItemDelegate::sizeHint(option, index);
             painter->save();
             QTextDocument doc;
-            doc.setHtml("<div><div>" + index.data(Qt::DisplayRole).toString() + "</div><div style=\"font-style: italic;\">" + dynamic_cast<ZSettingWidget *>(node->widget)->getValue() + "</div></div>");
+            doc.setHtml("<div>" + index.data(Qt::DisplayRole).toString() + "</div><div style=\"font-style: italic;\">" + dynamic_cast<ZSettingWidget *>(node->widget)->getValue() + "</div>");
             QAbstractTextDocumentLayout::PaintContext context;
             doc.setPageSize(s);
             doc.setDocumentMargin(0);

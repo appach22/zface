@@ -11,7 +11,9 @@ SOURCES += main.cpp \
     ZAllSettings.cpp \
     ZDbus.cpp \
     zfacedecoration.cpp \
-    ZParamDelegate.cpp
+    ZParamDelegate.cpp \
+    ZDateTimeDialog.cpp \
+    ZCustomWidget.cpp
 HEADERS += mainwindow.h \
     ZSettingsModel.h \
     ZSettingsNode.h \
@@ -20,10 +22,13 @@ HEADERS += mainwindow.h \
     ZParameter.h \
     ZDbus.h \
     zfacedecoration.h \
-    ZParamDelegate.h
+    ZParamDelegate.h \
+    ZDateTimeDialog.h \
+    ZCustomWidget.h
 QT += dbus
 DEFINES += QT_KEYPAD_NAVIGATION
-FORMS += mainwindow.ui
+FORMS += mainwindow.ui \
+    ZDateTimeDialog.ui
 RESOURCES += images.qrc
 LIBS += ../zkbd/libzkbd.a
 target.path += $$[DESTDIR]/usr/bin

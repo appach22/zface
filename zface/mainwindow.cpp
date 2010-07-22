@@ -68,7 +68,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     ui->filesView->setModel(&files);
     ui->filesView->installEventFilter(this);
-    files.setSorting(QDir::Name | QDir::DirsFirst | QDir::IgnoreCase);
+    files.setSorting(QDir::Name | QDir::DirsFirst | QDir::IgnoreCase | QDir::Reversed);
     files.setResolveSymlinks(false);
     files.setNameFilters(QStringList() << "*.wav");
     files.setFilter(QDir::AllDirs | QDir::NoDotAndDotDot | QDir::Files);
@@ -116,6 +116,7 @@ MainWindow::MainWindow(QWidget *parent)
     ui->filtersView->installEventFilter(this);
     ui->filtersView->setItemDelegate(paramDelegate);
     ui->fileOpsList->installEventFilter(this);
+    ui->filesView->setItemDelegate(paramDelegate);
 
     ui->gainRecLeftProgress->setFormat(tr("%v dB"));
     ui->gainRecRightProgress->setFormat(tr("%v dB"));
@@ -136,6 +137,10 @@ MainWindow::MainWindow(QWidget *parent)
     messageTimer.setSingleShot(true);
     messageTimer.setInterval(3000);
     connect(&messageTimer, SIGNAL(timeout()), SLOT(removeMessageBox()));
+
+    confirmMessage = new QMessageBox(this);
+    confirmMessage->setStandardButtons(QMessageBox::Yes | QMessageBox::No);
+    confirmMessage->setDefaultButton(QMessageBox::No);
 }
 
 MainWindow::~MainWindow()
@@ -261,6 +266,8 @@ void MainWindow::processBrowserPage(QKeyEvent * event)
     switch (event->key())
     {
         case Qt::Key_Select :
+            if (!ui->filesView->currentIndex().isValid())
+                break;
             if (files.fileInfo(ui->filesView->currentIndex()).isDir())
             {
                 SetWatcher(ui->filesView->currentIndex());
@@ -279,7 +286,6 @@ void MainWindow::processBrowserPage(QKeyEvent * event)
                         showMessage(QMessageBox::Warning, fileOpenErrors[currentFileInfo.openStatus]);
                     else
                     {
-                        qDebug() << currentFileInfo.sampleSize << " " << currentFileInfo.sampleRate << " " << currentFileInfo.duration;
                         ui->fileNameLabel->setText(files.fileName(ui->filesView->currentIndex()));
                         QString info = QString("%1").arg(currentFileInfo.sampleSize) + " " + trUtf8("бит") + ", " +
                                        QString("%1").arg(currentFileInfo.sampleRate / 1000) + " " + trUtf8("кГц") + ", ";
@@ -302,16 +308,25 @@ void MainWindow::processBrowserPage(QKeyEvent * event)
             }
             break;
         case Qt::Key_Escape :
-            if (files.parent(ui->filesView->rootIndex()).isValid() && ui->filesView->rootIndex() != rootIndex)
+            if (ui->filesView->rootIndex().parent().isValid() && ui->filesView->rootIndex() != rootIndex)
             {
                 ui->filesView->setCurrentIndex(ui->filesView->rootIndex());
-                ui->filesView->setRootIndex(files.parent(ui->filesView->rootIndex()));
+                ui->filesView->setRootIndex(ui->filesView->rootIndex().parent());
                 SetWatcher(ui->filesView->rootIndex());
                 files.refresh(ui->filesView->rootIndex());
                 ui->filesView->setEditFocus(true);
             }
             else
                 ui->pages->setCurrentWidget(ui->mainPage);
+            break;
+        case Qt::Key_Left :
+            ui->filesView->setCurrentIndex(ui->filesView->currentIndex().sibling(0, 0));
+            break;
+        case Qt::Key_Right :
+            {
+                int count = ui->filesView->currentIndex().model()->rowCount(ui->filesView->currentIndex().parent());
+                ui->filesView->setCurrentIndex(ui->filesView->currentIndex().sibling(count - 1, 0));
+            }
             break;
     }
 }
@@ -351,14 +366,25 @@ void MainWindow::processSettingsPage(QKeyEvent * event, QListView * view)
             }
             break;
         case Qt::Key_Escape :
-            QModelIndex ind = view->rootIndex();
-            if (ind.isValid())
             {
-                view->setRootIndex(ind.parent());
-                view->setCurrentIndex(ind);
+                QModelIndex ind = view->rootIndex();
+                if (ind.isValid())
+                {
+                    view->setRootIndex(ind.parent());
+                    view->setCurrentIndex(ind);
+                }
+                else
+                    ui->pages->setCurrentWidget(ui->mainPage);
             }
-            else
-                ui->pages->setCurrentWidget(ui->mainPage);
+            break;
+        case Qt::Key_Left :
+            view->setCurrentIndex(view->currentIndex().sibling(0, 0));
+            break;
+        case Qt::Key_Right :
+            {
+                int count = view->currentIndex().model()->rowCount(view->currentIndex().parent());
+                view->setCurrentIndex(view->currentIndex().sibling(count - 1, 0));
+            }
             break;
     }
 }
@@ -407,6 +433,30 @@ void MainWindow::processFileOps()
                     break;
             }
             break;
+        }
+        case 2 :
+        {
+            QString msgText(trUtf8("Переместить файл %1 в корзину?").arg(files.fileName(ui->filesView->currentIndex())));
+            confirmMessage->setText(msgText);
+            confirmMessage->setDefaultButton(QMessageBox::No);
+            if (QMessageBox::Yes == confirmMessage->exec())
+            {
+                QModelIndex index = ui->filesView->currentIndex();
+                if (files.rowCount(index.parent()) > 1)
+                {
+                    if (index.row() == files.rowCount(index.parent()) - 1)
+                        ui->filesView->setCurrentIndex(index.sibling(index.row() - 1, 0));
+                    else
+                        ui->filesView->setCurrentIndex(index.sibling(index.row() + 1, 0));
+                }
+                QString fName = files.fileName(index);
+                files.fileInfo(index).absoluteDir().mkdir(".Trash");
+                files.fileInfo(index).absoluteDir().rename(fName, QString(".Trash/") + fName);
+                ui->pages->setCurrentWidget(ui->browserPage);
+                ui->filesView->setEditFocus(true);
+            }
+            else
+                ui->fileOpsList->setEditFocus(true);
         }
     }
 

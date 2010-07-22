@@ -18,7 +18,6 @@ void ZSettingsModel::setRootNode(ZSettingsNode ** _node)
 {
     //delete rootNode;
     rootNode = _node;
-    qDebug() << "node " << &rootNode << " points to " << rootNode << "that points to " << *rootNode;
     reset();
 }
 
@@ -89,7 +88,6 @@ QVariant ZSettingsModel::data(const QModelIndex & index, int role) const
 QString ZSettingsModel::valueByName(const QString & _name)
 {
     valueFound = false;
-    qDebug() << "0 searching in node " << &rootNode << " points to " << rootNode << "that points to " << *rootNode;
     valueByName(_name, *rootNode);
     if (valueFound)
         return foundValue;
@@ -102,33 +100,20 @@ void ZSettingsModel::valueByName(const QString & _name, ZSettingsNode * _root)
     if (valueFound)
         return;
     if (!_root)
-    {
-        qDebug() << "ZZZZZZZZZZZ";
         return;
-    }
-    qDebug() << _root->name;
+
     if (!_root->children.count())
     {
-        qDebug() << "1";
         ZParameter * param = dynamic_cast<ZSettingWidget *>(_root->widget)->getData();
-        qDebug() << "2";
         if (param->name == _name)
         {
-            qDebug() << "3";
             foundValue = dynamic_cast<ZSettingWidget *>(_root->widget)->getValue();
             valueFound = true;
             return;
         }
-        qDebug() << "4";
     }
     else
-    {
-        qDebug() << "5\n\n" << _root->children.count();
         for (int i = 0; i < _root->children.count(); ++i)
-        {
-            qDebug() << "6 ";
             valueByName(_name, _root->children[i]);
-        }
-    }
 }
 

@@ -2,6 +2,7 @@
 #define ZSETTINGWIDGET_H
 
 #include "ZParameter.h"
+#include "ZCustomWidget.h"
 
 #include <QWidget>
 #include <QtGui/QKeyEvent>
@@ -15,7 +16,7 @@ class ZSettingWidget : public QWidget
 {
 Q_OBJECT
 
-    enum SettingType {Unknown, Select, Value};
+    enum SettingType {Unknown, Select, Value, Custom};
 
 public:
 
@@ -23,6 +24,7 @@ public:
 
     void setData(ZSelectParameter * _data);
     void setData(ZValueParameter * _data);
+    void setData(ZValueParameter * _data, ZCustomWidget * _customProcessor);
     ZParameter * getData();
     QString getValue();
 
@@ -44,8 +46,7 @@ private:
     SettingType type;
     int cachedValue;
     ZParameter * data;
-    //ZSelectParameter selectData;
-    //ZValueParameter valueData;
+    ZCustomWidget * customProcessor;
 };
 
 #endif // ZSETTINGWIDGET_H
