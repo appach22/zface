@@ -1,13 +1,7 @@
-#include "ZDateTimeDialog.h"
+#include "ZStartTimerDialog.h"
 #include "ui_ZDateTimeDialog.h"
 
-#include <time.h>
-#include <sys/time.h>
-
-#include <QDebug>
-
-
-ZDateTimeDialog::ZDateTimeDialog(QWidget *parent) :
+ZStartTimerDialog::ZStartTimerDialog(QWidget *parent) :
     ZCustomWidget(parent),
     ui(new Ui::ZDateTimeDialog)
 {
@@ -16,14 +10,20 @@ ZDateTimeDialog::ZDateTimeDialog(QWidget *parent) :
     ui->dateTimeEdit->installEventFilter(this);
     ui->dateTimeEdit->setMaximumDate(QDate(2037, 12, 31));
     ui->dateTimeEdit->setMinimumDate(QDate(2010, 1, 1));
+    int value;
+    if (zdbus.getParameter("Main", "Recorder.Timer.Start_time", &value))
+    {
+        cachedValue = QDateTime::fromTime_t(value);
+        ui->dateTimeEdit->setDateTime(cachedValue);
+    }
 }
 
-ZDateTimeDialog::~ZDateTimeDialog()
+ZStartTimerDialog::~ZStartTimerDialog()
 {
     delete ui;
 }
 
-void ZDateTimeDialog::changeEvent(QEvent *e)
+void ZStartTimerDialog::changeEvent(QEvent *e)
 {
     QWidget::changeEvent(e);
     switch (e->type()) {
@@ -35,29 +35,26 @@ void ZDateTimeDialog::changeEvent(QEvent *e)
     }
 }
 
-QString ZDateTimeDialog::getValue()
+QString ZStartTimerDialog::getValue()
 {
-    ui->dateTimeEdit->setDateTime(QDateTime::currentDateTime());
-    return ui->dateTimeEdit->date().toString(Qt::DefaultLocaleShortDate);
+    return cachedValue.toString(Qt::DefaultLocaleShortDate);
 }
 
-void ZDateTimeDialog::showEvent(QShowEvent *)
+void ZStartTimerDialog::showEvent(QShowEvent *)
 {
+    ui->dateTimeEdit->setDateTime(cachedValue);
     ui->dateTimeEdit->setEditFocus(true);
     ui->dateTimeEdit->setCurrentSection(QDateTimeEdit::MinuteSection);
-    ui->dateTimeEdit->setDateTime(QDateTime::currentDateTime());
 }
 
-bool ZDateTimeDialog::eventFilter(QObject *, QEvent *event)
+bool ZStartTimerDialog::eventFilter(QObject *, QEvent *event)
 {
     if (event->type() == QEvent::KeyPress)
     {
         if (static_cast<QKeyEvent *>(event)->key() == Qt::Key_Select)
         {
-            timeval tv;
-            tv.tv_sec = ui->dateTimeEdit->dateTime().toTime_t();
-            tv.tv_usec = 0;
-            settimeofday(&tv, NULL);
+            cachedValue = ui->dateTimeEdit->dateTime();
+            zdbus.setParameter("Main", "Recorder.Timer.Start_time", cachedValue.toTime_t());
             QCoreApplication::sendEvent(this, event);
             return true;
         }

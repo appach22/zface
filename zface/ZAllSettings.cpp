@@ -2,6 +2,9 @@
 #include "ZSettingWidget.h"
 #include "ZDbus.h"
 #include "ZDateTimeDialog.h"
+#include "ZStartTimerDialog.h"
+#include "ZTimerDurationDialog.h"
+#include "ZPinCode.h"
 
 #include <QFile>
 
@@ -125,6 +128,12 @@ void ZAllSettings::getParameter(QXmlStreamReader & _xml, ZSettingsNode * _parent
         ZCustomWidget * customWidget;
         if (name == "DateTime")
             customWidget = new ZDateTimeDialog(setting);
+        else if (name == "Recorder.Timer.Start_time")
+            customWidget = new ZStartTimerDialog(setting);
+        else if (name == "Recorder.Timer.Duration")
+            customWidget = new ZTimerDurationDialog(setting);
+        else if (name == "Security.Protection.PIN")
+            customWidget = new ZPinCode(setting);
         setting->setData(param, customWidget);
         _parentNode->SetWidget(setting);
     }

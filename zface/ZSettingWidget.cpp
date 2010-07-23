@@ -113,6 +113,8 @@ void ZSettingWidget::keyPressEvent(QKeyEvent * event)
     switch (event->key())
     {
         case Qt::Key_Select :
+            if (type == Custom)
+                break;
             // Получаем новое значение параметра
             if (type == Select)
             {

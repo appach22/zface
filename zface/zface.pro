@@ -13,7 +13,10 @@ SOURCES += main.cpp \
     zfacedecoration.cpp \
     ZParamDelegate.cpp \
     ZDateTimeDialog.cpp \
-    ZCustomWidget.cpp
+    ZCustomWidget.cpp \
+    ZStartTimerDialog.cpp \
+    ZTimerDurationDialog.cpp \
+    ZPinCode.cpp
 HEADERS += mainwindow.h \
     ZSettingsModel.h \
     ZSettingsNode.h \
@@ -24,11 +27,15 @@ HEADERS += mainwindow.h \
     zfacedecoration.h \
     ZParamDelegate.h \
     ZDateTimeDialog.h \
-    ZCustomWidget.h
+    ZCustomWidget.h \
+    ZStartTimerDialog.h \
+    ZTimerDurationDialog.h \
+    ZPinCode.h
 QT += dbus
 DEFINES += QT_KEYPAD_NAVIGATION
 FORMS += mainwindow.ui \
-    ZDateTimeDialog.ui
+    ZDateTimeDialog.ui \
+    ZPinCode.ui
 RESOURCES += images.qrc
 LIBS += ../zkbd/libzkbd.a
 target.path += $$[DESTDIR]/usr/bin

@@ -17,7 +17,7 @@ int main(int argc, char *argv[])
     a.qwsSetDecoration(decoration);
 #endif
 #if defined(QT_KEYPAD_NAVIGATION)
-    a.setNavigationMode(Qt::NavigationModeKeypadDirectional);
+    a.setNavigationMode(Qt::NavigationModeKeypadDirectional/*NavigationModeKeypadTabOrder*/);
 #endif
     MainWindow w;
     w.show();

@@ -236,7 +236,12 @@
                                 <item name="включен"    value="1" />
                         </param>
                 </setting>
-                <!-- время старта и длительность записи должны быть здесь -->
+                <setting type="leaf" name="Время старта записи">
+                        <param type="custom" category="Main" name="Recorder.Timer.Start_time" />
+                </setting>
+                <setting type="leaf" name="Длительность записи">
+                        <param type="custom" category="Main" name="Recorder.Timer.Duration" />
+                </setting>
                 <setting type="leaf" name="Регулярность записи">
                         <param type="select" category="Main" name="Recorder.Timer.Repeat">
                                 <item name="однажды"    value="0" />
@@ -273,7 +278,9 @@
                                 <item name="включена"   value="1" />
                         </param>
                 </setting>
-                <!-- изменить пин-код должен быть здесь -->
+                <setting type="leaf" name="Изменить ПИН-код">
+                        <param type="custom" category="Main" name="Security.Protection.PIN" />
+                </setting>
         </setting>
         <setting type="leaf" name="Дата и время">
                 <param type="custom" category="" name="DateTime" />
