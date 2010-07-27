@@ -3,6 +3,10 @@
 
 #include <time.h>
 #include <sys/time.h>
+#include <sys/ioctl.h>
+#include <linux/rtc.h>
+#include <fcntl.h>
+
 
 #include <QDebug>
 
@@ -41,6 +45,12 @@ QString ZDateTimeDialog::getValue()
     return ui->dateTimeEdit->date().toString(Qt::DefaultLocaleShortDate);
 }
 
+void ZDateTimeDialog::setValue(int)
+{
+    ;
+}
+
+
 void ZDateTimeDialog::showEvent(QShowEvent *)
 {
     ui->dateTimeEdit->setEditFocus(true);
@@ -58,6 +68,27 @@ bool ZDateTimeDialog::eventFilter(QObject *, QEvent *event)
             tv.tv_sec = ui->dateTimeEdit->dateTime().toTime_t();
             tv.tv_usec = 0;
             settimeofday(&tv, NULL);
+
+            int fd = open("/dev/rtc", O_WRONLY, 0);
+            if(fd < 0)
+            {
+                fd = open("/dev/rtc0", O_WRONLY, 0);
+                if(fd < 0)
+                        ; // TODO: log error
+                else
+                {
+                    struct tm *tm;
+
+                    unsigned int secs;
+                    secs = tv.tv_sec + ((tv.tv_usec > 500000) ? 1 : 0);
+
+                    tm = gmtime((time_t*)&secs);
+                    ioctl(fd, RTC_SET_TIME, tm);
+
+                    ::close(fd);
+                }
+            }
+
             QCoreApplication::sendEvent(this, event);
             return true;
         }

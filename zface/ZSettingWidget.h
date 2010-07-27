@@ -10,7 +10,19 @@
 #include <QtGui/QLabel>
 #include <QtGui/QProgressBar>
 #include <QtGui/QGroupBox>
+#include <QtGui/QRadioButton>
 
+
+class ZSelectButton : public QRadioButton
+{
+    Q_OBJECT
+
+public:
+    explicit ZSelectButton(QWidget *parent = 0);
+
+protected:
+    void paintEvent(QPaintEvent * event);
+};
 
 class ZSettingWidget : public QWidget
 {
@@ -24,9 +36,10 @@ public:
 
     void setData(ZSelectParameter * _data);
     void setData(ZValueParameter * _data);
-    void setData(ZValueParameter * _data, ZCustomWidget * _customProcessor);
+    void setData(ZParameter * _data, ZCustomWidget * _customProcessor);
     ZParameter * getData();
     QString getValue();
+    void setValue(int _value);
 
 protected:
     void keyPressEvent(QKeyEvent * event);

@@ -16,7 +16,10 @@ SOURCES += main.cpp \
     ZCustomWidget.cpp \
     ZStartTimerDialog.cpp \
     ZTimerDurationDialog.cpp \
-    ZPinCode.cpp
+    ZPinCode.cpp \
+    qtpiemenu.cpp \
+    qtpieitem.cpp \
+    qtpieaction.cpp
 HEADERS += mainwindow.h \
     ZSettingsModel.h \
     ZSettingsNode.h \
@@ -30,7 +33,10 @@ HEADERS += mainwindow.h \
     ZCustomWidget.h \
     ZStartTimerDialog.h \
     ZTimerDurationDialog.h \
-    ZPinCode.h
+    ZPinCode.h \
+    qtpiemenu.h \
+    qtpieitem.h \
+    qtpieaction.h
 QT += dbus
 DEFINES += QT_KEYPAD_NAVIGATION
 FORMS += mainwindow.ui \

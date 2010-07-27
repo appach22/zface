@@ -21,7 +21,8 @@ public:
 
     QVariant data(const QModelIndex & index, int role) const;
 
-    QString valueByName(const QString & _name);
+    QString getValueByName(const QString & _name);
+    void setValueByName(const QString & _name, int _value);
 
 private:
     ZSettingsNode * nodeFromIndex(const QModelIndex & index) const;
@@ -30,7 +31,7 @@ private:
 
     bool valueFound;
     QString foundValue;
-    void valueByName(const QString & _name, ZSettingsNode * _root);
+    void valueByName(const QString & _name, ZSettingsNode * _root, bool _doSet, int _value = 0);
 };
 
 #endif // ZSETTINGSMODEL_H

@@ -1,13 +1,34 @@
 #include <QtGui/QVBoxLayout>
-#include <QtGui/QRadioButton>
 #include <QCoreApplication>
+#include <QStylePainter>
 
 #include "ZSettingWidget.h"
+#include "ZParamDelegate.h"
 #include "ZDbus.h"
 
 #include <QDebug>
 
 extern QMap<QString, int> allValues;
+
+
+ZSelectButton::ZSelectButton(QWidget *parent) :
+    QRadioButton(parent)
+{
+}
+
+void ZSelectButton::paintEvent(QPaintEvent * event)
+{
+    QStylePainter p(this);
+    QStyleOptionButton opt;
+    QRadioButton::initStyleOption(&opt);
+    if (opt.state & QStyle::State_HasFocus)
+    {
+        opt.state &= ~QStyle::State_HasFocus;
+        opt.state |= QStyle::State_Selected;
+        //opt.state |= QStyle::State_MouseOver;
+    }
+    p.drawControl(QStyle::CE_RadioButton, opt);
+}
 
 ZSettingWidget::ZSettingWidget(QWidget *parent) :
     QWidget(parent)
@@ -43,7 +64,7 @@ void ZSettingWidget::setData(ZSelectParameter * _data)
 
     for (int i = 0; i < dynamic_cast<ZSelectParameter *>(data)->items.count(); ++i)
     {
-        QRadioButton * radio = new QRadioButton(box);
+        ZSelectButton * radio = new ZSelectButton(box);
         radio->setText(dynamic_cast<ZSelectParameter *>(data)->items[i].name);
         buttons->addButton(radio, i);
         boxLayout->addWidget(radio);
@@ -90,7 +111,7 @@ void ZSettingWidget::setData(ZValueParameter * _data)
     qDebug() << progress->width() << " " << ((QWidget*)progress->parent())->width();
 }
 
-void ZSettingWidget::setData(ZValueParameter * _data, ZCustomWidget * _customProcessor)
+void ZSettingWidget::setData(ZParameter * _data, ZCustomWidget * _customProcessor)
 {
     type = Custom;
     customProcessor = _customProcessor;
@@ -171,7 +192,7 @@ void ZSettingWidget::keyPressEvent(QKeyEvent * event)
 
 void ZSettingWidget::showEvent(QShowEvent *)
 {
-    cachedValue = allValues[data->name];
+    //cachedValue = allValues[data->name];
     if (type == Select)
     {
         for (int i = 0; i < dynamic_cast<ZSelectParameter *>(data)->items.count(); ++i)
@@ -206,15 +227,24 @@ QString ZSettingWidget::getValue()
     if (type == Select)
     {
         ZSelectParameter * param = dynamic_cast<ZSelectParameter *>(data);
-        cachedValue = allValues[param->name];
+        //cachedValue = allValues[param->name];
         for (int i = 0; i < param->items.count(); ++i)
             if (cachedValue == param->items[i].value)
                 return param->items[i].name;
     }
     else if (type == Value)
-        return QString("%1 ").arg(allValues[data->name]) + dynamic_cast<ZValueParameter *>(data)->unit;
+        return QString("%1 ").arg(/*allValues[data->name]*/cachedValue) + dynamic_cast<ZValueParameter *>(data)->unit;
     else if (type == Custom)
         return customProcessor->getValue();
 
     return "";
+}
+
+void ZSettingWidget::setValue(int _value)
+{
+    allValues[data->name] = _value;
+    if (type != Custom)
+        cachedValue = _value;
+    else
+        customProcessor->setValue(_value);
 }

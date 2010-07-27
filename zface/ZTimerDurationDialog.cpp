@@ -40,6 +40,13 @@ QString ZTimerDurationDialog::getValue()
     return cachedValue.toString(ui->timeEdit->displayFormat());
 }
 
+void ZTimerDurationDialog::setValue(int _value)
+{
+    cachedValue = QTime(_value / 3600, _value % 3600 / 60);
+    ui->timeEdit->setTime(cachedValue);
+}
+
+
 void ZTimerDurationDialog::showEvent(QShowEvent *)
 {
     ui->timeEdit->setTime(cachedValue);

@@ -85,17 +85,24 @@ QVariant ZSettingsModel::data(const QModelIndex & index, int role) const
 
 //bool addNode(const QString & _name, ZSettingsNode::Type _type, QWidget * _widget);
 
-QString ZSettingsModel::valueByName(const QString & _name)
+QString ZSettingsModel::getValueByName(const QString & _name)
 {
     valueFound = false;
-    valueByName(_name, *rootNode);
+    valueByName(_name, *rootNode, false);
     if (valueFound)
         return foundValue;
     else
         return "";
 }
 
-void ZSettingsModel::valueByName(const QString & _name, ZSettingsNode * _root)
+void ZSettingsModel::setValueByName(const QString & _name, int _value)
+{
+    valueFound = false;
+    if (rootNode)
+        valueByName(_name, *rootNode, true, _value);
+}
+
+void ZSettingsModel::valueByName(const QString & _name, ZSettingsNode * _root, bool _doSet, int _value)
 {
     if (valueFound)
         return;
@@ -104,16 +111,22 @@ void ZSettingsModel::valueByName(const QString & _name, ZSettingsNode * _root)
 
     if (!_root->children.count())
     {
-        ZParameter * param = dynamic_cast<ZSettingWidget *>(_root->widget)->getData();
-        if (param->name == _name)
+        if (_root->widget)
         {
-            foundValue = dynamic_cast<ZSettingWidget *>(_root->widget)->getValue();
-            valueFound = true;
-            return;
+            ZParameter * param = dynamic_cast<ZSettingWidget *>(_root->widget)->getData();
+            if (param->name == _name)
+            {
+                if (_doSet)
+                    dynamic_cast<ZSettingWidget *>(_root->widget)->setValue(_value);
+                else
+                    foundValue = dynamic_cast<ZSettingWidget *>(_root->widget)->getValue();
+                valueFound = true;
+                return;
+            }
         }
     }
     else
         for (int i = 0; i < _root->children.count(); ++i)
-            valueByName(_name, _root->children[i]);
+            valueByName(_name, _root->children[i], _doSet, _value);
 }
 

@@ -123,7 +123,7 @@ void ZAllSettings::getParameter(QXmlStreamReader & _xml, ZSettingsNode * _parent
     }
     else if (attrs.value("type").toString().toLower() == "custom")
     {
-        ZValueParameter * param = new ZValueParameter(/*category, name, _parentNode->name, QPair<int, int>(), attrs.value("unit").toString()*/);
+        ZParameter * param = new ZParameter(category, name, _parentNode->name);
         ZSettingWidget * setting = new ZSettingWidget(paramContainer);
         ZCustomWidget * customWidget;
         if (name == "DateTime")

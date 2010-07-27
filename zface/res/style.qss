@@ -62,8 +62,8 @@ QRadioButton {
      border-color: navy; 
  }
 
-QRadioButton::focus {
-    border-color: #99f151;
+QRadioButton::selected {
+    border-color: blue;
 }
 
  QScrollBar:vertical {

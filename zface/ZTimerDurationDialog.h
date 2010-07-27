@@ -18,6 +18,7 @@ public:
     ~ZTimerDurationDialog();
 
     QString getValue();
+    void setValue(int _value);
 
 protected:
     void changeEvent(QEvent *e);

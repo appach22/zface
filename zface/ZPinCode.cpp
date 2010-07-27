@@ -40,7 +40,11 @@ void ZPinCode::changeEvent(QEvent *e)
 QString ZPinCode::getValue()
 {
     return "";
-    //return ui->timeEdit->time().toString(ui->timeEdit->displayFormat());
+}
+
+void ZPinCode::setValue(int)
+{
+    ;
 }
 
 void ZPinCode::showEvent(QShowEvent *)

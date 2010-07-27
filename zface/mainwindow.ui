@@ -230,8 +230,8 @@
           </property>
           <property name="sizeHint" stdset="0">
            <size>
-            <width>127</width>
-            <height>13</height>
+            <width>133</width>
+            <height>14</height>
            </size>
           </property>
          </spacer>
@@ -272,8 +272,8 @@
           </property>
           <property name="sizeHint" stdset="0">
            <size>
-            <width>127</width>
-            <height>13</height>
+            <width>133</width>
+            <height>14</height>
            </size>
           </property>
          </spacer>
@@ -373,6 +373,9 @@
           <property name="frameShape">
            <enum>QFrame::NoFrame</enum>
           </property>
+          <property name="horizontalScrollBarPolicy">
+           <enum>Qt::ScrollBarAlwaysOff</enum>
+          </property>
          </widget>
         </item>
        </layout>
@@ -390,6 +393,9 @@
           <property name="frameShape">
            <enum>QFrame::NoFrame</enum>
           </property>
+          <property name="horizontalScrollBarPolicy">
+           <enum>Qt::ScrollBarAlwaysOff</enum>
+          </property>
          </widget>
         </item>
        </layout>
@@ -406,6 +412,9 @@
          <widget class="QListView" name="filtersView">
           <property name="frameShape">
            <enum>QFrame::NoFrame</enum>
+          </property>
+          <property name="horizontalScrollBarPolicy">
+           <enum>Qt::ScrollBarAlwaysOff</enum>
           </property>
          </widget>
         </item>

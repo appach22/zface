@@ -10,6 +10,7 @@ public:
     explicit ZCustomWidget(QWidget *parent = 0);
 
     virtual QString getValue() = 0;
+    virtual void setValue(int _value) = 0;
 
 signals:
 

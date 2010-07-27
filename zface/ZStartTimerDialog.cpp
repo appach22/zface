@@ -40,6 +40,13 @@ QString ZStartTimerDialog::getValue()
     return cachedValue.toString(Qt::DefaultLocaleShortDate);
 }
 
+void ZStartTimerDialog::setValue(int _value)
+{
+    cachedValue.setTime_t(_value);
+    ui->dateTimeEdit->setDateTime(cachedValue);
+}
+
+
 void ZStartTimerDialog::showEvent(QShowEvent *)
 {
     ui->dateTimeEdit->setDateTime(cachedValue);

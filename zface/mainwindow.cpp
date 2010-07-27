@@ -9,6 +9,8 @@
 #include "zplay-common.h"
 #include "dbus_constants.h"
 
+#include "qtpiemenu.h"
+
 QString fileOpenErrors[9] = {QObject::trUtf8("Неизвестная ошибка!"),
                              "",
                              QObject::trUtf8("Неподдерживаемый формат файла!"),
@@ -44,9 +46,9 @@ MainWindow::MainWindow(QWidget *parent)
     //this->setStyleSheet("background-color: white;");
     ui->recordingWidget->setStyleSheet("background-image: url(:/all/res/record_16x16.png);"
                                        "background-repeat: repeat-n;");
-    ui->mainPage->setStyleSheet("background-image: url(:/all/res/xface_mainmenu.bmp);"
-                                     "background-repeat: repeat-n;"
-                                     "background-position: center;");
+//    ui->mainPage->setStyleSheet("background-image: url(:/all/res/xface_mainmenu.bmp);"
+//                                     "background-repeat: repeat-n;"
+//                                     "background-position: center;");
     //ui->statusPages->setStyleSheet("background-color: white;");
     ui->sd->setStyleSheet("background-image: url(:/all/res/xface_storage.bmp);"
                           "background-repeat: repeat-n;"
@@ -65,6 +67,18 @@ MainWindow::MainWindow(QWidget *parent)
     file.open(QFile::ReadOnly);
     QString styleSheet = QLatin1String(file.readAll());
     this->setStyleSheet(styleSheet);
+
+//    QtPieMenu * pieMenu = new QtPieMenu("", this);
+//    QtPieMenu * pieMenu1 = new QtPieMenu("", this);
+//    QtPieMenu * pieMenu2 = new QtPieMenu("", this);
+//    QtPieMenu * pieMenu3 = new QtPieMenu("", this);
+//    QtPieMenu * pieMenu4 = new QtPieMenu("", this);
+//    ui->gridLayout_8->addWidget(pieMenu, 2, 1, Qt::AlignCenter);
+//    pieMenu->insertItem(pieMenu1);
+//    pieMenu->insertItem(pieMenu2);
+//    pieMenu->insertItem(pieMenu3);
+//    pieMenu->insertItem(pieMenu4);
+//    pieMenu->setOuterRadius(50);
 
     ui->filesView->setModel(&files);
     ui->filesView->installEventFilter(this);
@@ -523,6 +537,9 @@ void MainWindow::paramChanged(QString _param, QString _value)
 {
     qDebug() << "paramChanged " << _param << ": " << _value;
     int value = _value.toInt();
+    settings.setValueByName(_param, value);
+    mixer.setValueByName(_param, value);
+    filters.setValueByName(_param, value);
 
     if (_param == "Mixer.Input")
     {
@@ -660,7 +677,7 @@ void MainWindow::paramChanged(QString _param, QString _value)
         float val = value;
         if (value >= 1000)
         {
-            val /= 1000.;
+            val /= 1024.;
             ui->measureFree->setText(trUtf8("Гб"));
         }
         else
@@ -672,7 +689,7 @@ void MainWindow::paramChanged(QString _param, QString _value)
         float val = value;
         if (value >= 1000)
         {
-            val /= 1000.;
+            val /= 1024.;
             ui->measureTotal->setText(trUtf8("Гб"));
         }
         else
@@ -682,19 +699,21 @@ void MainWindow::paramChanged(QString _param, QString _value)
 
     else if (_param == "Recorder.Sample_size")
     {
-        ui->sampleSizeLabel->setText(settings.valueByName(_param));
+        ui->sampleSizeLabel->setText(settings.getValueByName(_param));
     }
     else if (_param == "Recorder.Compression")
     {
-        ui->compressionLabel->setText(settings.valueByName(_param));
+        ui->compressionLabel->setText(settings.getValueByName(_param));
     }
     else if (_param == "Recorder.Sample_rate")
     {
-        ui->sampleRateLabel->setText(settings.valueByName(_param));
+        qDebug() << "Here";
+        ui->sampleRateLabel->setText(settings.getValueByName(_param));
+        ui->sampleRateLabel->update();
     }
     else if (_param == "Recorder.Channels")
     {
-        ui->channelsLabel->setText(settings.valueByName(_param));
+        ui->channelsLabel->setText(settings.getValueByName(_param));
     }
 }
 

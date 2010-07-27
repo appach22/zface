@@ -13,12 +13,11 @@ ZParamDelegate::ZParamDelegate(QObject *parent) :
 {
 }
 
-
 QSize ZParamDelegate::sizeHint(const QStyleOptionViewItem & option, const QModelIndex & index) const
 {
     ZSettingsNode * node = static_cast<ZSettingsNode *>(index.internalPointer());
     QSize s = QStyledItemDelegate::sizeHint(option, index);
-    if (node->type == ZSettingsNode::Leaf)
+    if (node->type == ZSettingsNode::Leaf && !dynamic_cast<ZSettingWidget *>(node->widget)->getValue().isEmpty())
         return QSize(s.width(), s.height() * 2);
     else
         return QSize(s.width(), s.height() * 1.5);
@@ -28,9 +27,9 @@ QSize ZParamDelegate::sizeHint(const QStyleOptionViewItem & option, const QModel
 
 void ZParamDelegate::paint(QPainter * painter, const QStyleOptionViewItem & option, const QModelIndex & index) const
 {
-//    QStyleOptionViewItem newOption = option;
-//    newOption.state &= ~QStyle::State_Enabled;
-//    QStyledItemDelegate::paint(painter, newOption, index);
+    QStyleOptionViewItem newOption = option;
+    newOption.state &= ~QStyle::State_HasFocus;
+    //QStyledItemDelegate::paint(painter, newOption, index);
 
     if (index.data(Qt::DisplayRole).isValid())
     {
@@ -42,20 +41,26 @@ void ZParamDelegate::paint(QPainter * painter, const QStyleOptionViewItem & opti
         ZSettingsNode * node = static_cast<ZSettingsNode *>(index.internalPointer());
         if (node->type == ZSettingsNode::Leaf)
         {
-            QSize s = QStyledItemDelegate::sizeHint(option, index);
-            painter->save();
-            QTextDocument doc;
-            doc.setHtml("<div>" + index.data(Qt::DisplayRole).toString() + "</div><div style=\"font-style: italic;\">" + dynamic_cast<ZSettingWidget *>(node->widget)->getValue() + "</div>");
-            QAbstractTextDocumentLayout::PaintContext context;
-            doc.setPageSize(s);
-            doc.setDocumentMargin(0);
-            painter->translate(option.rect.x(), option.rect.y());
-            doc.documentLayout()->draw(painter, context);
-            painter->restore();
+            QString value = dynamic_cast<ZSettingWidget *>(node->widget)->getValue();
+            if (!value.isEmpty())
+            {
+                QSize s = QStyledItemDelegate::sizeHint(option, index);
+                painter->save();
+                QTextDocument doc;
+                doc.setHtml("<div>" + index.data(Qt::DisplayRole).toString() + "</div><div style=\"font-style: italic;\">" + value + "</div>");
+                QAbstractTextDocumentLayout::PaintContext context;
+                doc.setPageSize(s);
+                doc.setDocumentMargin(0);
+                painter->translate(option.rect.x(), option.rect.y());
+                doc.documentLayout()->draw(painter, context);
+                painter->restore();
+            }
+            else
+                QStyledItemDelegate::paint(painter, newOption, index);
         }
         else
-            QStyledItemDelegate::paint(painter, option, index);
+            QStyledItemDelegate::paint(painter, newOption, index);
    }
    else
-       QStyledItemDelegate::paint(painter, option, index);
+       QStyledItemDelegate::paint(painter, newOption, index);
 }
