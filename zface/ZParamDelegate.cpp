@@ -17,6 +17,7 @@ QSize ZParamDelegate::sizeHint(const QStyleOptionViewItem & option, const QModel
 {
     ZSettingsNode * node = static_cast<ZSettingsNode *>(index.internalPointer());
     QSize s = QStyledItemDelegate::sizeHint(option, index);
+    //qDebug() << s;
     if (node->type == ZSettingsNode::Leaf && !dynamic_cast<ZSettingWidget *>(node->widget)->getValue().isEmpty())
         return QSize(s.width(), s.height() * 2);
     else

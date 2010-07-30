@@ -11,6 +11,7 @@
 #include <QDebug>
 #include <QFileSystemWatcher>
 #include <QtGui/QListView>
+#include <QProcess>
 
 #include "ZSettingsModel.h"
 #include "ZDbus.h"
@@ -80,6 +81,7 @@ private:
     ZSettingsNode * mixerRoot;
     ZSettingsNode * filtersRoot;
     QMessageBox * confirmMessage;
+    QProcess externalCommand;
 
 
     void SetWatcher(QModelIndex root);
@@ -87,6 +89,7 @@ private:
     void processMainPage(QKeyEvent * event);
     void processBrowserPage(QKeyEvent * event);
     void processSettingsPage(QKeyEvent * event, QListView * view);
+    void processUtilitiesPage(QKeyEvent * event);
     void processParameterPage(QKeyEvent * event);
     void processPlayPage(QKeyEvent * event);
     bool processEncoders(QKeyEvent * event);

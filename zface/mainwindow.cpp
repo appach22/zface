@@ -81,6 +81,7 @@ MainWindow::MainWindow(QWidget *parent)
 //    pieMenu->setOuterRadius(50);
 
     ui->filesView->setModel(&files);
+    watcher = NULL;
     ui->filesView->installEventFilter(this);
     files.setSorting(QDir::Name | QDir::DirsFirst | QDir::IgnoreCase | QDir::Reversed);
     files.setResolveSymlinks(false);
@@ -101,6 +102,7 @@ MainWindow::MainWindow(QWidget *parent)
     zdbus->getParameter("Temp", "Storage.Capacity", &val);
     zdbus->getParameter("Temp", "Storage.Free_space", &val);
 
+    settingsRoot = mixerRoot = filtersRoot = 0;
     settings.setRootNode(&settingsRoot);
     ui->settingsView->setModel(&settings);
     mixer.setRootNode(&mixerRoot);
@@ -131,12 +133,15 @@ MainWindow::MainWindow(QWidget *parent)
     ui->filtersView->setItemDelegate(paramDelegate);
     ui->fileOpsList->installEventFilter(this);
     ui->filesView->setItemDelegate(paramDelegate);
+    ui->utilitiesList->installEventFilter(this);
+    ui->utilitiesList->setItemDelegate(paramDelegate);
+    // Это хак! Без него элементы рисуются неправильно
+    ui->utilitiesList->item(0)->setSizeHint(QSize(121, 15));
 
     ui->gainRecLeftProgress->setFormat(tr("%v dB"));
     ui->gainRecRightProgress->setFormat(tr("%v dB"));
     ui->gainPlayProgress->setFormat(tr("%v dB"));
 
-    watcher = NULL;
     //SetWatcher(ui->filesView->currentIndex());
     //connect(ui->filesView, SIGNAL(entered(QModelIndex))
     QTimer * timer = new QTimer(this);
@@ -201,6 +206,9 @@ void MainWindow::keyPressEvent(QKeyEvent * event)
         case 6 :
             processPlayPage(event);
             break;
+        case 7 :
+            processUtilitiesPage(event);
+            break;
     }
     //QMainWindow::keyPressEvent(event);
 }
@@ -218,6 +226,7 @@ void MainWindow::SetWatcher(QModelIndex root)
 void MainWindow::refreshPath()
 {
     qDebug() << "Changed!";
+    rootIndex = files.index("/tmp/sound");
     files.refresh(files.parent(ui->filesView->rootIndex()));
 }
 
@@ -237,6 +246,14 @@ void MainWindow::processMainPage(QKeyEvent * event)
                 ui->filesView->setCurrentIndex(files.index(0, 0, rootIndex));
                 ui->pages->setCurrentWidget(ui->browserPage);
                 ui->filesView->setEditFocus(true);
+            }
+            break;
+        case Qt::Key_Up :
+            {
+                ui->pages->setCurrentWidget(ui->utilitiesPage);
+                ui->utilitiesList->updateGeometry();
+                ui->utilitiesList->setCurrentRow(0);
+                ui->utilitiesList->setEditFocus(true);
             }
             break;
         case Qt::Key_Select :
@@ -403,6 +420,42 @@ void MainWindow::processSettingsPage(QKeyEvent * event, QListView * view)
     }
 }
 
+void MainWindow::processUtilitiesPage(QKeyEvent * event)
+{
+    switch (event->key())
+    {
+        case Qt::Key_Escape :
+            ui->pages->setCurrentWidget(ui->mainPage);
+            break;
+        case Qt::Key_Select :
+            if (ui->utilitiesList->currentRow() == 0)
+            {
+                if (QMessageBox::Yes == QMessageBox::question(this, "", trUtf8("Заблокировать кнопки от случайных нажатий?"),
+                                                              QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes))
+                    zdbus->setParameter("Temp", "Security.Keyboard_lock.Active", 1);
+            }
+            else if (ui->utilitiesList->currentRow() == 1)
+            {
+                if (QMessageBox::Yes == QMessageBox::question(this, "", trUtf8("Очистить корзину?"),
+                                                              QMessageBox::Yes | QMessageBox::No, QMessageBox::No))
+                    externalCommand.start("/usr/bin/emptyrecycle.sh");
+            }
+            else if (ui->utilitiesList->currentRow() == 2)
+            {
+                if (QMessageBox::Yes == QMessageBox::warning(this, "", trUtf8("После форматирования все записи будут потеряны! Форматировать?"),
+                                                              QMessageBox::Yes | QMessageBox::No, QMessageBox::No))
+                    externalCommand.start("/usr/bin/mmcformat.sh");
+            }
+            else if (ui->utilitiesList->currentRow() == 3)
+            {
+                ui->logsBrowser->setSource(QUrl("/etc/firmware/logs/problems.log"));
+                ui->pages->setCurrentWidget(ui->logsPage);
+                ui->logsBrowser->setEditFocus(true);
+            }
+            ui->utilitiesList->setEditFocus(true);
+            break;
+    }
+}
 void MainWindow::processParameterPage(QKeyEvent * event)
 {
     switch (event->key())
@@ -644,30 +697,38 @@ void MainWindow::paramChanged(QString _param, QString _value)
         {
             currentSDState = NotConnected;
             ui->cardErrorLabel->setText(trUtf8("Вставьте\nSD-карту!"));
-            ui->cardInfoWidget->hide();
-            ui->cardErrorLabel->show();
+            ui->cardStatusPages->setCurrentWidget(ui->cardErrorPage);
         }
         else if (currentSDState != NotFormatted)
         {
-            ui->cardErrorLabel->hide();
-            ui->cardInfoWidget->show();
+            ui->cardStatusPages->setCurrentWidget(ui->cardInfoPage);
             currentSDState = SDOK;
         }
     }
 
     else if (_param == "Storage.Formatted")
     {
-        if (!value && currentSDState != NotConnected)
+        if (value == 0 && currentSDState != NotConnected)
         {
             currentSDState = NotFormatted;
-            ui->cardErrorLabel->setText(trUtf8("SD-карта не\nотформатирована!"));
-            ui->cardInfoWidget->hide();
-            ui->cardErrorLabel->show();
+            ui->cardErrorLabel->setText(trUtf8("SD-карта не\nотформат-на!"));
+            ui->cardStatusPages->setCurrentWidget(ui->cardErrorPage);
         }
-        else if (value && currentSDState != NotConnected)
+        else if (value == 1 && currentSDState != NotConnected)
         {
-            ui->cardErrorLabel->hide();
-            ui->cardInfoWidget->show();
+            ui->cardStatusPages->setCurrentWidget(ui->cardInfoPage);
+            rootIndex = files.index("/tmp/sound");
+            ui->filesView->setRootIndex(rootIndex);
+            SetWatcher(rootIndex);
+            currentSDState = SDOK;
+        }
+        else if (value == 2 && currentSDState != NotConnected)
+        {
+            ui->cardErrorLabel->setText(trUtf8("Идет\nформатир-е..."));
+            ui->cardStatusPages->setCurrentWidget(ui->cardErrorPage);
+            rootIndex = files.index("/tmp/sound");
+            ui->filesView->setRootIndex(rootIndex);
+            SetWatcher(rootIndex);
             currentSDState = SDOK;
         }
     }
@@ -768,7 +829,7 @@ void MainWindow::messageForUser(unsigned int _code, int _type)
     if (messageText.isEmpty())
         messageText = trUtf8("Неизвестный номер сообщения: ") + QString("%1").arg(_code);
     if (_type == 0)
-        showMessage(QMessageBox::Warning, messageText);
+        showMessage(QMessageBox::Information, messageText);
     else if (_type == 1)
         showMessage(QMessageBox::Critical, messageText);
 }
