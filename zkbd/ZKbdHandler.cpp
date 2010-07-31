@@ -5,6 +5,7 @@
 #include <fcntl.h>
 #include <QDebug>
 #include <errno.h>
+#include <sys/ioctl.h>
 
 const QString ZKbdHandler::inputsNames[inputsCount] = {"mainkeys", "rotary0", "rotary1", "rotary2", "hp-detect"};
 
@@ -23,6 +24,9 @@ ZKbdHandler::ZKbdHandler()
         inputsNotifiers[i] = new QSocketNotifier(inputsFds[i], QSocketNotifier::Read, this);
         connect(inputsNotifiers[i], SIGNAL(activated(int)), this, SLOT(readKbdData(int)));
     }
+
+    int repeat[2] = {500, 100};
+    ioctl(inputsFds[0], EVIOCSREP, repeat);
 }
 
 ZKbdHandler::~ZKbdHandler()
@@ -64,6 +68,16 @@ void ZKbdHandler::readKbdData(int _fd)
             break;
         case 1 :
             key_code = Qt::Key_Escape;
+            break;
+        case 2 :
+            if (event.value == 0)
+                // Headset connected
+                key_code = Qt::Key_F11;
+            else
+                // Headset not connected
+                key_code = Qt::Key_F12;
+            // Always press (not to process keyUp and keyDown)
+            event.value = 1;
             break;
         case 63 :
             key_code = Qt::Key_F5;

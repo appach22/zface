@@ -53,6 +53,7 @@ class MainWindow : public QMainWindow
 public:
     MainWindow(QWidget *parent = 0);
     ~MainWindow();
+    void restartInactivityTimers();
 
 protected:
     void keyPressEvent(QKeyEvent * event);
@@ -83,6 +84,16 @@ private:
     QMessageBox * confirmMessage;
     QProcess externalCommand;
 
+    QTimer keyboardLockTimer;
+    int keyboardLockTimeout;
+    QWidget * beforeLockWidget;
+    QWidget * activeWindow;
+    bool keyboardLocked;
+    bool pinCodeProtection;
+    QTimer backlightTimer;
+    bool backlightIsOff;
+    int fdFrameBuffer;
+    int backlightTimeout;
 
     void SetWatcher(QModelIndex root);
 
@@ -94,6 +105,9 @@ private:
     void processPlayPage(QKeyEvent * event);
     bool processEncoders(QKeyEvent * event);
     void processFileOps();
+    void processLogsBrowserPage(QKeyEvent * event);
+    void processLockedPages(QKeyEvent * event);
+    void processPinCodePage(QKeyEvent * event);
     void showMessage(QMessageBox::Icon _type, const QString & _message);
 
 private slots:
@@ -107,6 +121,9 @@ private slots:
     void playPositionChanged(int _position);
     void messageForUser(unsigned int _code, int _type);
     void removeMessageBox();
+    void lockKeyboard();
+    void setLocked1();
+    void backlightTurnOff();
 
 };
 

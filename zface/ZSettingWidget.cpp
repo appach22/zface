@@ -108,7 +108,7 @@ void ZSettingWidget::setData(ZValueParameter * _data)
     progress->setValue(allValues[data->name]);
     valueLayout->addWidget(progress, 0, Qt::AlignCenter);
     valueLayout->addStretch(1);
-    qDebug() << progress->width() << " " << ((QWidget*)progress->parent())->width();
+    //qDebug() << progress->width() << " " << ((QWidget*)progress->parent())->width();
 }
 
 void ZSettingWidget::setData(ZParameter * _data, ZCustomWidget * _customProcessor)

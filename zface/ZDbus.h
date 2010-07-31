@@ -29,6 +29,7 @@ public:
 
     void sendRotaryEvent(const QString & _event, const QString & _action);
     void sendPlayEvent(const QString & _event);
+    void sendRecordKey();
     bool sendOpenFileRequest(const QString & _fileName, SoundFileInfo * _info);
 
 signals:

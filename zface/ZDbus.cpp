@@ -82,6 +82,11 @@ void ZDbus::sendPlayEvent(const QString & _event)
     bus.send(playMessage);
 }
 
+void ZDbus::sendRecordKey()
+{
+    QDBusMessage recordKeyMessage = QDBusMessage::createSignal("/", "com.speechpro.RecordKeyEvents", "RecordKey");
+    bus.send(recordKeyMessage);
+}
 
 bool  ZDbus::sendOpenFileRequest(const QString & _fileName, SoundFileInfo * _info)
 {
