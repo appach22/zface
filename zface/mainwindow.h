@@ -83,6 +83,7 @@ private:
     ZSettingsNode * filtersRoot;
     QMessageBox * confirmMessage;
     QProcess externalCommand;
+    bool doRenamePreset;
 
     QTimer keyboardLockTimer;
     int keyboardLockTimeout;
@@ -108,6 +109,11 @@ private:
     void processLogsBrowserPage(QKeyEvent * event);
     void processLockedPages(QKeyEvent * event);
     void processPinCodePage(QKeyEvent * event);
+    void processFiltersAndPresetsPage(QKeyEvent * event);
+    void processPresetsPage(QKeyEvent * event);
+    void processPresetOpsPage(QKeyEvent * event);
+    void processPresetNamePage(QKeyEvent * event);
+
     void showMessage(QMessageBox::Icon _type, const QString & _message);
 
 private slots:
@@ -124,6 +130,9 @@ private slots:
     void lockKeyboard();
     void setLocked1();
     void backlightTurnOff();
+
+public slots:
+    void virtualKeyboardPressed();
 
 };
 

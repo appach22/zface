@@ -31,6 +31,11 @@ public:
     void sendPlayEvent(const QString & _event);
     void sendRecordKey();
     bool sendOpenFileRequest(const QString & _fileName, SoundFileInfo * _info);
+    int getPresetsListing(QStringList & _listing);
+    int applyPreset(const QString & _presetName);
+    int deletePreset(const QString & _presetName);
+    int savePreset(const QString & _presetName);
+    int renamePreset(const QString & _oldName, const QString & _newName);
 
 signals:
 
@@ -61,6 +66,8 @@ private:
     QTimer * aliveTimer;
 
     static QDBusConnection bus;
+
+    int presetOperation(const QString _presetName, const QString _operation);
 };
 
 extern ZDbus * zdbus;

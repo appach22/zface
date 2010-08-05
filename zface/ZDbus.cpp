@@ -19,7 +19,7 @@ ZDbus::ZDbus(QObject *parent) :
     bus.connect("", "", "com.speechpro.PlayPositionEvents", "PositionChanged", this, SLOT(receivePlayPosition(int)));
     bus.connect("", "", "com.speechpro.RecDurationEvents", "RecDuration", this, SLOT(receiveRecDuration(int)));
     bus.connect("", "", "com.speechpro.MessageForUser", "Notify", this, SLOT(receiveUserNotify(unsigned int)));
-    //bus.connect("", "", "com.speechpro.MessageForUser", "Error", this, SLOT(receiveUserError(int)));
+    bus.connect("", "", "com.speechpro.MessageForUser", "Error", this, SLOT(receiveUserError(unsigned int)));
 }
 
 void ZDbus::startAliveTimer(int _interval)
@@ -151,3 +151,54 @@ void ZDbus::receiveUserError(unsigned int _code)
     emit messageForUser(_code, 1);
 }
 
+int ZDbus::getPresetsListing(QStringList & _listing)
+{
+    QDBusMessage method = QDBusMessage::createMethodCall("com.speechpro.zvar", "/", "com.speechpro.Presets", "Listing");
+    method << QString("Filters");
+    QDBusMessage reply = bus.call(method, QDBus::Block, 3000);
+    if (reply.type() == QDBusMessage::ErrorMessage)
+        return -1;
+    if (reply.arguments().count() < 2)
+        return -1;
+    _listing = reply.arguments()[0].toStringList();
+    return reply.arguments()[1].toInt();
+}
+
+int ZDbus::applyPreset(const QString & _presetName)
+{
+    return presetOperation(_presetName, "SaveAsCurrent");
+}
+
+int ZDbus::deletePreset(const QString & _presetName)
+{
+    return presetOperation(_presetName, "Delete");
+}
+
+int ZDbus::savePreset(const QString & _presetName)
+{
+    return presetOperation(_presetName, "SaveCurrentAs");
+}
+
+int ZDbus::renamePreset(const QString & _oldName, const QString & _newName)
+{
+    QDBusMessage method = QDBusMessage::createMethodCall("com.speechpro.zvar", "/", "com.speechpro.Presets", "Rename");
+    method << QString("Filters") << _oldName << _newName;
+    QDBusMessage reply = bus.call(method, QDBus::Block, 3000);
+    if (reply.type() == QDBusMessage::ErrorMessage)
+        return -1;
+    if (reply.arguments().count() < 2)
+        return -1;
+    return reply.arguments()[1].toInt();
+}
+
+int ZDbus::presetOperation(const QString _presetName, const QString _operation)
+{
+    QDBusMessage method = QDBusMessage::createMethodCall("com.speechpro.zvar", "/", "com.speechpro.Presets", _operation);
+    method << QString("Filters") << _presetName;
+    QDBusMessage reply = bus.call(method, QDBus::Block, 3000);
+    if (reply.type() == QDBusMessage::ErrorMessage)
+        return -1;
+    if (reply.arguments().count() < 2)
+        return -1;
+    return reply.arguments()[1].toInt();
+}

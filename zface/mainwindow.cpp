@@ -9,11 +9,11 @@
 #include "zplay-common.h"
 #include "dbus_constants.h"
 
-#include "qtpiemenu.h"
-
 #include <fcntl.h>
 #include <sys/ioctl.h>
 #include <linux/fb.h>
+#include <linux/input.h>
+
 
 QString fileOpenErrors[9] = {QObject::trUtf8("Неизвестная ошибка!"),
                              "",
@@ -57,7 +57,7 @@ MainWindow::MainWindow(QWidget *parent)
 //                                     "background-repeat: repeat-n;"
 //                                     "background-position: center;");
     //ui->statusPages->setStyleSheet("background-color: white;");
-    ui->sd->setStyleSheet("background-image: url(:/all/res/xface_storage.bmp);"
+    ui->sd->setStyleSheet("background-image: url(:/all/res/storage.png);"
                           "background-repeat: repeat-n;"
                           "background-position: center;");
     ui->gainPlayIcon->setStyleSheet("background-image: url(:/all/res/gain_play_spk.bmp);"
@@ -129,6 +129,24 @@ MainWindow::MainWindow(QWidget *parent)
     zdbus->getParameter("Main", "Security.Protection.Enabled", &val);
     zdbus->getParameter("Temp", "Security.Keyboard_lock.Active", &val);
 
+    // Начальное положение джека
+    uint8_t sw_b[SW_MAX / 8 + 1];
+    int sw = 0;
+    memset(sw_b, 0, sizeof(sw_b));
+    int fd = open("/dev/input/hp-detect", O_RDONLY, 0);
+    if (-1 == fd)
+        qDebug() << "Unable to open /dev/input/hp-detect!";
+    ioctl(fd, EVIOCGSW(sizeof(sw_b)), sw_b);
+    for(int i = 0; i < SW_MAX; i++)
+    {
+        if((sw_b[i / 32] >> i) & 1)
+            sw = i;
+    }
+    if (2 == sw)
+        zdbus->setParameter("Temp", "Mixer.Headset.Connected", 1);
+    else
+        zdbus->setParameter("Temp", "Mixer.Headset.Connected", 0);
+
 
     settingsRoot = mixerRoot = filtersRoot = 0;
     settings.setRootNode(&settingsRoot);
@@ -163,8 +181,15 @@ MainWindow::MainWindow(QWidget *parent)
     ui->filesView->setItemDelegate(paramDelegate);
     ui->utilitiesList->installEventFilter(this);
     ui->utilitiesList->setItemDelegate(paramDelegate);
+    ui->filtersAndPresetsList->installEventFilter(this);
+    ui->filtersAndPresetsList->setItemDelegate(paramDelegate);
+    ui->presetsList->installEventFilter(this);
+    ui->presetsList->setItemDelegate(paramDelegate);
+    ui->presetOpsList->installEventFilter(this);
+    ui->presetOpsList->setItemDelegate(paramDelegate);
     // Это хак! Без него элементы рисуются неправильно
     ui->utilitiesList->item(0)->setSizeHint(QSize(121, 15));
+    ui->filtersAndPresetsList->item(0)->setSizeHint(QSize(121, 15));
 
     ui->gainRecLeftProgress->setFormat(tr("%v dB"));
     ui->gainRecRightProgress->setFormat(tr("%v dB"));
@@ -188,7 +213,7 @@ MainWindow::MainWindow(QWidget *parent)
     confirmMessage = new QMessageBox(this);
     confirmMessage->setStandardButtons(QMessageBox::Yes | QMessageBox::No);
     confirmMessage->setDefaultButton(QMessageBox::No);
-}
+    }
 
 MainWindow::~MainWindow()
 {
@@ -265,6 +290,18 @@ void MainWindow::keyPressEvent(QKeyEvent * event)
         case 11 :
             processPinCodePage(event);
             break;
+        case 12 :
+            processFiltersAndPresetsPage(event);
+            break;
+        case 13 :
+            processPresetsPage(event);
+            break;
+        case 14 :
+            processPresetOpsPage(event);
+            break;
+        case 15 :
+            processPresetNamePage(event);
+            break;
         default:
             QMainWindow::keyPressEvent(event);
     }
@@ -309,7 +346,6 @@ void MainWindow::processMainPage(QKeyEvent * event)
         case Qt::Key_Up :
             {
                 ui->pages->setCurrentWidget(ui->utilitiesPage);
-                ui->utilitiesList->updateGeometry();
                 ui->utilitiesList->setCurrentRow(0);
                 ui->utilitiesList->setEditFocus(true);
             }
@@ -337,15 +373,9 @@ void MainWindow::processMainPage(QKeyEvent * event)
             currentPage = ui->settingsPage;
             break;
         case Qt::Key_Left :
-            // Идем наверх
-            while (ui->filtersView->rootIndex().isValid())
-                ui->filtersView->setRootIndex(ui->filtersView->rootIndex().parent());
-            ui->pages->setCurrentWidget(ui->filtersPage);
-            ui->filtersView->setEditFocus(true);
-            // Чтобы элемент сразу выделился
-            ui->filtersView->setCurrentIndex(filters.index(0, 0, ui->filtersView->rootIndex()));
-            currentView = ui->filtersView;
-            currentPage = ui->filtersPage;
+            ui->pages->setCurrentWidget(ui->filtersAndPresetsPage);
+            ui->filtersAndPresetsList->setCurrentRow(0);
+            ui->filtersAndPresetsList->setEditFocus(true);
             break;
     }
 }
@@ -463,7 +493,15 @@ void MainWindow::processSettingsPage(QKeyEvent * event, QListView * view)
                     view->setCurrentIndex(ind);
                 }
                 else
-                    ui->pages->setCurrentWidget(ui->mainPage);
+                {
+                    if (view == ui->filtersView)
+                    {
+                        ui->pages->setCurrentWidget(ui->filtersAndPresetsPage);
+                        ui->filtersAndPresetsList->setEditFocus(true);
+                    }
+                    else
+                        ui->pages->setCurrentWidget(ui->mainPage);
+                }
             }
             break;
         case Qt::Key_Left :
@@ -506,7 +544,7 @@ void MainWindow::processUtilitiesPage(QKeyEvent * event)
             }
             else if (ui->utilitiesList->currentRow() == 3)
             {
-                QFile log("/etc/firmware/logs/problms.log");
+                QFile log("/etc/firmware/logs/problems.log");
                 if (log.open(QIODevice::ReadOnly))
                 {
                     ui->pages->setCurrentWidget(ui->logsPage);
@@ -524,6 +562,168 @@ void MainWindow::processUtilitiesPage(QKeyEvent * event)
     }
 }
 
+
+void MainWindow::processFiltersAndPresetsPage(QKeyEvent * event)
+{
+    switch (event->key())
+    {
+        case Qt::Key_Escape :
+            ui->pages->setCurrentWidget(ui->mainPage);
+            break;
+        case Qt::Key_Select :
+            if (ui->filtersAndPresetsList->currentRow() == 0)
+            {
+                // Идем наверх
+                while (ui->filtersView->rootIndex().isValid())
+                    ui->filtersView->setRootIndex(ui->filtersView->rootIndex().parent());
+                ui->pages->setCurrentWidget(ui->filtersPage);
+                ui->filtersView->setEditFocus(true);
+                // Чтобы элемент сразу выделился
+                ui->filtersView->setCurrentIndex(filters.index(0, 0, ui->filtersView->rootIndex()));
+                currentView = ui->filtersView;
+                currentPage = ui->filtersPage;
+            }
+            else if (ui->filtersAndPresetsList->currentRow() == 1)
+            {
+                QStringList presets;
+                int res = zdbus->getPresetsListing(presets);
+                if (res)
+                {
+                    showMessage(QMessageBox::Critical, trUtf8("Не удалось получить список пресетов! Код ошибки ") + QString("%1.").arg(res));
+                    break;
+                }
+                ui->presetsList->clear();
+                for (int i = 0; i < presets.count(); ++i)
+                {
+                    presets[i].replace(QChar('-'), QChar('/'));
+                    ui->presetsList->addItem(QString::fromUtf8(QByteArray::fromBase64(presets[i].toAscii()).data()));
+                }
+                ui->presetsList->sortItems();
+                ui->pages->setCurrentWidget(ui->presetsPage);
+                ui->presetsList->setCurrentRow(0);
+                ui->presetsList->scrollToTop();
+                ui->presetsList->setEditFocus(true);
+            }
+            else if (ui->filtersAndPresetsList->currentRow() == 2)
+            {
+                doRenamePreset = false;
+                ui->presetNewNameLabel->setText("");
+                ui->pages->setCurrentWidget(ui->presetNamePage);
+                ui->pushButton_36->setFocus();
+            }
+            break;
+    }
+}
+
+void MainWindow::processPresetsPage(QKeyEvent * event)
+{
+    switch (event->key())
+    {
+        case Qt::Key_Escape :
+            ui->pages->setCurrentWidget(ui->filtersAndPresetsPage);
+            ui->filtersAndPresetsList->setEditFocus(true);
+            break;
+        case Qt::Key_Select :
+            {
+                QString presetName = ui->presetsList->currentItem()->text();
+                ui->presetNameLabel->setText(presetName);
+                ui->presetOpsList->clear();
+                ui->presetOpsList->addItem(trUtf8("Применить"));
+                if (presetName[0] != '!')
+                {
+                    ui->presetOpsList->addItem(trUtf8("Переименовать"));
+                    ui->presetOpsList->addItem(trUtf8("Удалить"));
+                }
+                ui->pages->setCurrentWidget(ui->presetOpsPage);
+                ui->presetOpsList->setCurrentRow(0);
+                ui->presetOpsList->setEditFocus(true);
+            }
+            break;
+    }
+}
+
+void MainWindow::processPresetOpsPage(QKeyEvent * event)
+{
+    switch (event->key())
+    {
+        case Qt::Key_Escape :
+            ui->pages->setCurrentWidget(ui->presetsPage);
+            ui->presetsList->setEditFocus(true);
+            break;
+        case Qt::Key_Select :
+            if (ui->presetOpsList->currentRow() == 0)
+            {
+                QString name = ui->presetNameLabel->text().toUtf8().toBase64();
+                name.replace(QChar('/'), QChar('-'));
+                int res = zdbus->applyPreset(name);
+                if (res)
+                {
+                    showMessage(QMessageBox::Critical, trUtf8("Не удалось применить пресет! Код ошибки ") + QString("%1.").arg(res));
+                    break;
+                }
+                ui->pages->setCurrentWidget(ui->presetsPage);
+                ui->presetsList->setEditFocus(true);
+            }
+            if (ui->presetOpsList->currentRow() == 1)
+            {
+                doRenamePreset = true;
+                ui->presetNewNameLabel->setText(ui->presetNameLabel->text());
+                ui->pages->setCurrentWidget(ui->presetNamePage);
+                ui->pushButton_36->setFocus();
+                break;
+            }
+            if (ui->presetOpsList->currentRow() == 2)
+            {
+                QString msgText(trUtf8("Удалить пресет ") + ui->presetNameLabel->text() + "?");
+                confirmMessage->setText(msgText);
+                confirmMessage->setDefaultButton(QMessageBox::No);
+                if (QMessageBox::No == confirmMessage->exec())
+                {
+                    ui->presetOpsList->setEditFocus(true);
+                    break;
+                }
+
+                QString name = ui->presetNameLabel->text().toUtf8().toBase64();
+                name.replace(QChar('/'), QChar('-'));
+                int res = zdbus->deletePreset(name);
+                if (res)
+                {
+                    showMessage(QMessageBox::Critical, trUtf8("Не удалось удалить пресет! Код ошибки ") + QString("%1.").arg(res));
+                    break;
+                }
+
+                int row = ui->presetsList->currentRow();
+                if (ui->presetsList->count() > 1)
+                {
+                    if (ui->presetsList->currentRow() == ui->presetsList->count() - 1)
+                        ui->presetsList->setCurrentRow(ui->presetsList->currentRow() - 1);
+                    else
+                        ui->presetsList->setCurrentRow(ui->presetsList->currentRow() + 1);
+                }
+                delete ui->presetsList->takeItem(row);
+                ui->pages->setCurrentWidget(ui->presetsPage);
+                ui->presetsList->setEditFocus(true);
+            }
+            break;
+    }
+}
+
+void MainWindow::processPresetNamePage(QKeyEvent * event)
+{
+    if (event->key() == Qt::Key_Escape)
+    {
+        if (doRenamePreset)
+        {
+            ui->pages->setCurrentWidget(ui->presetOpsPage);
+            ui->presetOpsList->setEditFocus(true);
+        }
+        else
+        {
+            ui->pages->setCurrentWidget(ui->filtersAndPresetsPage);
+            ui->filtersAndPresetsList->setEditFocus(true);
+        }
+    }
+}
 
 void MainWindow::processLogsBrowserPage(QKeyEvent * event)
 {
@@ -1100,3 +1300,56 @@ void MainWindow::backlightTurnOff()
     }
 }
 
+void MainWindow::virtualKeyboardPressed()
+{
+    QObject * button = sender();
+    QString name = ui->presetNewNameLabel->text();
+
+    if (button == ui->vkbdButton_Backspace)
+    {
+        if (!name.isEmpty())
+            name.remove(name.length() - 1, 1);
+    }
+    else if (button == ui->vkbdButton_Space && name.length() < 20)
+        name += " ";
+    else if (button == ui->vkbdButton_Caps)
+    {
+        QPushButton * current;
+        QList<QPushButton * > buttons = ui->virtualKeyboardWidget->findChildren<QPushButton * >(QRegExp("pushButton"));
+        if (ui->pushButton_17->text() == "Q")
+            foreach (current, buttons)
+                current->setText(current->text().toLower());
+        else
+            foreach (current, buttons)
+                current->setText(current->text().toUpper());
+    }
+    else if (button == ui->presetSaveButton && doRenamePreset)
+    {
+        int res = zdbus->renamePreset(ui->presetNameLabel->text().toUtf8().toBase64().replace('/', '-'), name.toUtf8().toBase64().replace('/', '-'));
+        if (res)
+            showMessage(QMessageBox::Critical, trUtf8("Не удалось переименовать пресет! Код ошибки ") + QString("%1.").arg(res));
+        else
+        {
+            ui->presetNameLabel->setText(name);
+            ui->presetsList->currentItem()->setText(name);
+            ui->pages->setCurrentWidget(ui->presetOpsPage);
+            ui->presetOpsList->setEditFocus(true);
+        }
+    }
+    else if (button == ui->presetSaveButton)
+    {
+        int res = zdbus->savePreset(name.toUtf8().toBase64().replace('/', '-'));
+        if (res)
+            showMessage(QMessageBox::Critical, trUtf8("Не удалось сохранить пресет! Код ошибки ") + QString("%1.").arg(res));
+        else
+        {
+            ui->pages->setCurrentWidget(ui->filtersAndPresetsPage);
+            ui->filtersAndPresetsList->setEditFocus(true);
+        }
+    }
+    else
+        if (name.length() < 20)
+            name += dynamic_cast<QPushButton *>(button)->text();
+
+    ui->presetNewNameLabel->setText(name);
+}

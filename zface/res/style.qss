@@ -101,3 +101,17 @@ QRadioButton::selected {
   QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {
       background: none;
   }
+
+ZKeyboardButton {
+     border: 1px solid #8f8f91;
+     border-radius: 3px;
+     background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
+                                       stop: 0 #f6f7fa, stop: 1 #dadbde);
+     min-width: 12px;
+     /*max-width: 64px;*/
+     max-height: 16px;
+ }
+
+ZKeyboardButton::focus {
+    border: 2px solid blue;
+}

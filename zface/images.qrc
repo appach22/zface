@@ -13,5 +13,6 @@
         <file>res/gain_rec_mic.bmp</file>
         <file>res/gain_rec_phone.bmp</file>
         <file>mainwindow.ui</file>
+        <file>res/storage.png</file>
     </qresource>
 </RCC>

@@ -24,7 +24,6 @@ QStringList ZKbdDriverPlugin::keys() const
 QWSKeyboardHandler * ZKbdDriverPlugin::create(const QString & driver, const QString &)
 {
     if (driver.toLower() == "zkbd") {
-        qDebug() << "Before call ZKbdHandler()";
         return new ZKbdHandler();
     }
     return 0;
