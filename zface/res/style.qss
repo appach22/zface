@@ -1,5 +1,34 @@
 /*background-color: white;*/
 
+#pages {
+    background-color: rgb(210, 210, 210);
+}
+
+QListView, QListWidget {
+    background-color: rgb(210, 210, 210);
+}
+
+#fileOpsList {
+    border: 2px solid grey;
+    border-radius: 5px;
+}
+
+#modeWidget {
+    background-color: qlineargradient(spread:pad, x1:1, y1:0.573864, x2:1, y2:0, stop:0 rgba(176, 176, 176, 255), stop:1 rgba(255, 255, 255, 255));
+}
+
+#statusPages {
+    background-color: qlineargradient(spread:reflect, x1:1, y1:0.5, x2:1, y2:0, stop:0 rgba(150, 150, 150, 255), stop:1 rgba(200, 200, 200, 255));
+    /*background-color: qlineargradient(spread:pad, x1:1, y1:0.573864, x2:1, y2:0, stop:0 rgba(176, 176, 176, 255), stop:1 rgba(255, 255, 255, 255));*/
+}
+
+#recording {
+    background-color: qlineargradient(spread:reflect, x1:1, y1:0.5, x2:1, y2:0, stop:0 rgba(255, 0, 0, 255), stop:1 rgba(255, 150, 150, 255));
+/*    background-color: qlineargradient(spread:pad, x1:0.995614, y1:0.528, x2:1, y2:0, stop:0 rgba(255, 26, 26, 255), stop:1 rgba(255, 200, 200, 255));*/
+    /*background-color: qlineargradient(spread:pad, x1:1, y1:0.573864, x2:1, y2:0, stop:0 rgba(255, 80, 80, 255), stop:1 rgba(255, 255, 255, 255));*/
+    color: white;
+}
+
  QProgressBar {
       border: 2px solid grey;
       border-radius: 5px;

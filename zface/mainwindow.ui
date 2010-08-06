@@ -50,15 +50,27 @@
       <property name="minimumSize">
        <size>
         <width>0</width>
-        <height>16</height>
+        <height>18</height>
        </size>
+      </property>
+      <property name="styleSheet">
+       <string notr="true"/>
       </property>
       <layout class="QHBoxLayout" name="horizontalLayout">
        <property name="spacing">
+        <number>1</number>
+       </property>
+       <property name="leftMargin">
         <number>0</number>
        </property>
-       <property name="margin">
+       <property name="topMargin">
+        <number>1</number>
+       </property>
+       <property name="rightMargin">
         <number>0</number>
+       </property>
+       <property name="bottomMargin">
+        <number>1</number>
        </property>
        <item>
         <widget class="QWidget" name="recordingWidget" native="true">
@@ -199,12 +211,24 @@
         <verstretch>0</verstretch>
        </sizepolicy>
       </property>
+      <property name="styleSheet">
+       <string notr="true"/>
+      </property>
       <property name="currentIndex">
-       <number>15</number>
+       <number>11</number>
       </property>
       <widget class="QWidget" name="mainPage">
        <layout class="QGridLayout" name="gridLayout_8">
-        <property name="margin">
+        <property name="leftMargin">
+         <number>2</number>
+        </property>
+        <property name="topMargin">
+         <number>1</number>
+        </property>
+        <property name="rightMargin">
+         <number>2</number>
+        </property>
+        <property name="bottomMargin">
          <number>0</number>
         </property>
         <property name="spacing">
@@ -436,7 +460,7 @@
          <number>0</number>
         </property>
         <property name="margin">
-         <number>0</number>
+         <number>2</number>
         </property>
         <item>
          <widget class="QLabel" name="fileNameLabel">
@@ -448,6 +472,22 @@
           </property>
           <property name="text">
            <string/>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignCenter</set>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="Line" name="line_2">
+          <property name="styleSheet">
+           <string notr="true">color: rgb(140, 140, 140);</string>
+          </property>
+          <property name="frameShadow">
+           <enum>QFrame::Plain</enum>
+          </property>
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
           </property>
          </widget>
         </item>
@@ -466,7 +506,7 @@
            <property name="spacing">
             <number>0</number>
            </property>
-           <item row="0" column="0" rowspan="2">
+           <item row="1" column="0" rowspan="2">
             <widget class="QWidget" name="widget_2" native="true">
              <property name="sizePolicy">
               <sizepolicy hsizetype="Fixed" vsizetype="Expanding">
@@ -482,7 +522,7 @@
              </property>
             </widget>
            </item>
-           <item row="0" column="1">
+           <item row="1" column="1">
             <widget class="QLabel" name="fileInfoLabel">
              <property name="sizePolicy">
               <sizepolicy hsizetype="Ignored" vsizetype="Fixed">
@@ -501,16 +541,22 @@
              </property>
             </widget>
            </item>
-           <item row="1" column="1">
+           <item row="2" column="1">
             <widget class="QListWidget" name="fileOpsList">
              <property name="sizePolicy">
-              <sizepolicy hsizetype="Ignored" vsizetype="Ignored">
+              <sizepolicy hsizetype="Expanding" vsizetype="Minimum">
                <horstretch>0</horstretch>
                <verstretch>0</verstretch>
               </sizepolicy>
              </property>
+             <property name="maximumSize">
+              <size>
+               <width>16777215</width>
+               <height>70</height>
+              </size>
+             </property>
              <property name="frameShape">
-              <enum>QFrame::HLine</enum>
+              <enum>QFrame::NoFrame</enum>
              </property>
              <property name="frameShadow">
               <enum>QFrame::Plain</enum>
@@ -524,24 +570,9 @@
              <property name="horizontalScrollBarPolicy">
               <enum>Qt::ScrollBarAlwaysOff</enum>
              </property>
-             <item>
-              <property name="text">
-               <string>Воспроизвести</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>Очистить и сохранить</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>Удалить в корзину</string>
-              </property>
-             </item>
             </widget>
            </item>
-           <item row="2" column="0">
+           <item row="4" column="0">
             <widget class="QWidget" name="playStateWidget" native="true">
              <property name="sizePolicy">
               <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
@@ -557,7 +588,7 @@
              </property>
             </widget>
            </item>
-           <item row="2" column="1">
+           <item row="4" column="1">
             <widget class="QProgressBar" name="playProgress">
              <property name="sizePolicy">
               <sizepolicy hsizetype="Ignored" vsizetype="Fixed">
@@ -582,7 +613,7 @@
              </property>
             </widget>
            </item>
-           <item row="3" column="0">
+           <item row="5" column="0">
             <widget class="QWidget" name="widget_4" native="true">
              <property name="sizePolicy">
               <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
@@ -598,7 +629,7 @@
              </property>
             </widget>
            </item>
-           <item row="3" column="1">
+           <item row="5" column="1">
             <widget class="QLabel" name="playProgressLabel">
              <property name="sizePolicy">
               <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
@@ -614,6 +645,35 @@
              </property>
              <property name="text">
               <string/>
+             </property>
+            </widget>
+           </item>
+           <item row="3" column="1">
+            <spacer name="verticalSpacer_5">
+             <property name="orientation">
+              <enum>Qt::Vertical</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>20</width>
+               <height>40</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+           <item row="0" column="1">
+            <widget class="QWidget" name="widget_3" native="true">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="minimumSize">
+              <size>
+               <width>0</width>
+               <height>10</height>
+              </size>
              </property>
             </widget>
            </item>
@@ -689,6 +749,7 @@ p, li { white-space: pre-wrap; }
 &lt;table border=&quot;0&quot; style=&quot;-qt-table-type: root; margin-top:4px; margin-bottom:4px; margin-left:4px; margin-right:4px;&quot;&gt;
 &lt;tr&gt;
 &lt;td style=&quot;border: none;&quot;&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;
@@ -1777,6 +1838,9 @@ p, li { white-space: pre-wrap; }
     </item>
     <item>
      <widget class="Line" name="line">
+      <property name="styleSheet">
+       <string notr="true">color: rgb(140, 140, 140);</string>
+      </property>
       <property name="frameShadow">
        <enum>QFrame::Plain</enum>
       </property>
@@ -1808,13 +1872,19 @@ p, li { white-space: pre-wrap; }
         <height>32</height>
        </size>
       </property>
+      <property name="styleSheet">
+       <string notr="true"/>
+      </property>
       <property name="currentIndex">
        <number>0</number>
       </property>
       <widget class="QWidget" name="mainStatus">
+       <property name="styleSheet">
+        <string notr="true"/>
+       </property>
        <layout class="QHBoxLayout" name="horizontalLayout_2">
         <property name="spacing">
-         <number>0</number>
+         <number>2</number>
         </property>
         <property name="margin">
          <number>0</number>
@@ -1833,6 +1903,9 @@ p, li { white-space: pre-wrap; }
             <height>0</height>
            </size>
           </property>
+          <property name="styleSheet">
+           <string notr="true"/>
+          </property>
          </widget>
         </item>
         <item>
@@ -1847,6 +1920,9 @@ p, li { white-space: pre-wrap; }
            <number>1</number>
           </property>
           <widget class="QWidget" name="cardErrorPage">
+           <property name="styleSheet">
+            <string notr="true"/>
+           </property>
            <layout class="QGridLayout" name="gridLayout_11">
             <property name="margin">
              <number>0</number>
@@ -1876,6 +1952,9 @@ p, li { white-space: pre-wrap; }
            </layout>
           </widget>
           <widget class="QWidget" name="cardInfoPage">
+           <property name="styleSheet">
+            <string notr="true"/>
+           </property>
            <layout class="QGridLayout" name="gridLayout_10">
             <property name="margin">
              <number>0</number>
@@ -1890,6 +1969,9 @@ p, li { white-space: pre-wrap; }
                 <horstretch>0</horstretch>
                 <verstretch>0</verstretch>
                </sizepolicy>
+              </property>
+              <property name="styleSheet">
+               <string notr="true"/>
               </property>
               <layout class="QGridLayout" name="gridLayout">
                <property name="margin">
@@ -1910,6 +1992,9 @@ p, li { white-space: pre-wrap; }
                   <font>
                    <family>Sans Serif</family>
                   </font>
+                 </property>
+                 <property name="styleSheet">
+                  <string notr="true"/>
                  </property>
                  <property name="text">
                   <string>Своб.</string>
@@ -2028,6 +2113,9 @@ p, li { white-space: pre-wrap; }
                <horstretch>0</horstretch>
                <verstretch>0</verstretch>
               </sizepolicy>
+             </property>
+             <property name="styleSheet">
+              <string notr="true"/>
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_4">
               <property name="spacing">

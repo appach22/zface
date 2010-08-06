@@ -14,5 +14,8 @@
         <file>res/gain_rec_phone.bmp</file>
         <file>mainwindow.ui</file>
         <file>res/storage.png</file>
+        <file>res/headphones.png</file>
+        <file>res/clock.png</file>
+        <file>res/key.png</file>
     </qresource>
 </RCC>

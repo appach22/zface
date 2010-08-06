@@ -76,7 +76,8 @@ private:
     PlayState currentPlayState;
     SDState currentSDState;
     QMessageBox * message;
-    QWidget * focusedWidget;
+    QStack<QWidget*> focusedWidgets;
+    QWidget * focused;
     QTimer messageTimer;
     ZSettingsNode * settingsRoot;
     ZSettingsNode * mixerRoot;
@@ -84,6 +85,7 @@ private:
     QMessageBox * confirmMessage;
     QProcess externalCommand;
     bool doRenamePreset;
+    int clockCounter;
 
     QTimer keyboardLockTimer;
     int keyboardLockTimeout;

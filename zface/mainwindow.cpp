@@ -41,18 +41,14 @@ QString userMessages[__NUMBER_OF_ASYNC_MESSAGES] = {"",
                                                     QObject::trUtf8("SD-карта не готова!")
                                                    };
 
-static int keyboardAutolockTimes[4] = {0, 30000, 60000, 120000};
+static int keyboardAutolockTimes[4] = {0, 5000, 60000, 120000};
 static int backlightTimes[4] = {0, 15000, 30000, 60000};
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent, Qt::FramelessWindowHint), ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-//    img = QImage(":/new/prefix1/res/xface_state_2.bmp");
     ui->pages->setCurrentWidget(ui->mainPage);
-    //this->setStyleSheet("background-color: white;");
-//    ui->recordingWidget->setStyleSheet("background-image: url(:/all/res/record_16x16.png);"
-//                                       "background-repeat: repeat-n;");
 //    ui->mainPage->setStyleSheet("background-image: url(:/all/res/xface_mainmenu.bmp);"
 //                                     "background-repeat: repeat-n;"
 //                                     "background-position: center;");
@@ -64,7 +60,8 @@ MainWindow::MainWindow(QWidget *parent)
                                     "background-repeat: repeat-n;"
                                     "background-position: center;");
     ui->recording->hide();
-    ui->recording->setStyleSheet("background-color: red; color: white;");
+//    ui->recording->setStyleSheet("background-color: qlineargradient(spread:pad, x1:1, y1:0.573864, x2:1, y2:0, stop:0 rgba(255, 80, 80, 255), stop:1 rgba(255, 255, 255, 255)); color: white;");
+
 #if defined(Q_OS_WIN)
     QFile file("../res/style.qss");
 #elif defined(Q_WS_QWS)
@@ -76,22 +73,10 @@ MainWindow::MainWindow(QWidget *parent)
     QString styleSheet = QLatin1String(file.readAll());
     this->setStyleSheet(styleSheet);
 
-//    QtPieMenu * pieMenu = new QtPieMenu("", this);
-//    QtPieMenu * pieMenu1 = new QtPieMenu("", this);
-//    QtPieMenu * pieMenu2 = new QtPieMenu("", this);
-//    QtPieMenu * pieMenu3 = new QtPieMenu("", this);
-//    QtPieMenu * pieMenu4 = new QtPieMenu("", this);
-//    ui->gridLayout_8->addWidget(pieMenu, 2, 1, Qt::AlignCenter);
-//    pieMenu->insertItem(pieMenu1);
-//    pieMenu->insertItem(pieMenu2);
-//    pieMenu->insertItem(pieMenu3);
-//    pieMenu->insertItem(pieMenu4);
-//    pieMenu->setOuterRadius(50);
-
     keyboardLockTimer.setSingleShot(true);
     connect(&keyboardLockTimer, SIGNAL(timeout()), SLOT(lockKeyboard()));
     keyboardLocked = false;
-    beforeLockWidget = focusedWidget = 0;
+    beforeLockWidget = 0;
 
     backlightTimer.setSingleShot(true);
     connect(&backlightTimer, SIGNAL(timeout()), SLOT(backlightTurnOff()));
@@ -173,20 +158,34 @@ MainWindow::MainWindow(QWidget *parent)
     ZParamDelegate * paramDelegate = new ZParamDelegate(this);
     ui->settingsView->installEventFilter(this);
     ui->settingsView->setItemDelegate(paramDelegate);
+    //ui->settingsView->setAlternatingRowColors(true);
     ui->mixerView->installEventFilter(this);
     ui->mixerView->setItemDelegate(paramDelegate);
+    //ui->mixerView->setAlternatingRowColors(true);
     ui->filtersView->installEventFilter(this);
     ui->filtersView->setItemDelegate(paramDelegate);
+    //ui->filtersView->setAlternatingRowColors(true);
     ui->fileOpsList->installEventFilter(this);
+    ui->fileOpsList->setItemDelegate(paramDelegate);
+    //ui->fileOpsList->setAlternatingRowColors(true);
     ui->filesView->setItemDelegate(paramDelegate);
+    //ui->filesView->setAlternatingRowColors(true);
     ui->utilitiesList->installEventFilter(this);
     ui->utilitiesList->setItemDelegate(paramDelegate);
+    //ui->utilitiesList->setAlternatingRowColors(true);
     ui->filtersAndPresetsList->installEventFilter(this);
     ui->filtersAndPresetsList->setItemDelegate(paramDelegate);
+    //ui->filtersAndPresetsList->setAlternatingRowColors(true);
     ui->presetsList->installEventFilter(this);
     ui->presetsList->setItemDelegate(paramDelegate);
+    //ui->presetsList->setAlternatingRowColors(true);
     ui->presetOpsList->installEventFilter(this);
     ui->presetOpsList->setItemDelegate(paramDelegate);
+    //ui->presetOpsList->setAlternatingRowColors(true);
+
+    ui->fileOpsList->addItem(trUtf8("Воспроизвести"));
+    ui->fileOpsList->addItem(trUtf8("Очистить и сохранить"));
+    ui->fileOpsList->addItem(trUtf8("Удалить в корзину"));
     // Это хак! Без него элементы рисуются неправильно
     ui->utilitiesList->item(0)->setSizeHint(QSize(121, 15));
     ui->filtersAndPresetsList->item(0)->setSizeHint(QSize(121, 15));
@@ -223,7 +222,10 @@ MainWindow::~MainWindow()
 
 void MainWindow::updateTime()
 {
-    ui->clockLabel->setText(QTime::currentTime().toString("hh:mm"));
+    if (++clockCounter % 2)
+        ui->clockLabel->setText(QTime::currentTime().toString("hh:mm"));
+    else
+        ui->clockLabel->setText(QTime::currentTime().toString("hh mm"));
 }
 
 void MainWindow::hideGain()
@@ -518,6 +520,7 @@ void MainWindow::processSettingsPage(QKeyEvent * event, QListView * view)
 
 void MainWindow::processUtilitiesPage(QKeyEvent * event)
 {
+    int res = 0;
     switch (event->key())
     {
         case Qt::Key_Escape :
@@ -526,20 +529,23 @@ void MainWindow::processUtilitiesPage(QKeyEvent * event)
         case Qt::Key_Select :
             if (ui->utilitiesList->currentRow() == 0)
             {
-                if (QMessageBox::Yes == QMessageBox::question(this, "", trUtf8("Заблокировать кнопки от случайных нажатий?"),
-                                                              QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes))
+                res = QMessageBox::question(this, "", trUtf8("Заблокировать кнопки от случайных нажатий?"),
+                                            QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes);
+                if (QMessageBox::Yes == res)
                     zdbus->setParameter("Temp", "Security.Keyboard_lock.Active", 1);
             }
             else if (ui->utilitiesList->currentRow() == 1)
             {
-                if (QMessageBox::Yes == QMessageBox::question(this, "", trUtf8("Очистить корзину?"),
-                                                              QMessageBox::Yes | QMessageBox::No, QMessageBox::No))
+                res = QMessageBox::question(this, "", trUtf8("Очистить корзину?"),
+                                            QMessageBox::Yes | QMessageBox::No, QMessageBox::No);
+                if (QMessageBox::Yes == res)
                     externalCommand.start("/usr/bin/emptyrecycle.sh");
             }
             else if (ui->utilitiesList->currentRow() == 2)
             {
-                if (QMessageBox::Yes == QMessageBox::warning(this, "", trUtf8("После форматирования все записи будут потеряны! Форматировать?"),
-                                                              QMessageBox::Yes | QMessageBox::No, QMessageBox::No))
+                res = QMessageBox::warning(this, "", trUtf8("После форматирования все записи будут потеряны! Форматировать?"),
+                                           QMessageBox::Yes | QMessageBox::No, QMessageBox::No);
+                if (QMessageBox::Yes == res)
                     externalCommand.start("/usr/bin/mmcformat.sh");
             }
             else if (ui->utilitiesList->currentRow() == 3)
@@ -557,7 +563,8 @@ void MainWindow::processUtilitiesPage(QKeyEvent * event)
                 else
                     showMessage(QMessageBox::Critical, trUtf8("Невозможно открыть файл журнала!"));
             }
-            ui->utilitiesList->setEditFocus(true);
+            if (res)
+                ui->utilitiesList->setEditFocus(true);
             break;
     }
 }
@@ -677,32 +684,32 @@ void MainWindow::processPresetOpsPage(QKeyEvent * event)
                 QString msgText(trUtf8("Удалить пресет ") + ui->presetNameLabel->text() + "?");
                 confirmMessage->setText(msgText);
                 confirmMessage->setDefaultButton(QMessageBox::No);
-                if (QMessageBox::No == confirmMessage->exec())
-                {
+                int res = confirmMessage->exec();
+                if (QMessageBox::No == res)
                     ui->presetOpsList->setEditFocus(true);
-                    break;
-                }
-
-                QString name = ui->presetNameLabel->text().toUtf8().toBase64();
-                name.replace(QChar('/'), QChar('-'));
-                int res = zdbus->deletePreset(name);
-                if (res)
+                else if (QMessageBox::Yes == res)
                 {
-                    showMessage(QMessageBox::Critical, trUtf8("Не удалось удалить пресет! Код ошибки ") + QString("%1.").arg(res));
-                    break;
-                }
+                    QString name = ui->presetNameLabel->text().toUtf8().toBase64();
+                    name.replace(QChar('/'), QChar('-'));
+                    int res = zdbus->deletePreset(name);
+                    if (res)
+                    {
+                        showMessage(QMessageBox::Critical, trUtf8("Не удалось удалить пресет! Код ошибки ") + QString("%1.").arg(res));
+                        break;
+                    }
 
-                int row = ui->presetsList->currentRow();
-                if (ui->presetsList->count() > 1)
-                {
-                    if (ui->presetsList->currentRow() == ui->presetsList->count() - 1)
-                        ui->presetsList->setCurrentRow(ui->presetsList->currentRow() - 1);
-                    else
-                        ui->presetsList->setCurrentRow(ui->presetsList->currentRow() + 1);
+                    int row = ui->presetsList->currentRow();
+                    if (ui->presetsList->count() > 1)
+                    {
+                        if (ui->presetsList->currentRow() == ui->presetsList->count() - 1)
+                            ui->presetsList->setCurrentRow(ui->presetsList->currentRow() - 1);
+                        else
+                            ui->presetsList->setCurrentRow(ui->presetsList->currentRow() + 1);
+                    }
+                    delete ui->presetsList->takeItem(row);
+                    ui->pages->setCurrentWidget(ui->presetsPage);
+                    ui->presetsList->setEditFocus(true);
                 }
-                delete ui->presetsList->takeItem(row);
-                ui->pages->setCurrentWidget(ui->presetsPage);
-                ui->presetsList->setEditFocus(true);
             }
             break;
     }
@@ -789,7 +796,8 @@ void MainWindow::processFileOps()
             QString msgText(trUtf8("Переместить файл %1 в корзину?").arg(files.fileName(ui->filesView->currentIndex())));
             confirmMessage->setText(msgText);
             confirmMessage->setDefaultButton(QMessageBox::No);
-            if (QMessageBox::Yes == confirmMessage->exec())
+            int res = confirmMessage->exec();
+            if (QMessageBox::Yes == res)
             {
                 QModelIndex index = ui->filesView->currentIndex();
                 if (files.rowCount(index.parent()) > 1)
@@ -805,7 +813,7 @@ void MainWindow::processFileOps()
                 ui->pages->setCurrentWidget(ui->browserPage);
                 ui->filesView->setEditFocus(true);
             }
-            else
+            else if (QMessageBox::No == res)
                 ui->fileOpsList->setEditFocus(true);
         }
     }
@@ -1123,11 +1131,10 @@ void MainWindow::paramChanged(QString _param, QString _value)
             if (activeWindow && activeWindow != this)
             {
                 activeWindow->hide();
-                if (!messageTimer.isActive())
-                    focusedWidget = 0;
+                focusedWidgets.push(this->focusWidget());
             }
-            else
-                focusedWidget = QApplication::focusWidget();
+            else if (QApplication::focusWidget())
+                focusedWidgets.push(QApplication::focusWidget());
             beforeLockWidget = ui->pages->currentWidget();
             if (pinCodeProtection)
             {
@@ -1151,8 +1158,11 @@ void MainWindow::paramChanged(QString _param, QString _value)
         {
             if (beforeLockWidget)
                 ui->pages->setCurrentWidget(beforeLockWidget);
-            if (focusedWidget)
-                focusedWidget->setEditFocus(true);
+            if (!focusedWidgets.isEmpty())
+            {
+                qDebug() << focusedWidgets;
+                focusedWidgets.pop()->setEditFocus(true);
+            }
 
             if (backlightTimeout)
             {
@@ -1161,9 +1171,6 @@ void MainWindow::paramChanged(QString _param, QString _value)
             }
         }
     }
-
-    else if (_param == "Security.Protection.Enabled")
-        pinCodeProtection = value;
 
     else if (_param == "Display.Backlight.Auto_turn_off")
     {
@@ -1174,6 +1181,35 @@ void MainWindow::paramChanged(QString _param, QString _value)
             backlightTimer.setInterval(backlightTimeout);
             backlightTimer.start();
         }
+    }
+
+    else if (_param == "Mixer.Headset.Connected")
+    {
+        if (value == 1)
+            ui->jackWidget->setStyleSheet("background-image: url(:/all/res/headphones.png);"
+                                          "background-repeat: repeat-n;"
+                                          "background-position: center;");
+        else
+            ui->jackWidget->setStyleSheet("background-image: none");
+    }
+    else if (_param == "Recorder.Timer.Enabled")
+    {
+        if (value == 1)
+            ui->timerWidget->setStyleSheet("background-image: url(:/all/res/clock.png);"
+                                           "background-repeat: repeat-n;"
+                                           "background-position: center;");
+        else
+            ui->timerWidget->setStyleSheet("background-image: none");
+    }
+    else if (_param == "Security.Protection.Enabled")
+    {
+        pinCodeProtection = value;
+        if (value == 1)
+            ui->PINwidget->setStyleSheet("background-image: url(:/all/res/key.png);"
+                                         "background-repeat: repeat-n;"
+                                         "background-position: center;");
+        else
+            ui->PINwidget->setStyleSheet("background-image: none");
     }
 }
 
@@ -1259,10 +1295,9 @@ void MainWindow::messageForUser(unsigned int _code, int _type)
 
 void MainWindow::showMessage(QMessageBox::Icon _type, const QString & _message)
 {
-    if (message)
-        delete message;
-    else
-        focusedWidget = QApplication::focusWidget();
+    if (!message)
+        focusedWidgets.push(QApplication::focusWidget());
+
     message = new QMessageBox(this);
     message->setText(_message);
     message->setStandardButtons(QMessageBox::Ok);
@@ -1270,8 +1305,7 @@ void MainWindow::showMessage(QMessageBox::Icon _type, const QString & _message)
     messageTimer.start();
     message->exec();
     messageTimer.stop();
-    if (focusedWidget)
-        focusedWidget->setEditFocus(true);
+    removeMessageBox();
 }
 
 void MainWindow::removeMessageBox()
@@ -1280,8 +1314,8 @@ void MainWindow::removeMessageBox()
     {
         delete message;
         message = 0;
-        if (focusedWidget)
-            focusedWidget->setEditFocus(true);
+        if ((focused = focusedWidgets.pop()))
+            focused->setEditFocus(true);
     }
 }
 

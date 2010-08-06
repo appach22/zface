@@ -37,7 +37,9 @@ void ZParamDelegate::paint(QPainter * painter, const QStyleOptionViewItem & opti
         if (option.state & QStyle::State_Selected)
             painter->fillRect(option.rect, option.palette.highlight());
         else if (index.row() % 2)
-            painter->fillRect(option.rect, option.palette.button());
+            painter->fillRect(option.rect, option.palette.base());
+        else
+            painter->fillRect(option.rect, option.palette.alternateBase());
 
         ZSettingsNode * node = static_cast<ZSettingsNode *>(index.internalPointer());
         if (node->type == ZSettingsNode::Leaf)
