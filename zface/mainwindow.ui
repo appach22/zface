@@ -215,7 +215,7 @@
        <string notr="true"/>
       </property>
       <property name="currentIndex">
-       <number>11</number>
+       <number>15</number>
       </property>
       <widget class="QWidget" name="mainPage">
        <layout class="QGridLayout" name="gridLayout_8">
@@ -755,6 +755,7 @@ p, li { white-space: pre-wrap; }
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'Courier New,courier';&quot;&gt;&lt;/p&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/body&gt;&lt;/html&gt;</string>
           </property>
           <property name="textInteractionFlags">
@@ -1211,7 +1212,7 @@ p, li { white-space: pre-wrap; }
                </font>
               </property>
               <property name="text">
-               <string>Q</string>
+               <string>й</string>
               </property>
              </widget>
             </item>
@@ -1230,7 +1231,7 @@ p, li { white-space: pre-wrap; }
                </font>
               </property>
               <property name="text">
-               <string>W</string>
+               <string>ц</string>
               </property>
              </widget>
             </item>
@@ -1249,7 +1250,7 @@ p, li { white-space: pre-wrap; }
                </font>
               </property>
               <property name="text">
-               <string>E</string>
+               <string>у</string>
               </property>
              </widget>
             </item>
@@ -1268,7 +1269,7 @@ p, li { white-space: pre-wrap; }
                </font>
               </property>
               <property name="text">
-               <string>R</string>
+               <string>к</string>
               </property>
              </widget>
             </item>
@@ -1287,7 +1288,7 @@ p, li { white-space: pre-wrap; }
                </font>
               </property>
               <property name="text">
-               <string>T</string>
+               <string>е</string>
               </property>
              </widget>
             </item>
@@ -1306,7 +1307,7 @@ p, li { white-space: pre-wrap; }
                </font>
               </property>
               <property name="text">
-               <string>Y</string>
+               <string>н</string>
               </property>
              </widget>
             </item>
@@ -1325,7 +1326,7 @@ p, li { white-space: pre-wrap; }
                </font>
               </property>
               <property name="text">
-               <string>U</string>
+               <string>г</string>
               </property>
              </widget>
             </item>
@@ -1344,7 +1345,7 @@ p, li { white-space: pre-wrap; }
                </font>
               </property>
               <property name="text">
-               <string>I</string>
+               <string>ш</string>
               </property>
              </widget>
             </item>
@@ -1363,7 +1364,7 @@ p, li { white-space: pre-wrap; }
                </font>
               </property>
               <property name="text">
-               <string>O</string>
+               <string>щ</string>
               </property>
              </widget>
             </item>
@@ -1382,7 +1383,7 @@ p, li { white-space: pre-wrap; }
                </font>
               </property>
               <property name="text">
-               <string>P</string>
+               <string>з</string>
               </property>
              </widget>
             </item>
@@ -1391,7 +1392,7 @@ p, li { white-space: pre-wrap; }
           <widget class="QWidget" name="horizontalLayoutWidget_2">
            <property name="geometry">
             <rect>
-             <x>10</x>
+             <x>5</x>
              <y>20</y>
              <width>154</width>
              <height>21</height>
@@ -1425,7 +1426,7 @@ p, li { white-space: pre-wrap; }
                </font>
               </property>
               <property name="text">
-               <string>A</string>
+               <string>ф</string>
               </property>
              </widget>
             </item>
@@ -1444,7 +1445,7 @@ p, li { white-space: pre-wrap; }
                </font>
               </property>
               <property name="text">
-               <string>S</string>
+               <string>ы</string>
               </property>
              </widget>
             </item>
@@ -1463,7 +1464,7 @@ p, li { white-space: pre-wrap; }
                </font>
               </property>
               <property name="text">
-               <string>D</string>
+               <string>в</string>
               </property>
              </widget>
             </item>
@@ -1482,7 +1483,7 @@ p, li { white-space: pre-wrap; }
                </font>
               </property>
               <property name="text">
-               <string>F</string>
+               <string>а</string>
               </property>
              </widget>
             </item>
@@ -1501,7 +1502,7 @@ p, li { white-space: pre-wrap; }
                </font>
               </property>
               <property name="text">
-               <string>G</string>
+               <string>п</string>
               </property>
              </widget>
             </item>
@@ -1520,7 +1521,7 @@ p, li { white-space: pre-wrap; }
                </font>
               </property>
               <property name="text">
-               <string>H</string>
+               <string>р</string>
               </property>
              </widget>
             </item>
@@ -1539,7 +1540,7 @@ p, li { white-space: pre-wrap; }
                </font>
               </property>
               <property name="text">
-               <string>J</string>
+               <string>о</string>
               </property>
              </widget>
             </item>
@@ -1558,7 +1559,7 @@ p, li { white-space: pre-wrap; }
                </font>
               </property>
               <property name="text">
-               <string>K</string>
+               <string>л</string>
               </property>
              </widget>
             </item>
@@ -1577,7 +1578,7 @@ p, li { white-space: pre-wrap; }
                </font>
               </property>
               <property name="text">
-               <string>L</string>
+               <string>д</string>
               </property>
              </widget>
             </item>
@@ -1586,10 +1587,10 @@ p, li { white-space: pre-wrap; }
           <widget class="QWidget" name="horizontalLayoutWidget_3">
            <property name="geometry">
             <rect>
-             <x>20</x>
+             <x>14</x>
              <y>40</y>
-             <width>121</width>
-             <height>21</height>
+             <width>156</width>
+             <height>20</height>
             </rect>
            </property>
            <property name="font">
@@ -1603,7 +1604,7 @@ p, li { white-space: pre-wrap; }
              <number>1</number>
             </property>
             <property name="sizeConstraint">
-             <enum>QLayout::SetMinimumSize</enum>
+             <enum>QLayout::SetDefaultConstraint</enum>
             </property>
             <item>
              <widget class="ZKeyboardButton" name="pushButton_35">
@@ -1620,7 +1621,7 @@ p, li { white-space: pre-wrap; }
                </font>
               </property>
               <property name="text">
-               <string>Z</string>
+               <string>я</string>
               </property>
              </widget>
             </item>
@@ -1639,7 +1640,7 @@ p, li { white-space: pre-wrap; }
                </font>
               </property>
               <property name="text">
-               <string>X</string>
+               <string>ч</string>
               </property>
              </widget>
             </item>
@@ -1658,7 +1659,7 @@ p, li { white-space: pre-wrap; }
                </font>
               </property>
               <property name="text">
-               <string>C</string>
+               <string>с</string>
               </property>
              </widget>
             </item>
@@ -1677,7 +1678,7 @@ p, li { white-space: pre-wrap; }
                </font>
               </property>
               <property name="text">
-               <string>V</string>
+               <string>м</string>
               </property>
              </widget>
             </item>
@@ -1696,7 +1697,7 @@ p, li { white-space: pre-wrap; }
                </font>
               </property>
               <property name="text">
-               <string>B</string>
+               <string>и</string>
               </property>
              </widget>
             </item>
@@ -1715,7 +1716,7 @@ p, li { white-space: pre-wrap; }
                </font>
               </property>
               <property name="text">
-               <string>N</string>
+               <string>т</string>
               </property>
              </widget>
             </item>
@@ -1734,7 +1735,45 @@ p, li { white-space: pre-wrap; }
                </font>
               </property>
               <property name="text">
-               <string>M</string>
+               <string>ь</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="ZKeyboardButton" name="pushButton_48">
+              <property name="maximumSize">
+               <size>
+                <width>16</width>
+                <height>16</height>
+               </size>
+              </property>
+              <property name="font">
+               <font>
+                <family>Arial</family>
+                <pointsize>11</pointsize>
+               </font>
+              </property>
+              <property name="text">
+               <string>б</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="ZKeyboardButton" name="pushButton_49">
+              <property name="maximumSize">
+               <size>
+                <width>16</width>
+                <height>16</height>
+               </size>
+              </property>
+              <property name="font">
+               <font>
+                <family>Arial</family>
+                <pointsize>11</pointsize>
+               </font>
+              </property>
+              <property name="text">
+               <string>ю</string>
               </property>
              </widget>
             </item>
@@ -1743,7 +1782,7 @@ p, li { white-space: pre-wrap; }
           <widget class="QWidget" name="horizontalLayoutWidget_4">
            <property name="geometry">
             <rect>
-             <x>20</x>
+             <x>30</x>
              <y>60</y>
              <width>121</width>
              <height>18</height>
@@ -1917,7 +1956,7 @@ p, li { white-space: pre-wrap; }
            </sizepolicy>
           </property>
           <property name="currentIndex">
-           <number>1</number>
+           <number>0</number>
           </property>
           <widget class="QWidget" name="cardErrorPage">
            <property name="styleSheet">
@@ -2276,7 +2315,6 @@ p, li { white-space: pre-wrap; }
    </layout>
   </widget>
  </widget>
- <layoutdefault spacing="0" margin="0"/>
  <customwidgets>
   <customwidget>
    <class>ZKeyboardButton</class>
@@ -2783,6 +2821,23 @@ p, li { white-space: pre-wrap; }
    </hints>
   </connection>
  </connections>
+ <designerdata>
+  <property name="gridDeltaX">
+   <number>10</number>
+  </property>
+  <property name="gridDeltaY">
+   <number>10</number>
+  </property>
+  <property name="gridSnapX">
+   <bool>false</bool>
+  </property>
+  <property name="gridSnapY">
+   <bool>false</bool>
+  </property>
+  <property name="gridVisible">
+   <bool>true</bool>
+  </property>
+ </designerdata>
  <slots>
   <slot>virtualKeyboardPressed()</slot>
  </slots>

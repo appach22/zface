@@ -9,11 +9,7 @@
 #include "zplay-common.h"
 #include "dbus_constants.h"
 
-#include <fcntl.h>
-#include <sys/ioctl.h>
-#include <linux/fb.h>
-#include <linux/input.h>
-
+ #include <QPixmap>
 
 QString fileOpenErrors[9] = {QObject::trUtf8("Неизвестная ошибка!"),
                              "",
@@ -40,9 +36,6 @@ QString userMessages[__NUMBER_OF_ASYNC_MESSAGES] = {"",
                                                     "",
                                                     QObject::trUtf8("SD-карта не готова!")
                                                    };
-
-static int keyboardAutolockTimes[4] = {0, 5000, 60000, 120000};
-static int backlightTimes[4] = {0, 15000, 30000, 60000};
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent, Qt::FramelessWindowHint), ui(new Ui::MainWindow)
@@ -73,15 +66,7 @@ MainWindow::MainWindow(QWidget *parent)
     QString styleSheet = QLatin1String(file.readAll());
     this->setStyleSheet(styleSheet);
 
-    keyboardLockTimer.setSingleShot(true);
-    connect(&keyboardLockTimer, SIGNAL(timeout()), SLOT(lockKeyboard()));
-    keyboardLocked = false;
     beforeLockWidget = 0;
-
-    backlightTimer.setSingleShot(true);
-    connect(&backlightTimer, SIGNAL(timeout()), SLOT(backlightTurnOff()));
-    backlightIsOff = false;
-    fdFrameBuffer = open("/dev/fb0", O_RDWR);
 
     ui->digit1->installEventFilter(this);
     ui->digit2->installEventFilter(this);
@@ -103,35 +88,16 @@ MainWindow::MainWindow(QWidget *parent)
     connect(zdbus, SIGNAL(playStateChanged(int)), SLOT(playStateChanged(int)));
     connect(zdbus, SIGNAL(playPositionChanged(int)), SLOT(playPositionChanged(int)));
     connect(zdbus, SIGNAL(messageForUser(unsigned int, int)), SLOT(messageForUser(unsigned int, int)));
+    connect(zdbus, SIGNAL(screenshot()), SLOT(doScreenshot()));
     int val;
     zdbus->getParameter("Temp", "Recorder.State", &val);
     zdbus->getParameter("Temp", "Storage.Connected", &val);
     zdbus->getParameter("Temp", "Storage.Formatted", &val);
     zdbus->getParameter("Temp", "Storage.Capacity", &val);
     zdbus->getParameter("Temp", "Storage.Free_space", &val);
-    zdbus->getParameter("Main", "Display.Backlight.Auto_turn_off", &val);
-    zdbus->getParameter("Main", "Security.Keyboard_lock.Auto_lock", &val);
     zdbus->getParameter("Main", "Security.Protection.Enabled", &val);
     zdbus->getParameter("Temp", "Security.Keyboard_lock.Active", &val);
-
-    // Начальное положение джека
-    uint8_t sw_b[SW_MAX / 8 + 1];
-    int sw = 0;
-    memset(sw_b, 0, sizeof(sw_b));
-    int fd = open("/dev/input/hp-detect", O_RDONLY, 0);
-    if (-1 == fd)
-        qDebug() << "Unable to open /dev/input/hp-detect!";
-    ioctl(fd, EVIOCGSW(sizeof(sw_b)), sw_b);
-    for(int i = 0; i < SW_MAX; i++)
-    {
-        if((sw_b[i / 32] >> i) & 1)
-            sw = i;
-    }
-    if (2 == sw)
-        zdbus->setParameter("Temp", "Mixer.Headset.Connected", 1);
-    else
-        zdbus->setParameter("Temp", "Mixer.Headset.Connected", 0);
-
+    zdbus->getParameter("Temp", "Mixer.Headset.Connected", &val);
 
     settingsRoot = mixerRoot = filtersRoot = 0;
     settings.setRootNode(&settingsRoot);
@@ -216,7 +182,6 @@ MainWindow::MainWindow(QWidget *parent)
 
 MainWindow::~MainWindow()
 {
-    ::close(fdFrameBuffer);
     delete ui;
 }
 
@@ -235,25 +200,6 @@ void MainWindow::hideGain()
 
 void MainWindow::keyPressEvent(QKeyEvent * event)
 {
-    if (processEncoders(event))
-        return;
-
-    if (event->key() == Qt::Key_F5)
-    {
-        zdbus->sendRecordKey();
-        return;
-    }
-    if (event->key() == Qt::Key_F11)
-    {
-        zdbus->setParameter("Temp", "Mixer.Headset.Connected", 0);
-        return;
-    }
-    if (event->key() == Qt::Key_F12)
-    {
-        zdbus->setParameter("Temp", "Mixer.Headset.Connected", 1);
-        return;
-    }
-
     switch(ui->pages->currentIndex())
     {
         case 0 :
@@ -825,7 +771,7 @@ void MainWindow::processLockedPages(QKeyEvent * event)
     if (ui->pages->currentWidget() == ui->lockedPage1 && event->key() == Qt::Key_Left)
     {
         ui->pages->setCurrentWidget(ui->lockedPage2);
-        QTimer::singleShot(2000, this, SLOT(setLocked1()));
+        QTimer::singleShot(3000, this, SLOT(setLocked1()));
     }
     else if (ui->pages->currentWidget() == ui->lockedPage2 && event->key() == Qt::Key_Right)
         zdbus->setParameter("Temp", "Security.Keyboard_lock.Active", 0);
@@ -857,55 +803,6 @@ void MainWindow::processPinCodePage(QKeyEvent * event)
         QMainWindow::keyPressEvent(event);
 }
 
-bool MainWindow::processEncoders(QKeyEvent * event)
-{
-    switch (event->key())
-    {
-        case Qt::Key_E :
-            if (keyboardLocked) break;
-            if (ui->statusPages->currentIndex() != 1)
-                ui->statusPages->setCurrentWidget(ui->gainPlayStatus);
-            zdbus->sendRotaryEvent("PlayEncoder", "+");
-            break;
-        case Qt::Key_C :
-            if (keyboardLocked) break;
-            if (ui->statusPages->currentIndex() != 1)
-                ui->statusPages->setCurrentWidget(ui->gainPlayStatus);
-            zdbus->sendRotaryEvent("PlayEncoder", "-");
-            break;
-        case Qt::Key_Q :
-            if (keyboardLocked) break;
-            if (ui->statusPages->currentIndex() != 2)
-                ui->statusPages->setCurrentWidget(ui->gainRecStatus);
-            zdbus->sendRotaryEvent("LeftRecEncoder", "+");
-            break;
-        case Qt::Key_Z :
-            if (keyboardLocked) break;
-            if (ui->statusPages->currentIndex() != 2)
-                ui->statusPages->setCurrentWidget(ui->gainRecStatus);
-            zdbus->sendRotaryEvent("LeftRecEncoder", "-");
-            break;
-        case Qt::Key_W :
-            if (keyboardLocked) break;
-            if (ui->statusPages->currentIndex() != 2)
-                ui->statusPages->setCurrentWidget(ui->gainRecStatus);
-            zdbus->sendRotaryEvent("RightRecEncoder", "+");
-            break;
-        case Qt::Key_X :
-            if (keyboardLocked) break;
-            if (ui->statusPages->currentIndex() != 2)
-                ui->statusPages->setCurrentWidget(ui->gainRecStatus);
-            zdbus->sendRotaryEvent("RightRecEncoder", "-");
-            break;
-        default:
-            return false;
-    }
-
-    if (!keyboardLocked)
-        gainTimer->start(1000);
-    return true;
-}
-
 void MainWindow::gainChanged(QString _gain, QString _value)
 {
     if (_gain.contains("Left_gain"))
@@ -918,7 +815,16 @@ void MainWindow::gainChanged(QString _gain, QString _value)
         ui->gainRecRightProgress->setValue(_value.toInt());
     }
     else if (_gain.contains(".Gain"))
+    {
         ui->gainPlayProgress->setValue(_value.toInt());
+        if (ui->statusPages->currentIndex() != 1)
+            ui->statusPages->setCurrentWidget(ui->gainPlayStatus);
+        gainTimer->start(1000);
+        return;
+    }
+    if (ui->statusPages->currentIndex() != 2)
+        ui->statusPages->setCurrentWidget(ui->gainRecStatus);
+    gainTimer->start(1000);
 }
 
 void MainWindow::paramChanged(QString _param, QString _value)
@@ -1111,20 +1017,8 @@ void MainWindow::paramChanged(QString _param, QString _value)
         ui->channelsLabel->setText(settings.getValueByName(_param));
     }
 
-    else if (_param == "Security.Keyboard_lock.Auto_lock")
-    {
-        keyboardLockTimeout = keyboardAutolockTimes[value];
-        keyboardLockTimer.stop();
-        if (keyboardLockTimeout)
-        {
-            keyboardLockTimer.setInterval(keyboardLockTimeout);
-            keyboardLockTimer.start();
-        }
-    }
-
     else if (_param == "Security.Keyboard_lock.Active")
     {
-        keyboardLocked = value;
         if (value == 1)
         {
             activeWindow = QApplication::activeWindow();
@@ -1147,12 +1041,6 @@ void MainWindow::paramChanged(QString _param, QString _value)
             }
             else
                 ui->pages->setCurrentWidget(ui->lockedPage1);
-
-            if (backlightTimeout)
-            {
-                backlightTimer.setInterval(5000);
-                backlightTimer.start();
-            }
         }
         else
         {
@@ -1163,23 +1051,6 @@ void MainWindow::paramChanged(QString _param, QString _value)
                 qDebug() << focusedWidgets;
                 focusedWidgets.pop()->setEditFocus(true);
             }
-
-            if (backlightTimeout)
-            {
-                backlightTimer.setInterval(backlightTimeout);
-                backlightTimer.start();
-            }
-        }
-    }
-
-    else if (_param == "Display.Backlight.Auto_turn_off")
-    {
-        backlightTimer.stop();
-        backlightTimeout = backlightTimes[value];
-        if (backlightTimeout)
-        {
-            backlightTimer.setInterval(backlightTimeout);
-            backlightTimer.start();
         }
     }
 
@@ -1210,18 +1081,6 @@ void MainWindow::paramChanged(QString _param, QString _value)
                                          "background-position: center;");
         else
             ui->PINwidget->setStyleSheet("background-image: none");
-    }
-}
-
-void MainWindow::restartInactivityTimers()
-{
-    if (keyboardLockTimeout)
-        keyboardLockTimer.start();
-    if (backlightIsOff)
-    {
-        ioctl(fdFrameBuffer, FBIOBLANK, FB_BLANK_UNBLANK);
-        backlightIsOff = false;
-        backlightTimer.start();
     }
 }
 
@@ -1319,21 +1178,6 @@ void MainWindow::removeMessageBox()
     }
 }
 
-void MainWindow::lockKeyboard()
-{
-    if (!keyboardLocked)
-        zdbus->setParameter("Temp", "Security.Keyboard_lock.Active", 1);
-}
-
-void MainWindow::backlightTurnOff()
-{
-    if (!backlightIsOff)
-    {
-        ioctl(fdFrameBuffer, FBIOBLANK, FB_BLANK_POWERDOWN);
-        backlightIsOff = true;
-    }
-}
-
 void MainWindow::virtualKeyboardPressed()
 {
     QObject * button = sender();
@@ -1350,7 +1194,7 @@ void MainWindow::virtualKeyboardPressed()
     {
         QPushButton * current;
         QList<QPushButton * > buttons = ui->virtualKeyboardWidget->findChildren<QPushButton * >(QRegExp("pushButton"));
-        if (ui->pushButton_17->text() == "Q")
+        if (ui->pushButton_17->text() == "Q" || ui->pushButton_17->text() == "Й")
             foreach (current, buttons)
                 current->setText(current->text().toLower());
         else
@@ -1387,3 +1231,14 @@ void MainWindow::virtualKeyboardPressed()
 
     ui->presetNewNameLabel->setText(name);
 }
+
+void MainWindow::doScreenshot()
+{
+    QPixmap screen = QPixmap::grabWindow(this->winId());
+    QString fileName = QString("/tmp/screen_") + QDateTime::currentDateTime().toString("yyyyMMdd_hhmmss") + ".png";
+    if (screen.save(fileName))
+        qDebug() << "Screenshot saved to " << fileName;
+    else
+        qDebug() << "Error saving screenshot!";
+}
+

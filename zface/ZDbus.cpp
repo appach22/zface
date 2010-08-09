@@ -20,6 +20,7 @@ ZDbus::ZDbus(QObject *parent) :
     bus.connect("", "", "com.speechpro.RecDurationEvents", "RecDuration", this, SLOT(receiveRecDuration(int)));
     bus.connect("", "", "com.speechpro.MessageForUser", "Notify", this, SLOT(receiveUserNotify(unsigned int)));
     bus.connect("", "", "com.speechpro.MessageForUser", "Error", this, SLOT(receiveUserError(unsigned int)));
+    bus.connect("", "", "com.speechpro.Service", "Screenshot", this, SLOT(receiveScreenshot()));
 }
 
 void ZDbus::startAliveTimer(int _interval)
@@ -69,23 +70,17 @@ bool ZDbus::getParameter(const QString & _category, const QString & _name, int *
     return ok;
 }
 
-void ZDbus::sendRotaryEvent(const QString & _event, const QString & _action)
-{
-    QDBusMessage rotaryMessage = QDBusMessage::createSignal("/", "com.speechpro.EncodersEvents", _event);
-    rotaryMessage << _action;
-    bus.send(rotaryMessage);
-}
+//void ZDbus::sendRotaryEvent(const QString & _event, const QString & _action)
+//{
+//    QDBusMessage rotaryMessage = QDBusMessage::createSignal("/", "com.speechpro.EncodersEvents", _event);
+//    rotaryMessage << _action;
+//    bus.send(rotaryMessage);
+//}
 
 void ZDbus::sendPlayEvent(const QString & _event)
 {
     QDBusMessage playMessage = QDBusMessage::createSignal("/", "com.speechpro.PlayControl", _event);
     bus.send(playMessage);
-}
-
-void ZDbus::sendRecordKey()
-{
-    QDBusMessage recordKeyMessage = QDBusMessage::createSignal("/", "com.speechpro.RecordKeyEvents", "RecordKey");
-    bus.send(recordKeyMessage);
 }
 
 bool  ZDbus::sendOpenFileRequest(const QString & _fileName, SoundFileInfo * _info)
@@ -201,4 +196,9 @@ int ZDbus::presetOperation(const QString _presetName, const QString _operation)
     if (reply.arguments().count() < 2)
         return -1;
     return reply.arguments()[1].toInt();
+}
+
+void ZDbus::receiveScreenshot()
+{
+    emit screenshot();
 }

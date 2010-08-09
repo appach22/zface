@@ -3,6 +3,7 @@
 
 #include "ZKbdDriverPlugin.h"
 #include "ZKbdHandler.h"
+#include "ZKbdDbusHandler.h"
 
 #include <QDebug>
 
@@ -18,13 +19,16 @@ ZKbdDriverPlugin::~ZKbdDriverPlugin()
 
 QStringList ZKbdDriverPlugin::keys() const
 {
-    return QStringList() << "zkbd";
+    return QStringList() << "zkbd" << "zkbd-dbus";
 }
 
 QWSKeyboardHandler * ZKbdDriverPlugin::create(const QString & driver, const QString &)
 {
     if (driver.toLower() == "zkbd") {
         return new ZKbdHandler();
+    }
+    else if (driver.toLower() == "zkbd-dbus") {
+        return new ZKbdDbusHandler();
     }
     return 0;
 }

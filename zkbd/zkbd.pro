@@ -1,11 +1,13 @@
 # requires(qws)
 HEADERS += ZKbdHandler.h \
-    ZKbdDriverPlugin.h
+    ZKbdDriverPlugin.h \
+    ZKbdDbusHandler.h
 SOURCES += ZKbdHandler.cpp \
-    ZKbdDriverPlugin.cpp
+    ZKbdDriverPlugin.cpp \
+    ZKbdDbusHandler.cpp
 CONFIG += static
+TEMPLATE = lib
 
-TEMPLATE=lib
-#PLUGIN_FOR=qt
-#PLUGIN_TYPE=kbddrivers
+# PLUGIN_FOR=qt
+# PLUGIN_TYPE=kbddrivers
 CONFIG += plugin

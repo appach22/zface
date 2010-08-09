@@ -27,9 +27,8 @@ public:
     bool setParameter(const QString & _category, const QString & _name, int _value);
     bool getParameter(const QString & _category, const QString & _name, int * _value);
 
-    void sendRotaryEvent(const QString & _event, const QString & _action);
+    //void sendRotaryEvent(const QString & _event, const QString & _action);
     void sendPlayEvent(const QString & _event);
-    void sendRecordKey();
     bool sendOpenFileRequest(const QString & _fileName, SoundFileInfo * _info);
     int getPresetsListing(QStringList & _listing);
     int applyPreset(const QString & _presetName);
@@ -46,6 +45,7 @@ signals:
     void playPositionChanged(int _position);
     void recDurationChanged(int _duration);
     void messageForUser(unsigned int _code, int _type);
+    void screenshot();
 
 
 public slots:
@@ -61,6 +61,7 @@ private slots:
     void receiveRecDuration(int _duration);
     void receiveUserNotify(unsigned int _code);
     void receiveUserError(unsigned int _code);
+    void receiveScreenshot();
 
 private:
     QTimer * aliveTimer;

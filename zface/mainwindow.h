@@ -53,7 +53,6 @@ class MainWindow : public QMainWindow
 public:
     MainWindow(QWidget *parent = 0);
     ~MainWindow();
-    void restartInactivityTimers();
 
 protected:
     void keyPressEvent(QKeyEvent * event);
@@ -87,16 +86,9 @@ private:
     bool doRenamePreset;
     int clockCounter;
 
-    QTimer keyboardLockTimer;
-    int keyboardLockTimeout;
     QWidget * beforeLockWidget;
     QWidget * activeWindow;
-    bool keyboardLocked;
     bool pinCodeProtection;
-    QTimer backlightTimer;
-    bool backlightIsOff;
-    int fdFrameBuffer;
-    int backlightTimeout;
 
     void SetWatcher(QModelIndex root);
 
@@ -106,7 +98,6 @@ private:
     void processUtilitiesPage(QKeyEvent * event);
     void processParameterPage(QKeyEvent * event);
     void processPlayPage(QKeyEvent * event);
-    bool processEncoders(QKeyEvent * event);
     void processFileOps();
     void processLogsBrowserPage(QKeyEvent * event);
     void processLockedPages(QKeyEvent * event);
@@ -129,9 +120,10 @@ private slots:
     void playPositionChanged(int _position);
     void messageForUser(unsigned int _code, int _type);
     void removeMessageBox();
-    void lockKeyboard();
+    //void lockKeyboard();
     void setLocked1();
-    void backlightTurnOff();
+    //void backlightTurnOff();
+    void doScreenshot();
 
 public slots:
     void virtualKeyboardPressed();
