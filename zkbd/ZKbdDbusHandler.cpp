@@ -4,36 +4,36 @@
 ZKbdDbusHandler::ZKbdDbusHandler() :
     bus(QDBusConnection::systemBus())
 {
-    bus.connect("", "", "com.speechpro.CursorKeysEvents", "UpKey", this, SLOT(UpKey()));
-    bus.connect("", "", "com.speechpro.CursorKeysEvents", "DownKey", this, SLOT(DownKey()));
-    bus.connect("", "", "com.speechpro.CursorKeysEvents", "LeftKey", this, SLOT(LeftKey()));
-    bus.connect("", "", "com.speechpro.CursorKeysEvents", "RightKey", this, SLOT(RightKey()));
-    bus.connect("", "", "com.speechpro.CursorKeysEvents", "EnterKey", this, SLOT(EnterKey()));
-    bus.connect("", "", "com.speechpro.CursorKeysEvents", "EscapeKey", this, SLOT(EscapeKey()));
+    bus.connect("", "", "com.speechpro.CursorKeysEvents", "UpKey", this, SLOT(UpKey(unsigned int)));
+    bus.connect("", "", "com.speechpro.CursorKeysEvents", "DownKey", this, SLOT(DownKey(unsigned int)));
+    bus.connect("", "", "com.speechpro.CursorKeysEvents", "LeftKey", this, SLOT(LeftKey(unsigned int)));
+    bus.connect("", "", "com.speechpro.CursorKeysEvents", "RightKey", this, SLOT(RightKey(unsigned int)));
+    bus.connect("", "", "com.speechpro.CursorKeysEvents", "EnterKey", this, SLOT(EnterKey(unsigned int)));
+    bus.connect("", "", "com.speechpro.CursorKeysEvents", "EscapeKey", this, SLOT(EscapeKey(unsigned int)));
 }
 
 
-void ZKbdDbusHandler::UpKey()
+void ZKbdDbusHandler::UpKey(unsigned int _isPressed)
 {
-    processKeyEvent(0xFFFF, Qt::Key_Up, Qt::NoModifier, true, false);
+    processKeyEvent(0xFFFF, Qt::Key_Up, Qt::NoModifier, _isPressed, false);
 }
-void ZKbdDbusHandler::DownKey()
+void ZKbdDbusHandler::DownKey(unsigned int _isPressed)
 {
-    processKeyEvent(0xFFFF, Qt::Key_Down, Qt::NoModifier, true, false);
+    processKeyEvent(0xFFFF, Qt::Key_Down, Qt::NoModifier, _isPressed, false);
 }
-void ZKbdDbusHandler::LeftKey()
+void ZKbdDbusHandler::LeftKey(unsigned int _isPressed)
 {
-    processKeyEvent(0xFFFF, Qt::Key_Left, Qt::NoModifier, true, false);
+    processKeyEvent(0xFFFF, Qt::Key_Left, Qt::NoModifier, _isPressed, false);
 }
-void ZKbdDbusHandler::RightKey()
+void ZKbdDbusHandler::RightKey(unsigned int _isPressed)
 {
-    processKeyEvent(0xFFFF, Qt::Key_Right, Qt::NoModifier, true, false);
+    processKeyEvent(0xFFFF, Qt::Key_Right, Qt::NoModifier, _isPressed, false);
 }
-void ZKbdDbusHandler::EnterKey()
+void ZKbdDbusHandler::EnterKey(unsigned int _isPressed)
 {
-    processKeyEvent(0xFFFF, Qt::Key_Select, Qt::NoModifier, true, false);
+    processKeyEvent(0xFFFF, Qt::Key_Select, Qt::NoModifier, _isPressed, false);
 }
-void ZKbdDbusHandler::EscapeKey()
+void ZKbdDbusHandler::EscapeKey(unsigned int _isPressed)
 {
-    processKeyEvent(0xFFFF, Qt::Key_Escape, Qt::NoModifier, true, false);
+    processKeyEvent(0xFFFF, Qt::Key_Escape, Qt::NoModifier, _isPressed, false);
 }

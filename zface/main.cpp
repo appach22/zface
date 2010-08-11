@@ -29,6 +29,10 @@ Q_IMPORT_PLUGIN(zkbd)
 
 int main(int argc, char *argv[])
 {
+#if defined(Q_WS_QWS)
+    QWSServer::setBackground(QBrush(Qt::black));
+#endif
+
     QApplication a(argc, argv);
 #if defined(Q_WS_QWS)
     QWSServer::setCursorVisible(false);
@@ -38,6 +42,10 @@ int main(int argc, char *argv[])
 #if defined(QT_KEYPAD_NAVIGATION)
     a.setNavigationMode(Qt::NavigationModeKeypadDirectional/*NavigationModeKeypadTabOrder*/);
 #endif
+//    QPalette palette;
+//    palette.setColor(QPalette::Window, QColor(14, 23, 38));
+//    palette.setColor(QPalette::WindowText, Qt::white);
+//    a.setPalette(palette);
     MainWindow w;
 //#if defined(Q_WS_QWS)
 //    ZKeyboardFilter * filter = new ZKeyboardFilter();

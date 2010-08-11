@@ -18,7 +18,8 @@ struct ZSettingsNode
     QList<ZSettingsNode *> children;
     QString name;
     Type type;
-    // TODO: убрать зависимость от GUI !!!!!!!!!!!1
+    bool enabled;
+    // TODO: СѓР±СЂР°С‚СЊ Р·Р°РІРёСЃРёРјРѕСЃС‚СЊ РѕС‚ GUI !!!!!!!!!!!1
     QWidget * widget;
 };
 

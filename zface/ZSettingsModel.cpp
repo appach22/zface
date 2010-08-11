@@ -88,7 +88,7 @@ QVariant ZSettingsModel::data(const QModelIndex & index, int role) const
 QString ZSettingsModel::getValueByName(const QString & _name)
 {
     valueFound = false;
-    valueByName(_name, *rootNode, false);
+    valueByName(_name, *rootNode, GetValue);
     if (valueFound)
         return foundValue;
     else
@@ -99,16 +99,24 @@ void ZSettingsModel::setValueByName(const QString & _name, int _value)
 {
     valueFound = false;
     if (rootNode)
-        valueByName(_name, *rootNode, true, _value);
+        valueByName(_name, *rootNode, SetValue, _value);
 }
 
-void ZSettingsModel::valueByName(const QString & _name, ZSettingsNode * _root, bool _doSet, int _value)
+void ZSettingsModel::setNodeEnabled(const QString & _name, bool _enabled)
+{
+    if (rootNode)
+        valueByName(_name, *rootNode, SetEnabled, static_cast<int>(_enabled));
+}
+
+
+void ZSettingsModel::valueByName(const QString & _name, ZSettingsNode * _root, NodeActions _action, int _value)
 {
     if (valueFound)
         return;
     if (!_root)
         return;
 
+//    if ()
     if (!_root->children.count())
     {
         if (_root->widget)
@@ -116,9 +124,9 @@ void ZSettingsModel::valueByName(const QString & _name, ZSettingsNode * _root, b
             ZParameter * param = dynamic_cast<ZSettingWidget *>(_root->widget)->getData();
             if (param->name == _name)
             {
-                if (_doSet)
+                if (_action == SetValue)
                     dynamic_cast<ZSettingWidget *>(_root->widget)->setValue(_value);
-                else
+                else if (_action == GetValue)
                     foundValue = dynamic_cast<ZSettingWidget *>(_root->widget)->getValue();
                 valueFound = true;
                 return;
@@ -127,6 +135,6 @@ void ZSettingsModel::valueByName(const QString & _name, ZSettingsNode * _root, b
     }
     else
         for (int i = 0; i < _root->children.count(); ++i)
-            valueByName(_name, _root->children[i], _doSet, _value);
+            valueByName(_name, _root->children[i], _action, _value);
 }
 

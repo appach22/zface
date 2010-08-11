@@ -3,38 +3,38 @@
         <setting type="leaf" name="Источник записи">
                 <param type="select" category="Main" name="Mixer.Input">
                         <item name="встр. микрофоны"  value="0" />
-                        <item name="линейный вход"    value="1" />
+                        <item name="аналоговый вход"    value="1" />
                         <item name="телефонная линия" value="2" />
                         <item name="цифровой вход"    value="3" />
                 </param>
         </setting>
         <setting type="leaf" name="Выход воспроизвед-я">
                 <param type="select" category="Main" name="Mixer.Output">
-                        <item name="линейный выход"   value="0" />
+                        <item name="аналоговый выход"   value="0" />
                         <item name="динамик/наушники" value="1" />
                         <item name="цифровой выход"   value="2" />
                 </param>
         </setting>
-        <setting type="leaf" name="Сквозной канал">
+        <!--<setting type="leaf" name="Сквозной канал">
                 <param type="select" category="Temp" name="Mixer.Through_channel">
                         <item name="отключен"   value="0" />
                         <item name="включен"    value="1" />
                 </param>
         </setting>
-        <setting type="leaf" name="Стерео на динамике">
+        <setting type="leaf" name="Канал на динамике">
                 <param type="select" category="Main" name="Mixer.Channels_to_speaker">
-                        <item name="микшируется"        value="0" />
-                        <item name="левый стереоканал"  value="1" />
-                        <item name="правый стереоканал" value="2" />
+                        <item name="микс"        value="0" />
+                        <item name="левый"  value="1" />
+                        <item name="правый" value="2" />
                 </param>
-        </setting>
-        <setting type="leaf" name="Режим лин-го входа">
+        </setting>-->
+        <setting type="leaf" name="Режим анал-го входа">
                 <param type="select" category="Main" name="Mixer.Input.Analog.Mode">
                         <item name="микрофонный"        value="0" />
                         <item name="линейный"           value="1" />
                 </param>
         </setting>
-        <setting type="leaf" name="Сигнал лин-го входа">
+        <setting type="leaf" name="Сигнал анал-го входа">
                 <param type="select" category="Main" name="Mixer.Input.Analog.Signal_kind">
                         <item name="дифференциальный"   value="0" />
                         <item name="асимметричный"      value="1" />
@@ -45,7 +45,7 @@
     <filters>
         <setting type="node" name="Широкополосный фильтр">
                 <setting type="leaf" name="Состояние">
-                        <param type="select" category="Filters" name="Broadband_filter.Enabled">
+                        <param type="select" category="Filters" name="Broadband_filter.Enabled" id="1" dependsOn="6,7">
                                 <item name="отключен"   value="0" />
                                 <item name="включен"    value="1" />
                         </param>
@@ -55,26 +55,26 @@
                 </setting>
                 <setting type="leaf" name="Низкие частоты">
                         <param type="select" category="Filters" name="Broadband_filter.LowBandNoise">
-                                <item name="отключены"  value="0" />
-                                <item name="включены"   value="1" />
+                                <item name="нет"  value="0" />
+                                <item name="да"   value="1" />
                         </param>
-                </setting>   
+                </setting>
                 <setting type="leaf" name="Реверберация">
                         <param type="select" category="Filters" name="Broadband_filter.Reverberation">
-                                <item name="отключена"  value="0" />
-                                <item name="включена"   value="1" />
+                                <item name="нет"  value="0" />
+                                <item name="да"   value="1" />
                         </param>
                 </setting>
                 <setting type="leaf" name="Вычитаемый шум">
                         <param type="select" category="Filters" name="Broadband_filter.Residual">
-                                <item name="отключен"   value="0" />
-                                <item name="включен"    value="1" />
+                                <item name="нет"   value="0" />
+                                <item name="да"    value="1" />
                         </param>
                 </setting>
         </setting>
         <setting type="node" name="Фильтр тональных помех">
                 <setting type="leaf" name="Состояние">
-                        <param type="select" category="Filters" name="HarmonicReject_filter.Enabled">
+                        <param type="select" category="Filters" name="HarmonicReject_filter.Enabled" id="2" dependsOn="7">
                                 <item name="отключен"   value="0" />
                                 <item name="включен"    value="1" />
                         </param>
@@ -82,7 +82,7 @@
         </setting>
         <setting type="node" name="Эквалайзер">
                 <setting type="leaf" name="Состояние">
-                        <param type="select" category="Filters" name="EQ_filter.Enabled">
+                        <param type="select" category="Filters" name="EQ_filter.Enabled" id="3" dependsOn="7">
                                 <item name="отключен"   value="0" />
                                 <item name="включен"    value="1" />
                         </param>
@@ -93,16 +93,47 @@
                                 <item name="параметрический"    value="1" />
                         </param>
                 </setting>
-                <setting type="leaf" name="НЧ_дБ">
-                        <param type="value" category="Filters" name="EQ_filter.LF" min="-6" max="6" step="1" unit="дБ" />
+                <setting type="leaf" name="НЧ (Гц)">
+                        <param type="value" category="Filters" name="EQ_filter.LF_hz" min="100" max="400" step="100" unit="Гц" />
                 </setting>
-                <setting type="leaf" name="ВЧ_дБ">
-                        <param type="value" category="Filters" name="EQ_filter.HF" min="-6" max="6" step="1" unit="дБ" />
+                <setting type="leaf" name="НЧ (дБ)">
+                        <param type="select" category="Filters" name="EQ_filter.LF_db">
+                            <item name="-12"        value="-12" />
+                            <item name="-9"         value="-9" />
+                            <item name="-6"         value="-6" />
+                            <item name="-3"         value="-3" />
+                            <item name="0"          value="0" />
+                            <item name="1"          value="1" />
+                            <item name="2"          value="2" />
+                            <item name="3"          value="3" />
+                            <item name="4"          value="4" />
+                            <item name="5"          value="5" />
+                            <item name="6"          value="6" />
+                        </param>
+                </setting>
+                <setting type="leaf" name="ВЧ (кГц)">
+                    <param type="value" category="Filters" name="EQ_filter.HF_khz" min="2" max="4" step="1" unit="кГц" />
+                </setting>
+
+                <setting type="leaf" name="ВЧ (дБ)">
+                        <param type="select" category="Filters" name="EQ_filter.HF_db">
+                            <item name="-12"        value="-12" />
+                            <item name="-9"         value="-9" />
+                            <item name="-6"         value="-6" />
+                            <item name="-3"         value="-3" />
+                            <item name="0"          value="0" />
+                            <item name="1"          value="1" />
+                            <item name="2"          value="2" />
+                            <item name="3"          value="3" />
+                            <item name="4"          value="4" />
+                            <item name="5"          value="5" />
+                            <item name="6"          value="6" />
+                        </param>
                 </setting>
         </setting>
-        <setting type="node" name="Фильтр импульсных помех">
+        <setting type="node" name="ФИП">
                 <setting type="leaf" name="Состояние">
-                        <param type="select" category="Filters" name="Declicker_filter.Enabled">
+                        <param type="select" category="Filters" name="Declicker_filter.Enabled" id="4" dependsOn="7">
                                 <item name="отключен"   value="0" />
                                 <item name="включен"    value="1" />
                         </param>
@@ -113,7 +144,7 @@
         </setting>
         <setting type="node" name="АРУ">
                 <setting type="leaf" name="Состояние">
-                        <param type="select" category="Filters" name="LevelEnhancement_filter.Enabled">
+                        <param type="select" category="Filters" name="LevelEnhancement_filter.Enabled" id="5" dependsOn="7">
                                 <item name="отключен"   value="0" />
                                 <item name="включен"    value="1" />
                         </param>
@@ -121,25 +152,25 @@
         </setting>
         <setting type="node" name="Фильтр стерео">
                 <setting type="leaf" name="Состояние">
-                        <param type="select" category="Filters" name="ReferenceNoise_filter.Enabled">
+                        <param type="select" category="Filters" name="ReferenceNoise_filter.Enabled" id="6" dependsOn="1,7">
                                 <item name="отключен"   value="0" />
                                 <item name="включен"    value="1" />
                         </param>
                 </setting>
-                <setting type="leaf" name="Сигнал канала">
+                <setting type="leaf" name="Опорный канал">
                         <param type="select" category="Filters" name="ReferenceNoise_filter.ReferenceChannel">
-                                <item name="опорного"   value="0" />
-                                <item name="основного"  value="1" />
+                                <item name="правый"     value="0" />
+                                <item name="левый"      value="1" />
                         </param>
                 </setting>
                 <setting type="leaf" name="Задержка">
-                        <param type="value" category="Filters" name="ReferenceNoise_filter.TimeDelay" min="0" max="10" step="1" unit="мс" />
+                        <param type="value" category="Filters" name="ReferenceNoise_filter.TimeDelay" min="0" max="20" step="1" unit="мс" />
                 </setting>
                 <setting type="leaf" name="Подавление">
-                        <param type="value" category="Filters" name="ReferenceNoise_filter.Supression" min="3" max="21" step="3" unit="дБ" />
+                        <param type="value" category="Filters" name="ReferenceNoise_filter.Supression" min="3" max="39" step="3" unit="дБ" />
                 </setting>
         </setting>
-        <setting type="node" name="Сдвиг каналов (псевдо-стерео)">
+        <!--<setting type="node" name="Псевдо-стерео">
                 <setting type="leaf" name="Состояние">
                         <param type="select" category="Filters" name="Pseudo_filter.Enabled">
                                 <item name="отключен"   value="0" />
@@ -149,10 +180,11 @@
                 <setting type="leaf" name="Задержка">
                         <param type="value" category="Filters" name="Pseudo_filter.Delay" min="0" max="20" step="1" unit="мс" />
                 </setting>
-        </setting>
+        </setting>-->
+        <!--
         <setting type="node" name="Морфер">
                 <setting type="leaf" name="Состояние">
-                        <param type="select" category="Filters" name="Voice_changer_filter.Enabled">
+                        <param type="select" category="Filters" name="Voice_changer_filter.Enabled" id="7" dependsOn="1,2,3,4,5,6">
                                 <item name="отключен"   value="0" />
                                 <item name="включен"    value="1" />
                         </param>
@@ -164,10 +196,11 @@
                         </param>
                 </setting>
         </setting>
+        -->
     </filters>
 
     <settings>
-        <setting type="node" name="Парметры записи">
+        <setting type="node" name="Парметры аудио">
                 <setting type="leaf" name="Частота дискрет-ции">
                         <param type="select" category="Main" name="Recorder.Sample_rate">
                                 <item name="8 кГц"      value="0" />
@@ -195,7 +228,7 @@
                                 <item name="5 часов"    value="3" />
                         </param>
                 </setting>
-                <setting type="leaf" name="Разделение каналов">
+                <setting type="leaf" name="Режим стерео">
                         <param type="select" category="Main" name="Recorder.Channels">
                                 <item name="моно"       value="0" />
                                 <item name="стерео"     value="1" />
@@ -226,7 +259,7 @@
                         <param type="value" category="Main" name="Recorder.Acoustic.Stop_threshold" min="0" max="72" step="1" unit="дБ" />
                 </setting>
                 <setting type="leaf" name="Задержка стопа">
-                        <param type="value" category="Main" name="Recorder.Acoustic.Start_delay" min="0.5" max="10.0" step="0.1" unit="с" />
+                        <param type="value" category="Main" name="Recorder.Acoustic.Start_delay" min="500" max="10000" step="500" unit="с" />
                 </setting>
         </setting>
         <setting type="node" name="Таймер записи">
@@ -236,12 +269,7 @@
                                 <item name="включен"    value="1" />
                         </param>
                 </setting>
-                <setting type="leaf" name="Время старта записи">
-                        <param type="custom" category="Main" name="Recorder.Timer.Start_time" />
-                </setting>
-                <setting type="leaf" name="Длительность записи">
-                        <param type="custom" category="Main" name="Recorder.Timer.Duration" />
-                </setting>
+                <!-- время старта и длительность записи должны быть здесь -->
                 <setting type="leaf" name="Регулярность записи">
                         <param type="select" category="Main" name="Recorder.Timer.Repeat">
                                 <item name="однажды"    value="0" />
@@ -278,13 +306,9 @@
                                 <item name="включена"   value="1" />
                         </param>
                 </setting>
-                <setting type="leaf" name="Изменить ПИН-код">
-                        <param type="custom" category="Main" name="Security.Protection.PIN" />
-                </setting>
+                <!-- изменить пин-код должен быть здесь -->
         </setting>
-        <setting type="leaf" name="Дата и время">
-                <param type="custom" category="" name="DateTime" />
-        </setting>
+        <!-- дата и время должны быть здесь -->
         <setting type="node" name="Прочие настройки">
                 <setting type="leaf" name="Отключ-е подсветки">
                         <param type="select" category="Main" name="Display.Backlight.Auto_turn_off">
@@ -294,7 +318,7 @@
                                 <item name="1 минута"       value="3" />
                         </param>
                 </setting>
-                <setting type="leaf" name="Светодиоды уровня">
+                <setting type="leaf" name="Светодиоды уровня и кнопок">
                         <param type="select" category="Main" name="Recorder.Enable_LEDs">
                                 <item name="отключены"  value="0" />
                                 <item name="включены"   value="1" />

@@ -21,12 +21,12 @@ signals:
 public slots:
 
 private slots:
-    void UpKey();
-    void DownKey();
-    void LeftKey();
-    void RightKey();
-    void EnterKey();
-    void EscapeKey();
+    void UpKey(unsigned int);
+    void DownKey(unsigned int);
+    void LeftKey(unsigned int);
+    void RightKey(unsigned int);
+    void EnterKey(unsigned int);
+    void EscapeKey(unsigned int);
 
 };
 

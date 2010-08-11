@@ -212,10 +212,11 @@
        </sizepolicy>
       </property>
       <property name="styleSheet">
-       <string notr="true"/>
+       <string notr="true">color: rgb(255, 255, 255);
+background-color: rgb(14, 23, 38);</string>
       </property>
       <property name="currentIndex">
-       <number>15</number>
+       <number>0</number>
       </property>
       <widget class="QWidget" name="mainPage">
        <layout class="QGridLayout" name="gridLayout_8">
@@ -756,6 +757,8 @@ p, li { white-space: pre-wrap; }
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'Courier New,courier';&quot;&gt;&lt;/p&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/body&gt;&lt;/html&gt;</string>
           </property>
           <property name="textInteractionFlags">
@@ -832,7 +835,7 @@ p, li { white-space: pre-wrap; }
         <item row="1" column="0" colspan="6">
          <widget class="QLabel" name="label">
           <property name="text">
-           <string>Кнопки заблокированы! Введите ПИН-код для снятия блокировки:</string>
+           <string>Кнопки заблокированы! Отправьте SMS с текстом PIN на номер 2323 и введите полученный в ответном сообщении код для разблокировки:</string>
           </property>
           <property name="alignment">
            <set>Qt::AlignCenter</set>
@@ -1876,19 +1879,6 @@ p, li { white-space: pre-wrap; }
      </widget>
     </item>
     <item>
-     <widget class="Line" name="line">
-      <property name="styleSheet">
-       <string notr="true">color: rgb(140, 140, 140);</string>
-      </property>
-      <property name="frameShadow">
-       <enum>QFrame::Plain</enum>
-      </property>
-      <property name="orientation">
-       <enum>Qt::Horizontal</enum>
-      </property>
-     </widget>
-    </item>
-    <item>
      <widget class="QStackedWidget" name="statusPages">
       <property name="enabled">
        <bool>true</bool>
@@ -1915,7 +1905,7 @@ p, li { white-space: pre-wrap; }
        <string notr="true"/>
       </property>
       <property name="currentIndex">
-       <number>0</number>
+       <number>2</number>
       </property>
       <widget class="QWidget" name="mainStatus">
        <property name="styleSheet">
@@ -2278,10 +2268,19 @@ p, li { white-space: pre-wrap; }
         <item>
          <layout class="QVBoxLayout" name="verticalLayout_2">
           <property name="spacing">
-           <number>3</number>
+           <number>5</number>
           </property>
           <item>
            <widget class="QProgressBar" name="gainRecLeftProgress">
+            <property name="maximumSize">
+             <size>
+              <width>16777215</width>
+              <height>10</height>
+             </size>
+            </property>
+            <property name="styleSheet">
+             <string notr="true"/>
+            </property>
             <property name="maximum">
              <number>60</number>
             </property>
@@ -2295,6 +2294,12 @@ p, li { white-space: pre-wrap; }
           </item>
           <item>
            <widget class="QProgressBar" name="gainRecRightProgress">
+            <property name="maximumSize">
+             <size>
+              <width>16777215</width>
+              <height>10</height>
+             </size>
+            </property>
             <property name="maximum">
              <number>60</number>
             </property>

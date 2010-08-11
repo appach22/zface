@@ -1,11 +1,15 @@
 /*background-color: white;*/
 
-#pages {
-    background-color: rgb(210, 210, 210);
-}
+/*#pages {
+    color: red;
+    background-color: rgb(14, 23, 38);
+    border-bottom: 1px solid rgb(153, 161, 163);
+    border-top: 1px solid rgb(153, 161, 163);
+}*/
 
 QListView, QListWidget {
-    background-color: rgb(210, 210, 210);
+    background-color: rgb(14, 23, 38);
+    color: white;
 }
 
 #fileOpsList {
@@ -14,12 +18,15 @@ QListView, QListWidget {
 }
 
 #modeWidget {
-    background-color: qlineargradient(spread:pad, x1:1, y1:0.573864, x2:1, y2:0, stop:0 rgba(176, 176, 176, 255), stop:1 rgba(255, 255, 255, 255));
+/*    background-color: qlineargradient(spread:pad, x1:1, y1:0.573864, x2:1, y2:0, stop:0 rgba(176, 176, 176, 255), stop:1 rgba(255, 255, 255, 255));*/
+background-color: qlineargradient(spread:pad, x1:1, y1:0.5, x2:1, y2:0, stop:0 rgba(203, 211, 214, 255), stop:1 rgba(237, 245, 247, 255));
 }
 
 #statusPages {
-    background-color: qlineargradient(spread:reflect, x1:1, y1:0.5, x2:1, y2:0, stop:0 rgba(150, 150, 150, 255), stop:1 rgba(200, 200, 200, 255));
+    background-color: qlineargradient(spread:pad, x1:1, y1:0.5, x2:1, y2:0, stop:0 rgba(205, 213, 215, 255), stop:1 rgba(235, 243, 246, 255));
+    /*background-color: qlineargradient(spread:reflect, x1:1, y1:0.5, x2:1, y2:0, stop:0 rgba(150, 150, 150, 255), stop:1 rgba(200, 200, 200, 255));*/
     /*background-color: qlineargradient(spread:pad, x1:1, y1:0.573864, x2:1, y2:0, stop:0 rgba(176, 176, 176, 255), stop:1 rgba(255, 255, 255, 255));*/
+    border-top: 1px solid white;
 }
 
 #recording {
@@ -29,22 +36,26 @@ QListView, QListWidget {
     color: white;
 }
 
- QProgressBar {
-      border: 2px solid grey;
-      border-radius: 5px;
- }
-            
- QProgressBar::chunk {
-      background-color: #05B8CC;
-      width: 1px;
- }
+QProgressBar::chunk {
+    border: 1px solid #386091;
+    background: qlineargradient(spread:pad, x1:1, y1:0.5, x2:1, y2:0, stop:0 rgba(83, 137, 207, 255), stop:1 rgba(99, 167, 248, 255));
+/*    border-top-left-radius: 5px;
+    border-bottom-left-radius: 5px;
+    border-top-right-radius: 5px;
+    border-bottom-right-radius: 5px;*/
+}
 
  QProgressBar {
-     border: 2px solid grey;
-     border-radius: 5px;
-     text-align: center;
+/*    background-color: qlineargradient(spread:pad, x1:1, y1:0.567, x2:1, y2:0, stop:0.462555 rgba(255, 255, 255, 255), stop:1 rgba(176, 176, 176, 255));*/
+     background-color: qlineargradient(spread:pad, x1:1, y1:0.567, x2:1, y2:0, stop:0.563877 rgba(255, 255, 255, 255), stop:1 rgba(176, 176, 176, 255));
+/*      border-top-left-radius: 5px;
+      border-bottom-left-radius: 5px;
+      border-top-right-radius: 5px;
+      border-bottom-right-radius: 5px;*/
+      border-radius: 0px;
+      text-align: center;
  }
- 
+            
 QPushButton {
      border: 2px solid #8f8f91;
      border-radius: 6px;

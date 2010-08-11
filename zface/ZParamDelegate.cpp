@@ -30,6 +30,8 @@ void ZParamDelegate::paint(QPainter * painter, const QStyleOptionViewItem & opti
 {
     QStyleOptionViewItem newOption = option;
     newOption.state &= ~QStyle::State_HasFocus;
+    newOption.state &= ~QStyle::State_Enabled;
+    newOption.state = 0;
     //QStyledItemDelegate::paint(painter, newOption, index);
 
     if (index.data(Qt::DisplayRole).isValid())

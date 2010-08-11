@@ -18,10 +18,12 @@ struct ZParameter
     QString category;
     QString name;
     QString visualName;
+    int id;
+    QList<int> dependencies;
     //int value;
     ZParameter() {}
     ZParameter(QString _category, QString _name, QString _visualName)
-        { category = _category; name = _name; visualName = _visualName;}
+        { category = _category; name = _name; visualName = _visualName; id = -1; }
     virtual ~ZParameter() {}
 };
 

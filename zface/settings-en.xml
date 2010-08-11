@@ -1,0 +1,335 @@
+<zface>
+    <mixer>
+        <setting type="leaf" name="Input source">
+                <param type="select" category="Main" name="Mixer.Input">
+                        <item name="internal microphones"   value="0" />
+                        <item name="analog input"           value="1" />
+                        <item name="telephone line"         value="2" />
+                        <item name="digital input"          value="3" />
+                </param>
+        </setting>
+        <setting type="leaf" name="Monitor">
+                <param type="select" category="Main" name="Mixer.Output">
+                        <item name="analog output"          value="0" />
+                        <item name="loudspeaker/headphones" value="1" />
+                        <item name="digital output"         value="2" />
+                </param>
+        </setting>
+        <!--<setting type="leaf" name="Сквозной канал">
+                <param type="select" category="Temp" name="Mixer.Through_channel">
+                        <item name="disabled"   value="0" />
+                        <item name="enabled"    value="1" />
+                </param>
+        </setting>
+        <setting type="leaf" name="Loudspeaker/headphones channels">
+                <param type="select" category="Main" name="Mixer.Channels_to_speaker">
+                        <item name="mix/stereo"             value="0" />
+                        <item name="left"                   value="1" />
+                        <item name="right"                  value="2" />
+                </param>
+        </setting>-->
+        <setting type="leaf" name="Analog input mode">
+                <param type="select" category="Main" name="Mixer.Input.Analog.Mode">
+                        <item name="microphone"             value="0" />
+                        <item name="linear"                 value="1" />
+                </param>
+        </setting>
+        <setting type="leaf" name="Analog input signal">
+                <param type="select" category="Main" name="Mixer.Input.Analog.Signal_kind">
+                        <item name="differential"           value="0" />
+                        <item name="asymmetrical"           value="1" />
+                </param>
+        </setting>
+    </mixer>
+
+    <filters>
+        <setting type="node" name="Broadband noise filter">
+                <setting type="leaf" name="State">
+                        <param type="select" category="Filters" name="Broadband_filter.Enabled">
+                                <item name="disabled"       value="0" />
+                                <item name="enabled"        value="1" />
+                        </param>
+                </setting>
+                <setting type="leaf" name="Supression">
+                        <param type="value" category="Filters" name="Broadband_filter.Supression" min="3" max="21" step="3" unit="dB" />
+                </setting>
+                <setting type="leaf" name="Low band noise">
+                        <param type="select" category="Filters" name="Broadband_filter.LowBandNoise">
+                                <item name="no"             value="0" />
+                                <item name="yes"            value="1" />
+                        </param>
+                </setting>
+                <setting type="leaf" name="Reverberation">
+                        <param type="select" category="Filters" name="Broadband_filter.Reverberation">
+                                <item name="no"             value="0" />
+                                <item name="yes"            value="1" />
+                        </param>
+                </setting>
+                <setting type="leaf" name="Residual signal">
+                        <param type="select" category="Filters" name="Broadband_filter.Residual">
+                                <item name="no"             value="0" />
+                                <item name="yes"            value="1" />
+                        </param>
+                </setting>
+        </setting>
+        <setting type="node" name="Harmonic reject filter">
+                <setting type="leaf" name="State">
+                        <param type="select" category="Filters" name="HarmonicReject_filter.Enabled">
+                                <item name="disabled"       value="0" />
+                                <item name="enabled"        value="1" />
+                        </param>
+                </setting>
+        </setting>
+        <setting type="node" name="Equalizer">
+                <setting type="leaf" name="State">
+                        <param type="select" category="Filters" name="EQ_filter.Enabled">
+                                <item name="disabled"       value="0" />
+                                <item name="enabled"        value="1" />
+                        </param>
+                </setting>
+                <setting type="leaf" name="Type">
+                        <param type="select" category="Filters" name="EQ_filter.Type">
+                                <item name="adaptive"       value="0" />
+                                <item name="parametric"     value="1" />
+                        </param>
+                </setting>
+                <setting type="leaf" name="LF (Hz)">
+                        <param type="value" category="Filters" name="EQ_filter.LF_hz" min="100" max="400" step="100" unit="Hz" />
+                </setting>
+                <setting type="leaf" name="LF (dB)">
+                        <param type="select" category="Filters" name="EQ_filter.LF_db">
+                            <item name="-12"        value="-12" />
+                            <item name="-9"         value="-9" />
+                            <item name="-6"         value="-6" />
+                            <item name="-3"         value="-3" />
+                            <item name="0"          value="0" />
+                            <item name="1"          value="1" />
+                            <item name="2"          value="2" />
+                            <item name="3"          value="3" />
+                            <item name="4"          value="4" />
+                            <item name="5"          value="5" />
+                            <item name="6"          value="6" />
+                        </param>
+                </setting>
+                <setting type="leaf" name="HF (kHz)">
+                    <param type="value" category="Filters" name="EQ_filter.HF_khz" min="2" max="4" step="1" unit="kHz" />
+                </setting>
+
+                <setting type="leaf" name="HF (dB)">
+                        <param type="select" category="Filters" name="EQ_filter.HF_db">
+                            <item name="-12"        value="-12" />
+                            <item name="-9"         value="-9" />
+                            <item name="-6"         value="-6" />
+                            <item name="-3"         value="-3" />
+                            <item name="0"          value="0" />
+                            <item name="1"          value="1" />
+                            <item name="2"          value="2" />
+                            <item name="3"          value="3" />
+                            <item name="4"          value="4" />
+                            <item name="5"          value="5" />
+                            <item name="6"          value="6" />
+                        </param>
+                </setting>
+        </setting>
+        <setting type="node" name="De-clicker">
+                <setting type="leaf" name="State">
+                        <param type="select" category="Filters" name="Declicker_filter.Enabled">
+                                <item name="disabled"   value="0" />
+                                <item name="enabled"    value="1" />
+                        </param>
+                </setting>
+                <setting type="leaf" name="Threshold">
+                        <param type="value" category="Filters" name="Declicker_filter.Threshold" min="0" max="10" step="1" unit="dB" />
+                </setting>
+        </setting>
+        <setting type="node" name="Speech level enhancer">
+                <setting type="leaf" name="State">
+                        <param type="select" category="Filters" name="LevelEnhancement_filter.Enabled">
+                                <item name="disabled"   value="0" />
+                                <item name="enabled"    value="1" />
+                        </param>
+                </setting>
+        </setting>
+        <setting type="node" name="Reference noise filter">
+                <setting type="leaf" name="State">
+                        <param type="select" category="Filters" name="ReferenceNoise_filter.Enabled">
+                                <item name="disabled"   value="0" />
+                                <item name="enabled"    value="1" />
+                        </param>
+                </setting>
+                <setting type="leaf" name="Reference channel">
+                        <param type="select" category="Filters" name="ReferenceNoise_filter.ReferenceChannel">
+                                <item name="right"      value="0" />
+                                <item name="left"       value="1" />
+                        </param>
+                </setting>
+                <setting type="leaf" name="Delay">
+                        <param type="value" category="Filters" name="ReferenceNoise_filter.TimeDelay" min="0" max="20" step="1" unit="ms" />
+                </setting>
+                <setting type="leaf" name="Supression">
+                        <param type="value" category="Filters" name="ReferenceNoise_filter.Supression" min="3" max="39" step="3" unit="dB" />
+                </setting>
+        </setting>
+        <!--<setting type="node" name="Псевдо-стерео">
+                <setting type="leaf" name="State">
+                        <param type="select" category="Filters" name="Pseudo_filter.Enabled">
+                                <item name="disabled"   value="0" />
+                                <item name="enabled"    value="1" />
+                        </param>
+                </setting>
+                <setting type="leaf" name="Delay">
+                        <param type="value" category="Filters" name="Pseudo_filter.Delay" min="0" max="20" step="1" unit="ms" />
+                </setting>
+        </setting>-->
+        <!--
+        <setting type="node" name="V-changer">
+                <setting type="leaf" name="State">
+                        <param type="select" category="Filters" name="Voice_changer_filter.Enabled">
+                                <item name="disabled"   value="0" />
+                                <item name="enabled"    value="1" />
+                        </param>
+                </setting>
+                <setting type="leaf" name="Voice">
+                        <param type="select" category="Filters" name="Voice_changer_filter.Voice">
+                                <item name="female"     value="0" />
+                                <item name="male"       value="1" />
+                        </param>
+                </setting>
+        </setting>
+        -->
+    </filters>
+
+    <settings>
+        <setting type="node" name="Audio settings">
+                <setting type="leaf" name="Sample rate">
+                        <param type="select" category="Main" name="Recorder.Sample_rate">
+                                <item name="8 kHz"      value="0" />
+                                <item name="16 kHz"     value="1" />
+                                <item name="44.1 kHz"   value="2" />
+                        </param>
+                </setting>
+                <setting type="leaf" name="Bit depth">
+                        <param type="select" category="Main" name="Recorder.Sample_size">
+                                <item name="16 bit"     value="0" />
+                                <item name="24 bits"    value="1" />
+                        </param>
+                </setting>
+                <setting type="leaf" name="Compression">
+                        <param type="select" category="Main" name="Recorder.Compression">
+                                <item name="PCM"        value="0" />
+                                <item name="muLaw"      value="1" />
+                        </param>
+                </setting>
+                <setting type="leaf" name="Break audio into fragments">
+                        <param type="select" category="Main" name="Recorder.Record_duration_limit">
+                                <item name="30 min"     value="0" />
+                                <item name="1 hour"     value="1" />
+                                <item name="3 hours"    value="2" />
+                                <item name="5 hours"    value="3" />
+                        </param>
+                </setting>
+                <setting type="leaf" name="Channel mode">
+                        <param type="select" category="Main" name="Recorder.Channels">
+                                <item name="mono"       value="0" />
+                                <item name="stereo"     value="1" />
+                        </param>
+                </setting>
+                <setting type="leaf" name="Save files">
+                        <param type="select" category="Main" name="Recorder.Record_files">
+                                <item name="original"   value="0" />
+                                <item name="cleaned"    value="1" />
+                                <item name="both"       value="2" />
+                        </param>
+                </setting>
+        </setting>
+        <setting type="node" name="Voice activation">
+                <setting type="leaf" name="State">
+                        <param type="select" category="Main" name="Recorder.Acoustic.Enabled">
+                                <item name="disabled"   value="0" />
+                                <item name="enabled"    value="1" />
+                        </param>
+                </setting>
+                <setting type="leaf" name="Start threshold">
+                        <param type="value" category="Main" name="Recorder.Acoustic.Start_threshold" min="0" max="72" step="1" unit="dB" />
+                </setting>
+                <setting type="leaf" name="Start delay">
+                        <param type="value" category="Main" name="Recorder.Acoustic.Start_delay" min="30" max="200" step="10" unit="ms" />
+                </setting>
+                <setting type="leaf" name="Stop threshold">
+                        <param type="value" category="Main" name="Recorder.Acoustic.Stop_threshold" min="0" max="72" step="1" unit="dB" />
+                </setting>
+                <setting type="leaf" name="Stop delay">
+                        <param type="value" category="Main" name="Recorder.Acoustic.Start_delay" min="500" max="10000" step="500" unit="s" />
+                </setting>
+        </setting>
+        <setting type="node" name="Recorder timer">
+                <setting type="leaf" name="State">
+                        <param type="select" category="Main" name="Recorder.Timer.Enabled">
+                                <item name="disabled"   value="0" />
+                                <item name="enabled"    value="1" />
+                        </param>
+                </setting>
+                <!-- время старта и длительность записи должны быть здесь -->
+                <setting type="leaf" name="Schedule">
+                        <param type="select" category="Main" name="Recorder.Timer.Repeat">
+                                <item name="once"       value="0" />
+                                <item name="every day"  value="1" />
+                        </param>
+                </setting>
+        </setting>
+        <setting type="node" name="Overflow protection">
+                <setting type="leaf" name="Auto delete old files">
+                        <param type="select" category="Main" name="Overflow_guardAuto_delete_old">
+                                <item name="disabled"   value="0" />
+                                <item name="enabled"    value="1" />
+                        </param>
+                </setting>
+                <setting type="leaf" name="Auto empty recycle bin">
+                        <param type="select" category="Main" name="Overflow_guardAuto_clean_trash">
+                                <item name="disabled"   value="0" />
+                                <item name="enabled"    value="1" />
+                        </param>
+                </setting>
+        </setting>
+        <setting type="node" name="Security">
+                <setting type="leaf" name="Autolock keyboard">
+                        <param type="select" category="Main" name="Security.Keyboard_lock.Auto_lock">
+                                <item name="disabled"   value="0" />
+                                <item name="30 sec"     value="1" />
+                                <item name="1 min"      value="2" />
+                                <item name="2 min"      value="3" />
+                        </param>
+                </setting>
+                <setting type="leaf" name="PIN-code protection">
+                        <param type="select" category="Main" name="Security.Protection.Enabled">
+                                <item name="disabled"   value="0" />
+                                <item name="enabled"    value="1" />
+                        </param>
+                </setting>
+                <!-- изменить пин-код должен быть здесь -->
+        </setting>
+        <!-- дата и время должны быть здесь -->
+        <setting type="node" name="Other settings">
+                <setting type="leaf" name="Screen backlights">
+                        <param type="select" category="Main" name="Display.Backlight.Auto_turn_off">
+                                <item name="no" value="0" />
+                                <item name="15 sec"     value="1" />
+                                <item name="30 sec"     value="2" />
+                                <item name="1 min"      value="3" />
+                        </param>
+                </setting>
+                <setting type="leaf" name="Signal and buttons LEDs">
+                        <param type="select" category="Main" name="Recorder.Enable_LEDs">
+                                <item name="disabled"   value="0" />
+                                <item name="enabled"    value="1" />
+                        </param>
+                </setting>
+                <setting type="leaf" name="USB mode">
+                        <param type="select" category="Main" name="USB.Connected_OS">
+                                <item name="Card-reader"    value="0" />
+                                <item name="Web-unterface"  value="1" />
+                        </param>
+                </setting>
+        </setting>
+    </settings>
+</zface>

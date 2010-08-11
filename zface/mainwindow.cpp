@@ -178,7 +178,7 @@ MainWindow::MainWindow(QWidget *parent)
     confirmMessage = new QMessageBox(this);
     confirmMessage->setStandardButtons(QMessageBox::Yes | QMessageBox::No);
     confirmMessage->setDefaultButton(QMessageBox::No);
-    }
+}
 
 MainWindow::~MainWindow()
 {

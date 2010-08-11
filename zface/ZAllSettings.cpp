@@ -87,6 +87,7 @@ void ZAllSettings::getParameter(QXmlStreamReader & _xml, ZSettingsNode * _parent
     QString category = attrs.value("category").toString();
     QString name = attrs.value("name").toString();
     int value;
+    ZParameter * parameter;
     if (attrs.value("type").toString().toLower() == "value")
     {
         QPair<int, int> range = QPair<int, int>(attrs.value("min").toString().toInt(), attrs.value("max").toString().toInt());
@@ -96,6 +97,7 @@ void ZAllSettings::getParameter(QXmlStreamReader & _xml, ZSettingsNode * _parent
         _parentNode->SetWidget(setting);
 
         zdbus->getParameter(category, name, &value);
+        parameter = param;
     }
     else if (attrs.value("type").toString().toLower() == "select")
     {
@@ -120,6 +122,7 @@ void ZAllSettings::getParameter(QXmlStreamReader & _xml, ZSettingsNode * _parent
         _parentNode->SetWidget(setting);
 
         zdbus->getParameter(category, name, &value);
+        parameter = param;
     }
     else if (attrs.value("type").toString().toLower() == "custom")
     {
@@ -136,5 +139,12 @@ void ZAllSettings::getParameter(QXmlStreamReader & _xml, ZSettingsNode * _parent
             customWidget = new ZPinCode(setting);
         setting->setData(param, customWidget);
         _parentNode->SetWidget(setting);
+        parameter = param;
+    }
+    if (attrs.hasAttribute("id"))
+        parameter->id = attrs.value("id").toString().toInt();
+    if (attrs.hasAttribute("dependsOn"))
+    {
+        QStringList deps = attrs.value("dependsOn").toString().split(",");
     }
 }
