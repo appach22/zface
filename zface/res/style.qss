@@ -1,16 +1,24 @@
 /*background-color: white;*/
 
-/*#pages {
-    color: red;
+#pages {
     background-color: rgb(14, 23, 38);
     border-bottom: 1px solid rgb(153, 161, 163);
     border-top: 1px solid rgb(153, 161, 163);
-}*/
+}
 
-QListView, QListWidget {
-    background-color: rgb(14, 23, 38);
+#pages QLabel {
     color: white;
 }
+
+/*QListView, QListWidget {
+    background-color: rgb(14, 23, 38);
+    color: white;
+}*/
+
+QListView {
+    background-color: rgb(14, 23, 38);
+}
+
 
 #fileOpsList {
     border: 2px solid grey;

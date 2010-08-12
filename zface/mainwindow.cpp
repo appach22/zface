@@ -134,8 +134,8 @@ MainWindow::MainWindow(QWidget *parent)
     ui->fileOpsList->installEventFilter(this);
     ui->fileOpsList->setItemDelegate(paramDelegate);
     //ui->fileOpsList->setAlternatingRowColors(true);
-    ui->filesView->setItemDelegate(paramDelegate);
-    //ui->filesView->setAlternatingRowColors(true);
+    //ui->filesView->setItemDelegate(paramDelegate);
+    ui->filesView->setAlternatingRowColors(true);
     ui->utilitiesList->installEventFilter(this);
     ui->utilitiesList->setItemDelegate(paramDelegate);
     //ui->utilitiesList->setAlternatingRowColors(true);
