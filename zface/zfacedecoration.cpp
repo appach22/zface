@@ -45,7 +45,7 @@
 ZFaceDecoration::ZFaceDecoration()
     : QDecorationDefault()
 {
-    border = 4;
+    border = 2;
     titleHeight = 0;
     buttonWidth = 0;
     buttonHeight = 0;

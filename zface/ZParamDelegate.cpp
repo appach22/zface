@@ -30,19 +30,9 @@ void ZParamDelegate::paint(QPainter * painter, const QStyleOptionViewItem & opti
 {
     QStyleOptionViewItem newOption = option;
     newOption.state &= ~QStyle::State_HasFocus;
-    //newOption.state &= ~QStyle::State_Enabled;
-    //newOption.state = 0;
-    //QStyledItemDelegate::paint(painter, newOption, index);
 
     if (index.data(Qt::DisplayRole).isValid())
     {
-//        if (option.state & QStyle::State_Selected)
-//            painter->fillRect(option.rect, option.palette.highlight());
-//        else if (index.row() % 2)
-//            painter->fillRect(option.rect, option.palette.base());
-//        else
-//            painter->fillRect(option.rect, option.palette.alternateBase());
-
         painter->fillRect(option.rect, option.palette.base());
         QRect insideRect = option.rect.adjusted(2, 2, -2, -2);
         QLinearGradient gradient(insideRect.topLeft(), insideRect.bottomLeft());
@@ -79,29 +69,24 @@ void ZParamDelegate::paint(QPainter * painter, const QStyleOptionViewItem & opti
             painter->drawText(insideRect.left() + 4, insideRect.top() + insideRect.height() / 2 + option.fontMetrics.ascent() + 2, value);
         }
     }
-//        ZSettingsNode * node = static_cast<ZSettingsNode *>(index.internalPointer());
-//        if (node->type == ZSettingsNode::Leaf)
-//        {
-//            QString value = dynamic_cast<ZSettingWidget *>(node->widget)->getValue();
-//            if (!value.isEmpty())
-//            {
-//                QSize s = QStyledItemDelegate::sizeHint(option, index);
-//                painter->save();
-//                QTextDocument doc;
-//                doc.setHtml("<div>" + index.data(Qt::DisplayRole).toString() + "</div><div style=\"font-style: italic;\">" + value + "</div>");
-//                QAbstractTextDocumentLayout::PaintContext context;
-//                doc.setPageSize(s);
-//                doc.setDocumentMargin(0);
-//                painter->translate(option.rect.x(), option.rect.y());
-//                doc.documentLayout()->draw(painter, context);
-//                painter->restore();
-//            }
-//            else
-//                QStyledItemDelegate::paint(painter, newOption, index);
-//        }
-//        else
-//            QStyledItemDelegate::paint(painter, newOption, index);
-//   }
    else
        QStyledItemDelegate::paint(painter, newOption, index);
+}
+
+ZFileOpsDelegate::ZFileOpsDelegate(QObject *parent) :
+    QStyledItemDelegate(parent)
+{
+}
+
+QSize ZFileOpsDelegate::sizeHint(const QStyleOptionViewItem & option, const QModelIndex & index) const
+{
+    QSize s = QStyledItemDelegate::sizeHint(option, index);
+    return QSize(s.width(), s.height() * 1.5);
+}
+
+void ZFileOpsDelegate::paint(QPainter * painter, const QStyleOptionViewItem & option, const QModelIndex & index) const
+{
+    QStyleOptionViewItem newOption = option;
+    newOption.state &= ~QStyle::State_HasFocus;
+    QStyledItemDelegate::paint(painter, newOption, index);
 }

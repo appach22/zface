@@ -77,9 +77,16 @@ bool ZDbus::getParameter(const QString & _category, const QString & _name, int *
 //    bus.send(rotaryMessage);
 //}
 
-void ZDbus::sendPlayEvent(const QString & _event)
+void ZDbus::sendPlayEvent(const QString & _event, unsigned int _arg)
 {
-    QDBusMessage playMessage = QDBusMessage::createSignal("/", "com.speechpro.PlayControl", _event);
+    QDBusMessage playMessage;
+    if (_arg == UINT_MAX)
+        playMessage = QDBusMessage::createSignal("/", "com.speechpro.PlayControl", _event);
+    else
+    {
+        playMessage = QDBusMessage::createSignal("/", "com.speechpro.PlayControl", _event);
+        playMessage << _arg;
+    }
     bus.send(playMessage);
 }
 

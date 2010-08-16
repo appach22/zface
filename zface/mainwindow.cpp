@@ -10,6 +10,7 @@
 #include "dbus_constants.h"
 
  #include <QPixmap>
+ #include <QNetworkInterface>
 
 QString fileOpenErrors[9] = {QObject::trUtf8("Неизвестная ошибка!"),
                              "",
@@ -34,7 +35,11 @@ QString userMessages[__NUMBER_OF_ASYNC_MESSAGES] = {"",
                                                     QObject::trUtf8("Форматирование успешно завершено."),
                                                     "",
                                                     "",
-                                                    QObject::trUtf8("SD-карта не готова!")
+                                                    QObject::trUtf8("SD-карта не готова!"),
+                                                    QObject::trUtf8("Сначала выключите Широкополосный фильтр."),
+                                                    QObject::trUtf8("Сначала выключите Стерео фильтр."),
+                                                    QObject::trUtf8("Сначала выключите Морфер."),
+                                                    QObject::trUtf8("Сначала выключите все фильтры.")
                                                    };
 
 MainWindow::MainWindow(QWidget *parent)
@@ -42,10 +47,6 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
     ui->pages->setCurrentWidget(ui->mainPage);
-//    ui->mainPage->setStyleSheet("background-image: url(:/all/res/xface_mainmenu.bmp);"
-//                                     "background-repeat: repeat-n;"
-//                                     "background-position: center;");
-    //ui->statusPages->setStyleSheet("background-color: white;");
     ui->sd->setStyleSheet("background-image: url(:/all/res/storage.png);"
                           "background-repeat: repeat-n;"
                           "background-position: center;");
@@ -53,7 +54,6 @@ MainWindow::MainWindow(QWidget *parent)
                                     "background-repeat: repeat-n;"
                                     "background-position: center;");
     ui->recording->hide();
-//    ui->recording->setStyleSheet("background-color: qlineargradient(spread:pad, x1:1, y1:0.573864, x2:1, y2:0, stop:0 rgba(255, 80, 80, 255), stop:1 rgba(255, 255, 255, 255)); color: white;");
 
 #if defined(Q_OS_WIN)
     QFile file("../res/style.qss");
@@ -122,6 +122,7 @@ MainWindow::MainWindow(QWidget *parent)
 #endif
 
     ZParamDelegate * paramDelegate = new ZParamDelegate(this);
+    ZFileOpsDelegate * fileOpsDelegate = new ZFileOpsDelegate(this);
     ui->settingsView->installEventFilter(this);
     ui->settingsView->setItemDelegate(paramDelegate);
     //ui->settingsView->setAlternatingRowColors(true);
@@ -132,9 +133,9 @@ MainWindow::MainWindow(QWidget *parent)
     ui->filtersView->setItemDelegate(paramDelegate);
     //ui->filtersView->setAlternatingRowColors(true);
     ui->fileOpsList->installEventFilter(this);
-    ui->fileOpsList->setItemDelegate(paramDelegate);
+    ui->fileOpsList->setItemDelegate(fileOpsDelegate);
     //ui->fileOpsList->setAlternatingRowColors(true);
-    //ui->filesView->setItemDelegate(paramDelegate);
+    ui->filesView->setItemDelegate(fileOpsDelegate);
     ui->filesView->setAlternatingRowColors(true);
     ui->utilitiesList->installEventFilter(this);
     ui->utilitiesList->setItemDelegate(paramDelegate);
@@ -355,7 +356,7 @@ void MainWindow::processBrowserPage(QKeyEvent * event)
                     {
                         ui->fileNameLabel->setText(files.fileName(ui->filesView->currentIndex()));
                         QString info = QString("%1").arg(currentFileInfo.sampleSize) + " " + trUtf8("бит") + ", " +
-                                       QString("%1").arg(currentFileInfo.sampleRate / 1000) + " " + trUtf8("кГц") + ", ";
+                                       QString("%1").arg(currentFileInfo.sampleRate / 1000.0, 0, 'f', 1).replace(".0", "") + " " + trUtf8("кГц") + ", ";
                         if (currentFileInfo.channels == 1)
                             info += trUtf8("моно");
                         else if (currentFileInfo.channels == 2)
@@ -375,7 +376,7 @@ void MainWindow::processBrowserPage(QKeyEvent * event)
             }
             break;
         case Qt::Key_Escape :
-            if (ui->filesView->rootIndex().parent().isValid() && ui->filesView->rootIndex() != rootIndex)
+            if (ui->filesView->rootIndex().parent().isValid() && ui->filesView->rootIndex() != files.index("/tmp/sound"))
             {
                 ui->filesView->setCurrentIndex(ui->filesView->rootIndex());
                 ui->filesView->setRootIndex(ui->filesView->rootIndex().parent());
@@ -508,6 +509,17 @@ void MainWindow::processUtilitiesPage(QKeyEvent * event)
                 }
                 else
                     showMessage(QMessageBox::Critical, trUtf8("Невозможно открыть файл журнала!"));
+            }
+            else if (ui->utilitiesList->currentRow() == 4)
+            {
+                ui->pages->setCurrentWidget(ui->logsPage);
+                QString ip = "";
+                QList<QNetworkAddressEntry> ips = QNetworkInterface::interfaceFromName("eth0").addressEntries();
+                if (ips.count())
+                    ip = ips[0].ip().toString();
+                ui->logsBrowser->setText(trUtf8("IP-адрес устройства: ") + ip);
+                ui->logsBrowser->setEditFocus(true);
+                break;
             }
             if (res)
                 ui->utilitiesList->setEditFocus(true);
@@ -715,6 +727,12 @@ void MainWindow::processPlayPage(QKeyEvent * event)
             break;
         case Qt::Key_Select :
             processFileOps();
+            break;
+        case Qt:: Key_Left:
+            zdbus->sendPlayEvent("Rewind", 5);
+            break;
+        case Qt::Key_Right :
+            zdbus->sendPlayEvent("FastForward", 5);
             break;
     }
 }
@@ -1098,7 +1116,9 @@ bool MainWindow::eventFilter(QObject *obj, QEvent *event)
                 return true;
             }
         }
-        if (static_cast<QKeyEvent *>(event)->key() == Qt::Key_Select)
+        if (static_cast<QKeyEvent *>(event)->key() == Qt::Key_Select ||
+            static_cast<QKeyEvent *>(event)->key() == Qt::Key_Left ||
+            static_cast<QKeyEvent *>(event)->key() == Qt::Key_Right)
         {
             QCoreApplication::sendEvent(this, event);
             return true;

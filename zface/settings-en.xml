@@ -167,7 +167,7 @@
                         <param type="value" category="Filters" name="ReferenceNoise_filter.TimeDelay" min="0" max="20" step="1" unit="ms" />
                 </setting>
                 <setting type="leaf" name="Supression">
-                        <param type="value" category="Filters" name="ReferenceNoise_filter.Supression" min="3" max="39" step="3" unit="dB" />
+                        <param type="value" category="Filters" name="ReferenceNoise_filter.Supression" min="0" max="60" step="3" unit="dB" />
                 </setting>
         </setting>
         <!--<setting type="node" name="Псевдо-стерео">

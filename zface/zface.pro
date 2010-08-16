@@ -33,7 +33,7 @@ HEADERS += mainwindow.h \
     ZTimerDurationDialog.h \
     ZPinCode.h \
     ZKeyboardButton.h
-QT += dbus
+QT += dbus network
 DEFINES += QT_KEYPAD_NAVIGATION
 FORMS += mainwindow.ui \
     ZDateTimeDialog.ui \

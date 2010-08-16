@@ -10,21 +10,27 @@
 //---------------------------------------------------------------------
 
 // --- широковещательные интерфейсы ---
-#define DBUS_I_ENCODERS_EVENTS          DBUS_PREFIX "EncodersEvents"
-#define DBUS_I_RECORD_KEY_EVENTS        DBUS_PREFIX "RecordKeyEvents"
-#define DBUS_I_CURSOR_KEYS_EVENTS       DBUS_PREFIX "CursorKeysEvents"
-#define DBUS_I_TIMER_RECORD_REQUESTS    DBUS_PREFIX "TimerRecRequests"
-#define DBUS_I_PARAM_CHANGED_EVENTS     DBUS_PREFIX "ParamChangedEvents"
-#define DBUS_I_PARAM_CHANGE_REQUESTS    DBUS_PREFIX "ParamChangeRequests"
+#define DBUS_I_ENCODERS_EVENTS                  DBUS_PREFIX "EncodersEvents"
+#define DBUS_I_RECORD_KEY_EVENTS                DBUS_PREFIX "RecordKeyEvents"
+#define DBUS_I_THROUGH_CHANNEL_KEY_EVENTS       DBUS_PREFIX "ThroughChannelKeyEvents"
+#define DBUS_I_CURSOR_KEYS_EVENTS               DBUS_PREFIX "CursorKeysEvents"
+#define DBUS_I_FILTERS_KEYS_EVENTS              DBUS_PREFIX "FiltersKeysEvents"
+#define DBUS_I_ENCODERS_KEYS_EVENTS             DBUS_PREFIX "EncodersKeysEvents"
+#define DBUS_I_TIMER_RECORD_REQUESTS            DBUS_PREFIX "TimerRecRequests"
+#define DBUS_I_PARAM_CHANGED_EVENTS             DBUS_PREFIX "ParamChangedEvents"
+#define DBUS_I_PARAM_CHANGE_REQUESTS            DBUS_PREFIX "ParamChangeRequests"
 
 #define DBUS_I_RECORDER_CONTROL         DBUS_PREFIX "RecControl"
 #define DBUS_I_RECORDER_DURATION        DBUS_PREFIX "RecDurationEvents"
-#define DBUS_I_PLAYER_LEVEL             DBUS_PREFIX "PlayLevelEvents"
+// #define DBUS_I_PLAYER_LEVEL             DBUS_PREFIX "PlayLevelEvents"
 #define DBUS_I_PLAYER_CONTROL           DBUS_PREFIX "PlayControl"
 #define DBUS_I_PLAYER_STATE             DBUS_PREFIX "PlayStateEvents"
 #define DBUS_I_PLAYER_POSITION          DBUS_PREFIX "PlayPositionEvents"
 
-#define DBUS_I_PLAYER_LEVEL             DBUS_PREFIX "PlayLevelEvents"
+#define DBUS_I_CLEANER_STATE            DBUS_PREFIX "CleanerStateEvents"
+#define DBUS_I_CLEANER_CONTROL          DBUS_PREFIX "CleanerControl"
+
+// #define DBUS_I_PLAYER_LEVEL             DBUS_PREFIX "PlayLevelEvents"
 #define DBUS_I_HEART_BEATS              DBUS_PREFIX "HeartBeats"
 #define DBUS_I_GAIN_CHANGED_EVENTS      DBUS_PREFIX "GainChangedEvents"
 
@@ -44,7 +50,7 @@
 #define DBUS_N_ZKEY                     DBUS_PREFIX "zkey"
 #define DBUS_N_ZFACE                    DBUS_PREFIX "zface"
 #define DBUS_N_ZPLAY                    DBUS_PREFIX "zplay"
-#define DBUS_N_ZDENOISER                DBUS_PREFIX "zdenoiser"
+#define DBUS_N_ZBACKGROUND              DBUS_PREFIX "zbackground"
 #define DBUS_N_ZSPACE                   DBUS_PREFIX "zspace"
 #define DBUS_N_ZMIX                     DBUS_PREFIX "zmix"
 #define DBUS_N_ZDOG                     DBUS_PREFIX "zdog"
@@ -73,6 +79,9 @@
 #define DBUS_S_LREC_ENCODER             "LeftRecEncoder"
 #define DBUS_S_RREC_ENCODER             "RightRecEncoder"
 
+// --- сигналы нажатия крутилок
+#define DBUS_S_PLAY_ENCODER_KEY         "PlayEncoderKey"
+
 // --- команды управления записью ---
 #define DBUS_S_START_RECORD             "StartRec"
 #define DBUS_S_STOP_RECORD              "StopRec"
@@ -92,7 +101,7 @@
 #define DBUS_S_FAST_FORWARD_PLAY        "FastForward"
 
 // --- уведомления о состоянии воспроизведения ---
-#define DBUS_S_PLAY_LEVEL               "PlayLevel"
+// #define DBUS_S_PLAY_LEVEL               "PlayLevel"
 #define DBUS_S_PLAY_POSITION            "PositionChanged"
 
 #define DBUS_S_PLAY_STARTED             "Playing"
@@ -105,6 +114,7 @@
 
 // --- уведомления о нажатии кнопок ---
 #define DBUS_S_RECORD_KEY               "RecordKey"
+#define DBUS_S_THROUGH_CHANNEL_KEY      "ThroughChannelKey"
 #define DBUS_S_LEFT_KEY                 "LeftKey"
 #define DBUS_S_RIGHT_KEY                "RightKey"
 #define DBUS_S_UP_KEY                   "UpKey"
@@ -112,7 +122,33 @@
 #define DBUS_S_ENTER_KEY                "EnterKey"
 #define DBUS_S_ESC_KEY                  "EscapeKey"
 
-#define DBUS_S_REFRESH_DISPLAY          "RefreshDisplay"
+// --- кнопки фильтров ---
+#define DBUS_S_BNF_KEY                  "BNFKey"
+#define DBUS_S_HRF_KEY                  "HRFKey"
+#define DBUS_S_EQ_KEY                   "EQKey"
+#define DBUS_S_DC_KEY                   "DCKey"
+#define DBUS_S_LEF_KEY                  "LEFKey"
+#define DBUS_S_RNF_KEY                  "RNFKey"
+#define DBUS_S_VC_KEY                   "VCKey"
+#define DBUS_S_BYPASS_KEY               "BypassKey"
+
+// --- включение быстрых диалогов для настройки фильтров ---
+#define DBUS_S_BNF_FAST_DIALOG_ENABLED  "BNFFastDialogEnabled"
+#define DBUS_S_HRF_FAST_DIALOG_ENABLED  "HRFFastDialogEnabled"
+#define DBUS_S_EQ_FAST_DIALOG_ENABLED   "EQFastDialogEnabled"
+#define DBUS_S_DC_FAST_DIALOG_ENABLED   "DCFastDialogEnabled"
+#define DBUS_S_LEF_FAST_DIALOG_ENABLED  "LEFFastDialogEnabled"
+#define DBUS_S_RNF_FAST_DIALOG_ENABLED  "RNFFastDialogEnabled"
+#define DBUS_S_VC_FAST_DIALOG_ENABLED   "VCFastDialogEnabled"
+
+// --- выключение быстрых диалогов для настройки фильтров ---
+#define DBUS_S_BNF_FAST_DIALOG_DISABLED  "BNFFastDialogDisabled"
+#define DBUS_S_HRF_FAST_DIALOG_DISABLED  "HRFFastDialogDisabled"
+#define DBUS_S_EQ_FAST_DIALOG_DISABLED   "EQFastDialogDisabled"
+#define DBUS_S_DC_FAST_DIALOG_DISABLED   "DCFastDialogDisabled"
+#define DBUS_S_LEF_FAST_DIALOG_DISABLED  "LEFFastDialogDisabled"
+#define DBUS_S_RNF_FAST_DIALOG_DISABLED  "RNFFastDialogDisabled"
+#define DBUS_S_VC_FAST_DIALOG_DISABLED   "VCFastDialogDisabled"
 
 // ---  ---
 #define DBUS_S_GAIN_CHANGED             "GainChanged"
@@ -134,7 +170,7 @@
 #define DBUS_S_ZSTREAMER_ALIVE          "zstreamerAlive"
 #define DBUS_S_ZSPACE_ALIVE             "zspaceAlive"
 #define DBUS_S_ZMONSTER_ALIVE           "zmonsterAlive"
-#define DBUS_S_ZDENOISER_ALIVE          "zdenoiserAlive"
+#define DBUS_S_ZBACKGROUND_ALIVE        "zbackgroundAlive"
 
 //---------------------------------------------------------------------
 
@@ -161,18 +197,18 @@
 #define PARAM_MIXER_OUTPUT_LINE_GAIN           "Mixer.Output.LineOut.Gain"
 #define PARAM_MIXER_OUTPUT_SPEAKER_GAIN        "Mixer.Output.Speaker.Gain"
 #define PARAM_MIXER_OUTPUT_DIGITAL_GAIN        "Mixer.Output.DigitalOut.Gain"
-#define PARAM_MIXER_THROUGH_CHANNEL_GAIN       "Mixer.Through_channel.Gain"
+// #define PARAM_MIXER_THROUGH_CHANNEL_GAIN       "Mixer.Through_channel.Gain"
 #define PARAM_RECORDER_SAMPLE_RATE             "Recorder.Sample_rate"
 #define PARAM_RECORDER_PRECISION               "Recorder.Sample_size"
 #define PARAM_RECORDER_COMPRESSION             "Recorder.Compression"
 #define PARAM_RECORDER_RECORD_DURATION_LIMIT   "Recorder.Record_duration_limit"
 #define PARAM_RECORDER_CHANNELS                "Recorder.Channels"
 #define PARAM_RECORDER_RECORD_FILES            "Recorder.Record_files"
-#define PARAM_RECORDER_AGC_STATE               "Recorder.AGC.Enabled"
-#define PARAM_RECORDER_AGC_ATTACK              "Recorder.AGC.Attack_time"
-#define PARAM_RECORDER_AGC_DECAY               "Recorder.AGC.Decay_time"
-#define PARAM_RECORDER_AGC_NOISE               "Recorder.AGC.Noise_threshold"
-#define PARAM_RECORDER_AGC_GAIN                "Recorder.AGC.Target_gain"
+// #define PARAM_RECORDER_AGC_STATE               "Recorder.AGC.Enabled"
+// #define PARAM_RECORDER_AGC_ATTACK              "Recorder.AGC.Attack_time"
+// #define PARAM_RECORDER_AGC_DECAY               "Recorder.AGC.Decay_time"
+// #define PARAM_RECORDER_AGC_NOISE               "Recorder.AGC.Noise_threshold"
+// #define PARAM_RECORDER_AGC_GAIN                "Recorder.AGC.Target_gain"
 #define PARAM_RECORDER_TIMER_STATE             "Recorder.Timer.Enabled"
 #define PARAM_RECORDER_TIMER_START             "Recorder.Timer.Start_time"
 #define PARAM_RECORDER_TIMER_DURATION          "Recorder.Timer.Duration"
@@ -183,11 +219,11 @@
 #define PARAM_RECORDER_ACOUSTIC_STOP           "Recorder.Acoustic.Stop_threshold"
 #define PARAM_RECORDER_ACOUSTIC_STOPDELAY      "Recorder.Acoustic.Stop_delay"
 #define PARAM_RECORDER_ENABLE_LEDS             "Recorder.Enable_LEDs"
-#define PARAM_PLAYER_AGC_STATE                 "Player.AGC.Enabled"
-#define PARAM_PLAYER_AGC_ATTENUATION           "Player.AGC.Attenuation_gain"
-#define PARAM_PLAYER_AGC_NOISE                 "Player.AGC.Noise_gain"
-#define PARAM_PLAYER_AGC_DELAY                 "Player.AGC.Delay"
-#define PARAM_PLAYER_NOISE_CANCELATION         "Player.Noise_cancelation"
+// #define PARAM_PLAYER_AGC_STATE                 "Player.AGC.Enabled"
+// #define PARAM_PLAYER_AGC_ATTENUATION           "Player.AGC.Attenuation_gain"
+// #define PARAM_PLAYER_AGC_NOISE                 "Player.AGC.Noise_gain"
+// #define PARAM_PLAYER_AGC_DELAY                 "Player.AGC.Delay"
+// #define PARAM_PLAYER_NOISE_CANCELATION         "Player.Noise_cancelation"
 #define PARAM_OWERFLOW_GUARD_CLEAN_TRASH       "Overflow_guard.Auto_clean_trash"
 #define PARAM_OWERFLOW_GUARD_DELETE_OLD        "Overflow_guard.Auto_delete_old"
 #define PARAM_DISPLAY_BACKLIGHT_AUTO_OFF       "Display.Backlight.Auto_turn_off"
@@ -196,6 +232,7 @@
 #define PARAM_SECURITY_KEYBOARD_LOCK           "Security.Keyboard_lock.Auto_lock"
 #define PARAM_SECURITY_PROTECTION_ENABLED      "Security.Protection.Enabled"
 #define PARAM_SECURITY_PROTECTION_PIN          "Security.Protection.PIN"
+#define PARAM_BYPASS_FILTERS                    "Bypass_filters.Enabled"
 
 // filters
 #define PARAM_BROADBAND_FILTER_ENABLED          "Broadband_filter.Enabled"
@@ -206,8 +243,10 @@
 #define PARAM_HARMONIC_REJECT_FILTER_ENABLED    "HarmonicReject_filter.Enabled"
 #define PARAM_EQ_FILTER_ENABLED                 "EQ_filter.Enabled"
 #define PARAM_EQ_FILTER_TYPE                    "EQ_filter.Type"
-#define PARAM_EQ_FILTER_LF                      "EQ_filter.LF"
-#define PARAM_EQ_FILTER_HF                      "EQ_filter.HF"
+#define PARAM_EQ_FILTER_LF_DB                   "EQ_filter.LF_db"
+#define PARAM_EQ_FILTER_LF_HZ                   "EQ_filter.LF_hz"
+#define PARAM_EQ_FILTER_HF_DB                   "EQ_filter.HF_db"
+#define PARAM_EQ_FILTER_HF_KHZ                  "EQ_filter.HF_khz"
 #define PARAM_DECLICKER_FILTER_ENABLED          "Declicker_filter.Enabled"
 #define PARAM_DECLICKER_FILTER_THRESHOLD        "Declicker_filter.Threshold"
 #define PARAM_LEVEL_ENHANCEMENT_FILTER_ENABLED  "LevelEnhancement_filter.Enabled"
@@ -215,8 +254,8 @@
 #define PARAM_REFERENCE_NOISE_FILTER_REFERENCE_CHANNEL   "ReferenceNoise_filter.ReferenceChannel"
 #define PARAM_REFERENCE_NOISE_FILTER_TIME_DELAY          "ReferenceNoise_filter.TimeDelay"
 #define PARAM_REFERENCE_NOISE_FILTER_SUPRESSION          "ReferenceNoise_filter.Supression"
-#define PARAM_PSEUDO_FILTER_ENABLED             "Pseudo_filter.Enabled"
-#define PARAM_PSEUDO_FILTER_DELAY               "Pseudo_filter.Delay"
+// #define PARAM_PSEUDO_FILTER_ENABLED             "Pseudo_filter.Enabled"
+// #define PARAM_PSEUDO_FILTER_DELAY               "Pseudo_filter.Delay"
 #define PARAM_VOICE_CHANGER_FILTER_ENABLED      "Voice_changer_filter.Enabled"
 #define PARAM_VOICE_CHANGER_FILTER_VOICE        "Voice_changer_filter.Voice"
 
@@ -260,6 +299,10 @@ enum
     MSG_CANT_ENCODE_MP3,                // Error: "не могу начать кодирование MP3"
     MSG_RECORDING_IN_PROGRESS,          // Notify: "идёт запись, воспроизведение невозможно"
     MSG_RECORDING_MMC_NOT_READY,        // Notify: SD-карта не готова
+    MSG_FIRST_DISABLE_BNF_FILTER,       // Notify: Сначала выключите Широкополосный фильтр
+    MSG_FIRST_DISABLE_RNF_FILTER,       // Notify: Сначала выключите Стерео фильтр
+    MSG_FIRST_DISABLE_VC_FILTER,        // Notify: Сначала выключите Морфер
+    MSG_FIRST_DISABLE_ALL_FILTERS,      // Notify: Сначала выключите все фильтры
     __NUMBER_OF_ASYNC_MESSAGES          // Кол-во элементов в enum
 };
 

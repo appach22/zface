@@ -45,7 +45,7 @@
     <filters>
         <setting type="node" name="Широкополосный фильтр">
                 <setting type="leaf" name="Состояние">
-                        <param type="select" category="Filters" name="Broadband_filter.Enabled" id="1" dependsOn="6,7">
+                        <param type="select" category="Filters" name="Broadband_filter.Enabled">
                                 <item name="отключен"   value="0" />
                                 <item name="включен"    value="1" />
                         </param>
@@ -74,7 +74,7 @@
         </setting>
         <setting type="node" name="Фильтр тональных помех">
                 <setting type="leaf" name="Состояние">
-                        <param type="select" category="Filters" name="HarmonicReject_filter.Enabled" id="2" dependsOn="7">
+                        <param type="select" category="Filters" name="HarmonicReject_filter.Enabled">
                                 <item name="отключен"   value="0" />
                                 <item name="включен"    value="1" />
                         </param>
@@ -82,7 +82,7 @@
         </setting>
         <setting type="node" name="Эквалайзер">
                 <setting type="leaf" name="Состояние">
-                        <param type="select" category="Filters" name="EQ_filter.Enabled" id="3" dependsOn="7">
+                        <param type="select" category="Filters" name="EQ_filter.Enabled">
                                 <item name="отключен"   value="0" />
                                 <item name="включен"    value="1" />
                         </param>
@@ -133,7 +133,7 @@
         </setting>
         <setting type="node" name="ФИП">
                 <setting type="leaf" name="Состояние">
-                        <param type="select" category="Filters" name="Declicker_filter.Enabled" id="4" dependsOn="7">
+                        <param type="select" category="Filters" name="Declicker_filter.Enabled">
                                 <item name="отключен"   value="0" />
                                 <item name="включен"    value="1" />
                         </param>
@@ -144,7 +144,7 @@
         </setting>
         <setting type="node" name="АРУ">
                 <setting type="leaf" name="Состояние">
-                        <param type="select" category="Filters" name="LevelEnhancement_filter.Enabled" id="5" dependsOn="7">
+                        <param type="select" category="Filters" name="LevelEnhancement_filter.Enabled">
                                 <item name="отключен"   value="0" />
                                 <item name="включен"    value="1" />
                         </param>
@@ -152,7 +152,7 @@
         </setting>
         <setting type="node" name="Фильтр стерео">
                 <setting type="leaf" name="Состояние">
-                        <param type="select" category="Filters" name="ReferenceNoise_filter.Enabled" id="6" dependsOn="1,7">
+                        <param type="select" category="Filters" name="ReferenceNoise_filter.Enabled">
                                 <item name="отключен"   value="0" />
                                 <item name="включен"    value="1" />
                         </param>
@@ -167,7 +167,7 @@
                         <param type="value" category="Filters" name="ReferenceNoise_filter.TimeDelay" min="0" max="20" step="1" unit="мс" />
                 </setting>
                 <setting type="leaf" name="Подавление">
-                        <param type="value" category="Filters" name="ReferenceNoise_filter.Supression" min="3" max="39" step="3" unit="дБ" />
+                        <param type="value" category="Filters" name="ReferenceNoise_filter.Supression" min="0" max="60" step="3" unit="дБ" />
                 </setting>
         </setting>
         <!--<setting type="node" name="Псевдо-стерео">
@@ -184,7 +184,7 @@
         <!--
         <setting type="node" name="Морфер">
                 <setting type="leaf" name="Состояние">
-                        <param type="select" category="Filters" name="Voice_changer_filter.Enabled" id="7" dependsOn="1,2,3,4,5,6">
+                        <param type="select" category="Filters" name="Voice_changer_filter.Enabled">
                                 <item name="отключен"   value="0" />
                                 <item name="включен"    value="1" />
                         </param>

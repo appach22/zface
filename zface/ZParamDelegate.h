@@ -18,4 +18,19 @@ public slots:
 
 };
 
+class ZFileOpsDelegate : public QStyledItemDelegate
+{
+Q_OBJECT
+public:
+    explicit ZFileOpsDelegate(QObject *parent = 0);
+
+    QSize sizeHint(const QStyleOptionViewItem & option, const QModelIndex & index) const;
+    void paint(QPainter * painter, const QStyleOptionViewItem & option, const QModelIndex & index) const;
+
+signals:
+
+public slots:
+
+};
+
 #endif // ZPARAMDELEGATE_H

@@ -28,7 +28,7 @@ public:
     bool getParameter(const QString & _category, const QString & _name, int * _value);
 
     //void sendRotaryEvent(const QString & _event, const QString & _action);
-    void sendPlayEvent(const QString & _event);
+    void sendPlayEvent(const QString & _event, unsigned int _arg = UINT_MAX);
     bool sendOpenFileRequest(const QString & _fileName, SoundFileInfo * _info);
     int getPresetsListing(QStringList & _listing);
     int applyPreset(const QString & _presetName);

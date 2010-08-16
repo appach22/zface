@@ -17,5 +17,6 @@
         <file>res/headphones.png</file>
         <file>res/clock.png</file>
         <file>res/key.png</file>
+        <file>res/radio.png</file>
     </qresource>
 </RCC>
