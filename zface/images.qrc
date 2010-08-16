@@ -1,10 +1,6 @@
 <RCC>
     <qresource prefix="/all">
-        <file>res/xface_state_2.bmp</file>
-        <file>res/xface_state_1.bmp</file>
         <file>res/record_16x16.png</file>
-        <file>res/xface_mainmenu.bmp</file>
-        <file>res/xface_storage.bmp</file>
         <file>res/gain_play_dig.bmp</file>
         <file>res/gain_play_line.bmp</file>
         <file>res/gain_play_spk.bmp</file>
@@ -17,6 +13,8 @@
         <file>res/headphones.png</file>
         <file>res/clock.png</file>
         <file>res/key.png</file>
-        <file>res/radio.png</file>
+        <file>res/radio_on.png</file>
+        <file>res/radio_off.png</file>
+        <file>res/main_menu.png</file>
     </qresource>
 </RCC>

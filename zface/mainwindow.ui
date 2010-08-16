@@ -221,7 +221,7 @@
        <string notr="true"/>
       </property>
       <property name="currentIndex">
-       <number>8</number>
+       <number>0</number>
       </property>
       <widget class="QWidget" name="mainPage">
        <layout class="QGridLayout" name="gridLayout_8">
@@ -247,6 +247,11 @@
             <horstretch>0</horstretch>
             <verstretch>0</verstretch>
            </sizepolicy>
+          </property>
+          <property name="font">
+           <font>
+            <pointsize>11</pointsize>
+           </font>
           </property>
           <property name="text">
            <string/>
@@ -274,6 +279,11 @@
             <verstretch>0</verstretch>
            </sizepolicy>
           </property>
+          <property name="font">
+           <font>
+            <pointsize>11</pointsize>
+           </font>
+          </property>
           <property name="text">
            <string/>
           </property>
@@ -289,6 +299,11 @@
             <horstretch>0</horstretch>
             <verstretch>0</verstretch>
            </sizepolicy>
+          </property>
+          <property name="font">
+           <font>
+            <pointsize>11</pointsize>
+           </font>
           </property>
           <property name="text">
            <string/>
@@ -315,6 +330,11 @@
             <horstretch>0</horstretch>
             <verstretch>0</verstretch>
            </sizepolicy>
+          </property>
+          <property name="font">
+           <font>
+            <pointsize>11</pointsize>
+           </font>
           </property>
           <property name="text">
            <string/>

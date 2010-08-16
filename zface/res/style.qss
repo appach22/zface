@@ -11,6 +11,12 @@
     color: white;
 }
 
+#mainPage {
+    background-image: url(:/all/res/main_menu.png);
+    background-repeat: repeat-n;
+    background-position: center;
+}
+
 /*QListView, QListWidget {
     background-color: rgb(14, 23, 38);
     color: white;
@@ -134,7 +140,11 @@ QRadioButton::indicator {
 }
 
 QRadioButton::indicator::checked {
-     image: url(/etc/zface/radio.png);
+     image: url(:/all/res/radio_on.png);
+}
+
+QRadioButton::indicator::unchecked {
+     image: url(:/all/res/radio_off.png);
 }
 
 
