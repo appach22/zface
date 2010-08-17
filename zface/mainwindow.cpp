@@ -50,9 +50,9 @@ MainWindow::MainWindow(QWidget *parent)
     ui->sd->setStyleSheet("background-image: url(:/all/res/storage.png);"
                           "background-repeat: repeat-n;"
                           "background-position: center;");
-    ui->gainPlayIcon->setStyleSheet("background-image: url(:/all/res/gain_play_spk.bmp);"
-                                    "background-repeat: repeat-n;"
-                                    "background-position: center;");
+//    ui->gainPlayIcon->setStyleSheet("background-image: url(:/all/res/gain_play_spk.png);"
+//                                    "background-repeat: repeat-n;"
+//                                    "background-position: center;");
     ui->recording->hide();
 
 #if defined(Q_OS_WIN)
@@ -98,6 +98,9 @@ MainWindow::MainWindow(QWidget *parent)
     zdbus->getParameter("Main", "Security.Protection.Enabled", &val);
     zdbus->getParameter("Temp", "Security.Keyboard_lock.Active", &val);
     zdbus->getParameter("Temp", "Mixer.Headset.Connected", &val);
+    zdbus->getParameter("Main", "Mixer.Channels_to_speaker", &val);
+    zdbus->getParameter("Main", "Mixer.Through_channel", &val);
+    zdbus->getParameter("Main", "Recorder.Acoustic.Enabled", &val);
 
     settingsRoot = mixerRoot = filtersRoot = 0;
     settings.setRootNode(&settingsRoot);
@@ -859,7 +862,7 @@ void MainWindow::paramChanged(QString _param, QString _value)
         switch (value)
         {
             case 0 :
-                ui->gainRecIcon->setStyleSheet("background-image: url(:/all/res/gain_rec_mic.bmp);"
+                ui->gainRecIcon->setStyleSheet("background-image: url(:/all/res/gain_rec_mic.png);"
                                                "background-repeat: repeat-n;"
                                                "background-position: center;");
                 if (zdbus->getParameter("Main", "Mixer.Input.Mic.Left_gain", &gain))
@@ -868,7 +871,7 @@ void MainWindow::paramChanged(QString _param, QString _value)
                     ui->gainRecRightProgress->setValue(gain);
                 break;
             case 1 :
-                ui->gainRecIcon->setStyleSheet("background-image: url(:/all/res/gain_rec_line.bmp);"
+                ui->gainRecIcon->setStyleSheet("background-image: url(:/all/res/gain_rec_line.png);"
                                                "background-repeat: repeat-n;"
                                                "background-position: center;");
                 if (zdbus->getParameter("Main", "Mixer.Input.Analog.Left_gain", &gain))
@@ -877,7 +880,7 @@ void MainWindow::paramChanged(QString _param, QString _value)
                     ui->gainRecRightProgress->setValue(gain);
                 break;
             case 2 :
-                ui->gainRecIcon->setStyleSheet("background-image: url(:/all/res/gain_rec_phone.bmp);"
+                ui->gainRecIcon->setStyleSheet("background-image: url(:/all/res/gain_rec_phone.png);"
                                                "background-repeat: repeat-n;"
                                                "background-position: center;");
                 if (zdbus->getParameter("Main", "Mixer.Input.Phone.Gain", &gain))
@@ -887,7 +890,7 @@ void MainWindow::paramChanged(QString _param, QString _value)
                 }
                 break;
             case 3 :
-                ui->gainRecIcon->setStyleSheet("background-image: url(:/all/res/gain_rec_dig.bmp);"
+                ui->gainRecIcon->setStyleSheet("background-image: url(:/all/res/gain_rec_dig.png);"
                                                "background-repeat: repeat-n;"
                                                "background-position: center;");
                 if (zdbus->getParameter("Main", "Mixer.Input.DigitalIn.Left_gain", &gain))
@@ -904,21 +907,21 @@ void MainWindow::paramChanged(QString _param, QString _value)
         switch (value)
         {
             case 0 :
-                ui->gainPlayIcon->setStyleSheet("background-image: url(:/all/res/gain_play_line.bmp);"
+                ui->gainPlayIcon->setStyleSheet("background-image: url(:/all/res/gain_play_line.png);"
                                                 "background-repeat: repeat-n;"
                                                 "background-position: center;");
                 if (zdbus->getParameter("Main", "Mixer.Output.LineOut.Gain", &gain))
                     ui->gainPlayProgress->setValue(gain);
                 break;
             case 1 :
-                ui->gainPlayIcon->setStyleSheet("background-image: url(:/all/res/gain_play_spk.bmp);"
+                ui->gainPlayIcon->setStyleSheet("background-image: url(:/all/res/gain_play_spk.png);"
                                                 "background-repeat: repeat-n;"
                                                 "background-position: center;");
                 if (zdbus->getParameter("Main", "Mixer.Output.Speaker.Gain", &gain))
                     ui->gainPlayProgress->setValue(gain);
                 break;
             case 2 :
-                ui->gainPlayIcon->setStyleSheet("background-image: url(:/all/res/gain_play_dig.bmp);"
+                ui->gainPlayIcon->setStyleSheet("background-image: url(:/all/res/gain_play_dig.png);"
                                                 "background-repeat: repeat-n;"
                                                 "background-position: center;");
                 if (zdbus->getParameter("Main", "Mixer.Output.DigitalOut.Gain", &gain))
@@ -929,6 +932,28 @@ void MainWindow::paramChanged(QString _param, QString _value)
 
     else if (_param == "Mixer.Through_channel")
     {
+        if (value)
+            ui->channelWidget->setStyleSheet("background-image: url(:/all/res/through_channel.png);"
+                                             "background-repeat: repeat-n;");
+        else
+            ui->channelWidget->setStyleSheet("background-image: none;");
+    }
+
+    else if (_param == "Mixer.Channels_to_speaker")
+    {
+//        switch (value)
+//        {
+//            case 0 : ui->channels2spkWidget->setStyleSheet("background-image: url(:/all/res/left.png);"
+//                                                           "background-repeat: repeat-n;");
+//                     break;
+//            case 1 : ui->channels2spkWidget->setStyleSheet("background-image: url(:/all/res/right.png);"
+//                                                           "background-repeat: repeat-n;");
+//                     break;
+//            case 2 : ui->channels2spkWidget->setStyleSheet("background-image: url(:/all/res/stereo.png);"
+//                                                           "background-repeat: repeat-n;");
+//                     break;
+//        }
+
     }
 
     else if (_param == "Recorder.State")
@@ -948,6 +973,15 @@ void MainWindow::paramChanged(QString _param, QString _value)
                                                    "background-repeat: repeat-n;");
                 break;
         }
+    }
+
+    else if (_param == "Recorder.Acoustic.Enabled")
+    {
+        if (value)
+            ui->AGCwidget->setStyleSheet("background-image: url(:/all/res/acoustic_start.png);"
+                                             "background-repeat: repeat-n;");
+        else
+            ui->AGCwidget->setStyleSheet("background-image: none;");
     }
 
     else if (_param == "Storage.Connected")
@@ -1176,6 +1210,12 @@ void MainWindow::showMessage(QMessageBox::Icon _type, const QString & _message)
 {
     if (!message)
         focusedWidgets.push(QApplication::focusWidget());
+    else
+    {
+        messageTimer.stop();
+        delete message;
+        message = 0;
+    }
 
     message = new QMessageBox(this);
     message->setText(_message);
@@ -1183,7 +1223,6 @@ void MainWindow::showMessage(QMessageBox::Icon _type, const QString & _message)
     message->setIcon(_type);
     messageTimer.start();
     message->exec();
-    messageTimer.stop();
     removeMessageBox();
 }
 
@@ -1191,6 +1230,7 @@ void MainWindow::removeMessageBox()
 {
     if (message)
     {
+        messageTimer.stop();
         delete message;
         message = 0;
         if ((focused = focusedWidgets.pop()))
@@ -1214,7 +1254,7 @@ void MainWindow::virtualKeyboardPressed()
     {
         QPushButton * current;
         QList<QPushButton * > buttons = ui->virtualKeyboardWidget->findChildren<QPushButton * >(QRegExp("pushButton"));
-        if (ui->pushButton_17->text() == "Q" || ui->pushButton_17->text() == "Й")
+        if (ui->pushButton_17->text() == "Q" || ui->pushButton_17->text() == QString::fromUtf8("Й"))
             foreach (current, buttons)
                 current->setText(current->text().toLower());
         else
@@ -1236,13 +1276,24 @@ void MainWindow::virtualKeyboardPressed()
     }
     else if (button == ui->presetSaveButton)
     {
-        int res = zdbus->savePreset(name.toUtf8().toBase64().replace('/', '-'));
+        QStringList presets;
+        int res = zdbus->getPresetsListing(presets);
         if (res)
-            showMessage(QMessageBox::Critical, trUtf8("Не удалось сохранить пресет! Код ошибки ") + QString("%1.").arg(res));
-        else
         {
-            ui->pages->setCurrentWidget(ui->filtersAndPresetsPage);
-            ui->filtersAndPresetsList->setEditFocus(true);
+            showMessage(QMessageBox::Critical, trUtf8("Не удалось получить список пресетов! Код ошибки ") + QString("%1.").arg(res));
+            return;
+        }
+        if (QMessageBox::Yes == QMessageBox::warning(this, "", trUtf8("Пресет с именем ") + name + trUtf8(" уже существует. Перезаписать?"),
+                                                     QMessageBox::Yes | QMessageBox::No, QMessageBox::No))
+        {
+            res = zdbus->savePreset(name.toUtf8().toBase64().replace('/', '-'));
+            if (res)
+                showMessage(QMessageBox::Critical, trUtf8("Не удалось сохранить пресет! Код ошибки ") + QString("%1.").arg(res));
+            else
+            {
+                ui->pages->setCurrentWidget(ui->filtersAndPresetsPage);
+                ui->filtersAndPresetsList->setEditFocus(true);
+            }
         }
     }
     else

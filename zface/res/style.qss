@@ -22,6 +22,10 @@
     color: white;
 }*/
 
+#contentWidget {
+    background-color: black;
+}
+
 QListView {
 /*    background-color: rgb(14, 23, 38);*/
     background-color: black;
@@ -34,6 +38,7 @@ QListView {
     selection-color: white;
     border-radius: 5px;
     padding: 5px 0px;
+    color: black;
 }
 
 #modeWidget {
@@ -206,15 +211,58 @@ QScrollBar::handle:vertical {
   }
 
 ZKeyboardButton {
-     border: 1px solid #8f8f91;
+/*     border: 1px solid #8f8f91;*/
      border-radius: 3px;
-     background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
-                                       stop: 0 #f6f7fa, stop: 1 #dadbde);
+     background-color: qlineargradient(spread:pad, x1:1, y1:0, x2:1, y2:1, stop:0 rgba(159, 175, 191, 255), stop:1 rgba(232, 232, 234, 255));
      min-width: 12px;
      /*max-width: 64px;*/
      max-height: 16px;
  }
 
-ZKeyboardButton::focus {
-    border: 2px solid blue;
+ZKeyboardButton::selected {
+    border: 1px solid rgb(166, 208, 255);
+    background-color: qlineargradient(spread:pad, x1:1, y1:0, x2:1, y2:1, stop:0 rgba(103, 145, 193, 255), stop:1 rgba(38, 108, 193, 255));
+    color: white;
+}
+
+ZKeyboardButton::pressed {
+    background-color: qlineargradient(spread:pad, x1:1, y1:0, x2:1, y2:1, stop:0 rgba(38, 108, 193, 255), stop:1 rgba(103, 145, 193, 255));
+}
+
+#virtualKeyboardWidget {
+    background-color: rgb(95, 99, 102);
+    border-radius: 5px;
+    border: 1px solid rgb(116, 117, 119);
+    padding-left: 5px;
+}
+
+#presetNewNameLabel {
+    background-color: qlineargradient(spread:pad, x1:1, y1:0, x2:1, y2:1, stop:0 rgba(159, 175, 191, 255), stop:1 rgba(232, 232, 234, 255));
+    border-radius: 5px;
+    color: black;
+    padding: 3px;
+}
+
+QTimeEdit, QDateTimeEdit {
+    background-color: qlineargradient(spread:pad, x1:1, y1:0, x2:1, y2:1, stop:0 rgba(159, 175, 191, 255), stop:1 rgba(232, 232, 234, 255));
+    border-radius: 5px;
+    color: black;
+    padding: 3px;
+}
+
+QSpinBox {
+    background-color: qlineargradient(spread:pad, x1:1, y1:0, x2:1, y2:1, stop:0 rgba(159, 175, 191, 255), stop:1 rgba(232, 232, 234, 255));
+    border-radius: 3px;
+    color: black;
+    padding: 3px;
+}
+
+QSpinBox::focus {
+    border: 1px solid rgb(166, 208, 255);
+    background-color: qlineargradient(spread:pad, x1:1, y1:0, x2:1, y2:1, stop:0 rgba(103, 145, 193, 255), stop:1 rgba(38, 108, 193, 255));
+    color: white;
+}
+
+#customWidget {
+    color: black;
 }

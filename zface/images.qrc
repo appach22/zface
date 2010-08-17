@@ -1,13 +1,6 @@
 <RCC>
     <qresource prefix="/all">
         <file>res/record_16x16.png</file>
-        <file>res/gain_play_dig.bmp</file>
-        <file>res/gain_play_line.bmp</file>
-        <file>res/gain_play_spk.bmp</file>
-        <file>res/gain_rec_dig.bmp</file>
-        <file>res/gain_rec_line.bmp</file>
-        <file>res/gain_rec_mic.bmp</file>
-        <file>res/gain_rec_phone.bmp</file>
         <file>mainwindow.ui</file>
         <file>res/storage.png</file>
         <file>res/headphones.png</file>
@@ -15,6 +8,18 @@
         <file>res/key.png</file>
         <file>res/radio_on.png</file>
         <file>res/radio_off.png</file>
+        <file>res/right.png</file>
+        <file>res/stereo.png</file>
+        <file>res/left.png</file>
+        <file>res/acoustic_start.png</file>
+        <file>res/through_channel.png</file>
+        <file>res/gain_play_dig.png</file>
+        <file>res/gain_play_line.png</file>
+        <file>res/gain_rec_dig.png</file>
+        <file>res/gain_rec_line.png</file>
+        <file>res/gain_rec_mic.png</file>
+        <file>res/gain_rec_phone.png</file>
+        <file>res/gain_play_spk.png</file>
         <file>res/main_menu.png</file>
     </qresource>
 </RCC>

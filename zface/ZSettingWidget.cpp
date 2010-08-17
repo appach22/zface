@@ -16,7 +16,7 @@ ZSelectButton::ZSelectButton(QWidget *parent) :
 {
 }
 
-void ZSelectButton::paintEvent(QPaintEvent * event)
+void ZSelectButton::paintEvent(QPaintEvent *)
 {
     QStylePainter p(this);
     QStyleOptionButton opt;
@@ -54,17 +54,20 @@ void ZSettingWidget::setData(ZSelectParameter * _data)
     caption->setAlignment(Qt::AlignCenter);
     caption->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Fixed);
     mainLayout->addWidget(caption);
-    box = new QGroupBox(this);
-    box->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
-    mainLayout->addWidget(box);
+    scroll = new QScrollArea(this);
+    scroll->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    scroll->setWidgetResizable(true);
+    mainLayout->addWidget(scroll);
 
-    QVBoxLayout * boxLayout = new QVBoxLayout(box);
+    QWidget * contentWidget = new QWidget(scroll);
+    contentWidget->setObjectName("contentWidget");
+    QVBoxLayout * boxLayout = new QVBoxLayout(contentWidget);
     boxLayout->setContentsMargins(4, 4, 4, 4);
-    buttons = new QButtonGroup(box);
+    buttons = new QButtonGroup(contentWidget);
 
     for (int i = 0; i < dynamic_cast<ZSelectParameter *>(data)->items.count(); ++i)
     {
-        ZSelectButton * radio = new ZSelectButton(box);
+        ZSelectButton * radio = new ZSelectButton(contentWidget);
         radio->setText(dynamic_cast<ZSelectParameter *>(data)->items[i].name);
         buttons->addButton(radio, i);
         boxLayout->addWidget(radio);
@@ -73,6 +76,7 @@ void ZSettingWidget::setData(ZSelectParameter * _data)
         radio->installEventFilter(this);
     }
     boxLayout->addStretch(1);
+    scroll->setWidget(contentWidget);
 }
 
 void ZSettingWidget::setData(ZValueParameter * _data)
@@ -164,15 +168,17 @@ void ZSettingWidget::keyPressEvent(QKeyEvent * event)
         case Qt::Key_Down :
             if (type == Value)
             {
-                if (cachedValue > dynamic_cast<ZValueParameter *>(data)->range.first)
-                    progress->setValue(--cachedValue);
+                ZValueParameter * param = dynamic_cast<ZValueParameter *>(data);
+                if (progress->value() - param->step >= param->range.first)
+                    progress->setValue(progress->value() - param->step);
             }
             break;
         case Qt::Key_Up :
             if (type == Value)
             {
-                if (cachedValue < dynamic_cast<ZValueParameter *>(data)->range.second)
-                    progress->setValue(++cachedValue);
+                ZValueParameter * param = dynamic_cast<ZValueParameter *>(data);
+                if (progress->value() + param->step <= param->range.second)
+                    progress->setValue(progress->value() + param->step);
             }
             break;
         case Qt::Key_Left :
@@ -201,7 +207,7 @@ void ZSettingWidget::showEvent(QShowEvent *)
                 buttons->buttons()[i]->setChecked(true);
                 buttons->buttons()[i]->setFocus();
             }
-        box->setEditFocus(true);
+//        scroll->setEditFocus(true);
     }
     else if (type == Value)
     {

@@ -221,7 +221,7 @@
        <string notr="true"/>
       </property>
       <property name="currentIndex">
-       <number>0</number>
+       <number>11</number>
       </property>
       <widget class="QWidget" name="mainPage">
        <layout class="QGridLayout" name="gridLayout_8">
@@ -369,6 +369,41 @@
            </size>
           </property>
          </spacer>
+        </item>
+        <item row="3" column="0">
+         <widget class="QWidget" name="channels2spkWidget" native="true">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="minimumSize">
+           <size>
+            <width>32</width>
+            <height>16</height>
+           </size>
+          </property>
+         </widget>
+        </item>
+        <item row="3" column="2">
+         <widget class="QWidget" name="files2sdWidget" native="true">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="minimumSize">
+           <size>
+            <width>25</width>
+            <height>30</height>
+           </size>
+          </property>
+          <property name="styleSheet">
+           <string notr="true"/>
+          </property>
+         </widget>
         </item>
        </layout>
       </widget>
@@ -754,6 +789,7 @@ p, li { white-space: pre-wrap; }
 &lt;tr&gt;
 &lt;td style=&quot;border: none;&quot;&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:9pt;&quot;&gt;&lt;/p&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:9pt;&quot;&gt;&lt;/p&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:9pt;&quot;&gt;&lt;/p&gt;
@@ -868,9 +904,14 @@ p, li { white-space: pre-wrap; }
          <widget class="QSpinBox" name="digit1">
           <property name="maximumSize">
            <size>
-            <width>17</width>
-            <height>16</height>
+            <width>22</width>
+            <height>22</height>
            </size>
+          </property>
+          <property name="font">
+           <font>
+            <pointsize>16</pointsize>
+           </font>
           </property>
           <property name="wrapping">
            <bool>true</bool>
@@ -893,9 +934,14 @@ p, li { white-space: pre-wrap; }
          <widget class="QSpinBox" name="digit2">
           <property name="maximumSize">
            <size>
-            <width>17</width>
-            <height>16</height>
+            <width>22</width>
+            <height>22</height>
            </size>
+          </property>
+          <property name="font">
+           <font>
+            <pointsize>16</pointsize>
+           </font>
           </property>
           <property name="wrapping">
            <bool>true</bool>
@@ -918,9 +964,14 @@ p, li { white-space: pre-wrap; }
          <widget class="QSpinBox" name="digit3">
           <property name="maximumSize">
            <size>
-            <width>17</width>
-            <height>16</height>
+            <width>22</width>
+            <height>22</height>
            </size>
+          </property>
+          <property name="font">
+           <font>
+            <pointsize>16</pointsize>
+           </font>
           </property>
           <property name="wrapping">
            <bool>true</bool>
@@ -943,9 +994,14 @@ p, li { white-space: pre-wrap; }
          <widget class="QSpinBox" name="digit4">
           <property name="maximumSize">
            <size>
-            <width>17</width>
-            <height>16</height>
+            <width>22</width>
+            <height>22</height>
            </size>
+          </property>
+          <property name="font">
+           <font>
+            <pointsize>16</pointsize>
+           </font>
           </property>
           <property name="wrapping">
            <bool>true</bool>
@@ -1088,8 +1144,17 @@ p, li { white-space: pre-wrap; }
         <property name="leftMargin">
          <number>2</number>
         </property>
+        <property name="topMargin">
+         <number>4</number>
+        </property>
         <property name="rightMargin">
          <number>2</number>
+        </property>
+        <property name="bottomMargin">
+         <number>4</number>
+        </property>
+        <property name="verticalSpacing">
+         <number>4</number>
         </property>
         <item row="0" column="0" colspan="5">
          <widget class="QLabel" name="presetNewNameLabel">
@@ -1108,8 +1173,11 @@ p, li { white-space: pre-wrap; }
           <property name="maximumSize">
            <size>
             <width>16777215</width>
-            <height>20</height>
+            <height>24</height>
            </size>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">color: black;</string>
           </property>
           <property name="frameShape">
            <enum>QFrame::StyledPanel</enum>
@@ -1158,6 +1226,10 @@ p, li { white-space: pre-wrap; }
             <stylestrategy>NoAntialias</stylestrategy>
            </font>
           </property>
+          <property name="styleSheet">
+           <string notr="true">padding-left: 3px;
+padding-right: 3px;</string>
+          </property>
           <property name="text">
            <string>Сохранить</string>
           </property>
@@ -1187,14 +1259,14 @@ p, li { white-space: pre-wrap; }
           <property name="minimumSize">
            <size>
             <width>0</width>
-            <height>80</height>
+            <height>83</height>
            </size>
           </property>
           <widget class="QWidget" name="horizontalLayoutWidget">
            <property name="geometry">
             <rect>
-             <x>0</x>
-             <y>0</y>
+             <x>1</x>
+             <y>5</y>
              <width>171</width>
              <height>21</height>
             </rect>
@@ -1401,9 +1473,9 @@ p, li { white-space: pre-wrap; }
           <widget class="QWidget" name="horizontalLayoutWidget_2">
            <property name="geometry">
             <rect>
-             <x>5</x>
-             <y>20</y>
-             <width>154</width>
+             <x>1</x>
+             <y>23</y>
+             <width>171</width>
              <height>21</height>
             </rect>
            </property>
@@ -1591,13 +1663,32 @@ p, li { white-space: pre-wrap; }
               </property>
              </widget>
             </item>
+            <item>
+             <widget class="ZKeyboardButton" name="pushButton_43">
+              <property name="maximumSize">
+               <size>
+                <width>16</width>
+                <height>16</height>
+               </size>
+              </property>
+              <property name="font">
+               <font>
+                <family>Arial</family>
+                <pointsize>11</pointsize>
+               </font>
+              </property>
+              <property name="text">
+               <string>ж</string>
+              </property>
+             </widget>
+            </item>
            </layout>
           </widget>
           <widget class="QWidget" name="horizontalLayoutWidget_3">
            <property name="geometry">
             <rect>
-             <x>14</x>
-             <y>40</y>
+             <x>9</x>
+             <y>41</y>
              <width>156</width>
              <height>20</height>
             </rect>
@@ -1791,9 +1882,9 @@ p, li { white-space: pre-wrap; }
           <widget class="QWidget" name="horizontalLayoutWidget_4">
            <property name="geometry">
             <rect>
-             <x>30</x>
+             <x>9</x>
              <y>60</y>
-             <width>121</width>
+             <width>163</width>
              <height>18</height>
             </rect>
            </property>
@@ -1811,7 +1902,7 @@ p, li { white-space: pre-wrap; }
               </property>
               <property name="maximumSize">
                <size>
-                <width>40</width>
+                <width>34</width>
                 <height>16</height>
                </size>
               </property>
@@ -1834,9 +1925,15 @@ p, li { white-space: pre-wrap; }
                 <verstretch>0</verstretch>
                </sizepolicy>
               </property>
+              <property name="minimumSize">
+               <size>
+                <width>98</width>
+                <height>0</height>
+               </size>
+              </property>
               <property name="maximumSize">
                <size>
-                <width>64</width>
+                <width>105</width>
                 <height>16</height>
                </size>
               </property>
@@ -1861,7 +1958,7 @@ p, li { white-space: pre-wrap; }
               </property>
               <property name="maximumSize">
                <size>
-                <width>16</width>
+                <width>20</width>
                 <height>16</height>
                </size>
               </property>
@@ -1879,6 +1976,19 @@ p, li { white-space: pre-wrap; }
            </layout>
           </widget>
          </widget>
+        </item>
+        <item row="3" column="2">
+         <spacer name="verticalSpacer_8">
+          <property name="orientation">
+           <enum>Qt::Vertical</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>20</width>
+            <height>40</height>
+           </size>
+          </property>
+         </spacer>
         </item>
        </layout>
       </widget>
@@ -2525,8 +2635,8 @@ p, li { white-space: pre-wrap; }
    <slot>virtualKeyboardPressed()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>23</x>
-     <y>88</y>
+     <x>18</x>
+     <y>94</y>
     </hint>
     <hint type="destinationlabel">
      <x>34</x>
@@ -2541,8 +2651,8 @@ p, li { white-space: pre-wrap; }
    <slot>virtualKeyboardPressed()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>38</x>
-     <y>90</y>
+     <x>35</x>
+     <y>94</y>
     </hint>
     <hint type="destinationlabel">
      <x>53</x>
@@ -2557,8 +2667,8 @@ p, li { white-space: pre-wrap; }
    <slot>virtualKeyboardPressed()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>57</x>
-     <y>87</y>
+     <x>52</x>
+     <y>94</y>
     </hint>
     <hint type="destinationlabel">
      <x>59</x>
@@ -2573,8 +2683,8 @@ p, li { white-space: pre-wrap; }
    <slot>virtualKeyboardPressed()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>76</x>
-     <y>90</y>
+     <x>69</x>
+     <y>94</y>
     </hint>
     <hint type="destinationlabel">
      <x>73</x>
@@ -2589,8 +2699,8 @@ p, li { white-space: pre-wrap; }
    <slot>virtualKeyboardPressed()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>91</x>
-     <y>92</y>
+     <x>86</x>
+     <y>94</y>
     </hint>
     <hint type="destinationlabel">
      <x>89</x>
@@ -2605,8 +2715,8 @@ p, li { white-space: pre-wrap; }
    <slot>virtualKeyboardPressed()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>107</x>
-     <y>92</y>
+     <x>103</x>
+     <y>94</y>
     </hint>
     <hint type="destinationlabel">
      <x>107</x>
@@ -2621,8 +2731,8 @@ p, li { white-space: pre-wrap; }
    <slot>virtualKeyboardPressed()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>124</x>
-     <y>92</y>
+     <x>120</x>
+     <y>94</y>
     </hint>
     <hint type="destinationlabel">
      <x>124</x>
@@ -2637,8 +2747,8 @@ p, li { white-space: pre-wrap; }
    <slot>virtualKeyboardPressed()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>142</x>
-     <y>92</y>
+     <x>137</x>
+     <y>94</y>
     </hint>
     <hint type="destinationlabel">
      <x>155</x>
@@ -2653,8 +2763,8 @@ p, li { white-space: pre-wrap; }
    <slot>virtualKeyboardPressed()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>160</x>
-     <y>90</y>
+     <x>154</x>
+     <y>94</y>
     </hint>
     <hint type="destinationlabel">
      <x>163</x>
@@ -2669,8 +2779,8 @@ p, li { white-space: pre-wrap; }
    <slot>virtualKeyboardPressed()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>32</x>
-     <y>110</y>
+     <x>26</x>
+     <y>114</y>
     </hint>
     <hint type="destinationlabel">
      <x>37</x>
@@ -2685,8 +2795,8 @@ p, li { white-space: pre-wrap; }
    <slot>virtualKeyboardPressed()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>49</x>
-     <y>110</y>
+     <x>43</x>
+     <y>114</y>
     </hint>
     <hint type="destinationlabel">
      <x>65</x>
@@ -2701,8 +2811,8 @@ p, li { white-space: pre-wrap; }
    <slot>virtualKeyboardPressed()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>66</x>
-     <y>109</y>
+     <x>60</x>
+     <y>114</y>
     </hint>
     <hint type="destinationlabel">
      <x>67</x>
@@ -2717,8 +2827,8 @@ p, li { white-space: pre-wrap; }
    <slot>virtualKeyboardPressed()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>80</x>
-     <y>109</y>
+     <x>77</x>
+     <y>114</y>
     </hint>
     <hint type="destinationlabel">
      <x>119</x>
@@ -2733,7 +2843,7 @@ p, li { white-space: pre-wrap; }
    <slot>virtualKeyboardPressed()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>102</x>
+     <x>94</x>
      <y>114</y>
     </hint>
     <hint type="destinationlabel">
@@ -2749,8 +2859,8 @@ p, li { white-space: pre-wrap; }
    <slot>virtualKeyboardPressed()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>113</x>
-     <y>110</y>
+     <x>111</x>
+     <y>114</y>
     </hint>
     <hint type="destinationlabel">
      <x>277</x>
@@ -2765,8 +2875,8 @@ p, li { white-space: pre-wrap; }
    <slot>virtualKeyboardPressed()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>134</x>
-     <y>106</y>
+     <x>128</x>
+     <y>114</y>
     </hint>
     <hint type="destinationlabel">
      <x>438</x>
@@ -2813,8 +2923,8 @@ p, li { white-space: pre-wrap; }
    <slot>virtualKeyboardPressed()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>132</x>
-     <y>130</y>
+     <x>171</x>
+     <y>132</y>
     </hint>
     <hint type="destinationlabel">
      <x>14</x>
@@ -2835,6 +2945,54 @@ p, li { white-space: pre-wrap; }
     <hint type="destinationlabel">
      <x>388</x>
      <y>742</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>pushButton_43</sender>
+   <signal>pressed()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>virtualKeyboardPressed()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>163</x>
+     <y>93</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>313</x>
+     <y>450</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>pushButton_48</sender>
+   <signal>pressed()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>virtualKeyboardPressed()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>143</x>
+     <y>114</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>294</x>
+     <y>588</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>pushButton_49</sender>
+   <signal>pressed()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>virtualKeyboardPressed()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>156</x>
+     <y>114</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>439</x>
+     <y>681</y>
     </hint>
    </hints>
   </connection>

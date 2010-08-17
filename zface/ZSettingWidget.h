@@ -9,9 +9,8 @@
 #include <QtGui/QButtonGroup>
 #include <QtGui/QLabel>
 #include <QtGui/QProgressBar>
-#include <QtGui/QGroupBox>
 #include <QtGui/QRadioButton>
-
+#include <QtGui/QScrollArea>
 
 class ZSelectButton : public QRadioButton
 {
@@ -53,7 +52,7 @@ private slots:
 private:
 
     QButtonGroup * buttons;
-    QGroupBox * box;
+    QScrollArea * scroll;
     QWidget * progressContainer;
     QProgressBar * progress;
     SettingType type;

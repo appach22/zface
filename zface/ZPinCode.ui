@@ -54,6 +54,9 @@
      <property name="text">
       <string>Старый ПИН-код:</string>
      </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
     </widget>
    </item>
    <item row="1" column="7">
@@ -86,9 +89,14 @@
     <widget class="QSpinBox" name="digit1">
      <property name="maximumSize">
       <size>
-       <width>17</width>
-       <height>16</height>
+       <width>22</width>
+       <height>22</height>
       </size>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>16</pointsize>
+      </font>
      </property>
      <property name="wrapping">
       <bool>true</bool>
@@ -111,9 +119,14 @@
     <widget class="QSpinBox" name="digit2">
      <property name="maximumSize">
       <size>
-       <width>17</width>
-       <height>16</height>
+       <width>22</width>
+       <height>22</height>
       </size>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>16</pointsize>
+      </font>
      </property>
      <property name="wrapping">
       <bool>true</bool>
@@ -136,9 +149,14 @@
     <widget class="QSpinBox" name="digit3">
      <property name="maximumSize">
       <size>
-       <width>17</width>
-       <height>16</height>
+       <width>22</width>
+       <height>22</height>
       </size>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>16</pointsize>
+      </font>
      </property>
      <property name="wrapping">
       <bool>true</bool>
@@ -161,9 +179,14 @@
     <widget class="QSpinBox" name="digit4">
      <property name="maximumSize">
       <size>
-       <width>17</width>
-       <height>16</height>
+       <width>22</width>
+       <height>22</height>
       </size>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>16</pointsize>
+      </font>
      </property>
      <property name="wrapping">
       <bool>true</bool>
@@ -226,6 +249,9 @@
      <property name="text">
       <string>Новый ПИН-код:</string>
      </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
     </widget>
    </item>
    <item row="4" column="7">
@@ -258,9 +284,14 @@
     <widget class="QSpinBox" name="digit5">
      <property name="maximumSize">
       <size>
-       <width>17</width>
-       <height>16</height>
+       <width>22</width>
+       <height>22</height>
       </size>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>16</pointsize>
+      </font>
      </property>
      <property name="wrapping">
       <bool>true</bool>
@@ -283,9 +314,14 @@
     <widget class="QSpinBox" name="digit6">
      <property name="maximumSize">
       <size>
-       <width>17</width>
-       <height>16</height>
+       <width>22</width>
+       <height>22</height>
       </size>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>16</pointsize>
+      </font>
      </property>
      <property name="wrapping">
       <bool>true</bool>
@@ -308,9 +344,14 @@
     <widget class="QSpinBox" name="digit7">
      <property name="maximumSize">
       <size>
-       <width>17</width>
-       <height>16</height>
+       <width>22</width>
+       <height>22</height>
       </size>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>16</pointsize>
+      </font>
      </property>
      <property name="wrapping">
       <bool>true</bool>
@@ -333,9 +374,14 @@
     <widget class="QSpinBox" name="digit8">
      <property name="maximumSize">
       <size>
-       <width>17</width>
-       <height>16</height>
+       <width>22</width>
+       <height>22</height>
       </size>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>16</pointsize>
+      </font>
      </property>
      <property name="wrapping">
       <bool>true</bool>

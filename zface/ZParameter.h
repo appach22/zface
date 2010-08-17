@@ -40,10 +40,11 @@ struct ZValueParameter : public ZParameter
 {
     QPair<int, int> range;
     QString unit;
+    int step;
     ZValueParameter() {}
     ZValueParameter(QString _category, QString _name, QString _visualName, QPair<int, int> & _range, QString _unit)
         : ZParameter(_category, _name, _visualName)
-        { range = _range; unit = _unit;}
+        { range = _range; unit = _unit; step = 1;}
 };
 
 #endif // ZPARAMETER_H

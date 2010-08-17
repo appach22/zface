@@ -72,7 +72,7 @@
                         </param>
                 </setting>
         </setting>
-        <setting type="node" name="Фильтр тональных помех">
+        <setting type="node" name="Фильтр тональн. помех">
                 <setting type="leaf" name="Состояние">
                         <param type="select" category="Filters" name="HarmonicReject_filter.Enabled">
                                 <item name="отключен"   value="0" />
@@ -98,17 +98,17 @@
                 </setting>
                 <setting type="leaf" name="НЧ (дБ)">
                         <param type="select" category="Filters" name="EQ_filter.LF_db">
-                            <item name="-12"        value="-12" />
-                            <item name="-9"         value="-9" />
-                            <item name="-6"         value="-6" />
-                            <item name="-3"         value="-3" />
-                            <item name="0"          value="0" />
-                            <item name="1"          value="1" />
-                            <item name="2"          value="2" />
-                            <item name="3"          value="3" />
-                            <item name="4"          value="4" />
-                            <item name="5"          value="5" />
-                            <item name="6"          value="6" />
+                            <item name="-12 дБ"        value="-12" />
+                            <item name="-9 дБ"         value="-9" />
+                            <item name="-6 дБ"         value="-6" />
+                            <item name="-3 дБ"         value="-3" />
+                            <item name="0 дБ"          value="0" />
+                            <item name="1 дБ"          value="1" />
+                            <item name="2 дБ"          value="2" />
+                            <item name="3 дБ"          value="3" />
+                            <item name="4 дБ"          value="4" />
+                            <item name="5 дБ"          value="5" />
+                            <item name="6 дБ"          value="6" />
                         </param>
                 </setting>
                 <setting type="leaf" name="ВЧ (кГц)">
@@ -117,21 +117,21 @@
 
                 <setting type="leaf" name="ВЧ (дБ)">
                         <param type="select" category="Filters" name="EQ_filter.HF_db">
-                            <item name="-12"        value="-12" />
-                            <item name="-9"         value="-9" />
-                            <item name="-6"         value="-6" />
-                            <item name="-3"         value="-3" />
-                            <item name="0"          value="0" />
-                            <item name="1"          value="1" />
-                            <item name="2"          value="2" />
-                            <item name="3"          value="3" />
-                            <item name="4"          value="4" />
-                            <item name="5"          value="5" />
-                            <item name="6"          value="6" />
+                            <item name="-12 дБ"        value="-12" />
+                            <item name="-9 дБ"         value="-9" />
+                            <item name="-6 дБ"         value="-6" />
+                            <item name="-3 дБ"         value="-3" />
+                            <item name="0 дБ"          value="0" />
+                            <item name="1 дБ"          value="1" />
+                            <item name="2 дБ"          value="2" />
+                            <item name="3 дБ"          value="3" />
+                            <item name="4 дБ"          value="4" />
+                            <item name="5 дБ"          value="5" />
+                            <item name="6 дБ"          value="6" />
                         </param>
                 </setting>
         </setting>
-        <setting type="node" name="ФИП">
+        <setting type="node" name="Фильтр импульсн. помех">
                 <setting type="leaf" name="Состояние">
                         <param type="select" category="Filters" name="Declicker_filter.Enabled">
                                 <item name="отключен"   value="0" />
@@ -201,7 +201,7 @@
 
     <settings>
         <setting type="node" name="Парметры аудио">
-                <setting type="leaf" name="Частота дискрет-ции">
+                <setting type="leaf" name="Частота дискретизации">
                         <param type="select" category="Main" name="Recorder.Sample_rate">
                                 <item name="8 кГц"      value="0" />
                                 <item name="16 кГц"     value="1" />
@@ -259,7 +259,7 @@
                         <param type="value" category="Main" name="Recorder.Acoustic.Stop_threshold" min="0" max="72" step="1" unit="дБ" />
                 </setting>
                 <setting type="leaf" name="Задержка стопа">
-                        <param type="value" category="Main" name="Recorder.Acoustic.Start_delay" min="500" max="10000" step="500" unit="с" />
+                        <param type="value" category="Main" name="Recorder.Acoustic.Stop_delay" min="500" max="10000" step="500" unit="мс" />
                 </setting>
         </setting>
         <setting type="node" name="Таймер записи">
@@ -269,7 +269,12 @@
                                 <item name="включен"    value="1" />
                         </param>
                 </setting>
-                <!-- время старта и длительность записи должны быть здесь -->
+                <setting type="leaf" name="Время старта записи">
+                        <param type="custom" category="Main" name="Recorder.Timer.Start_time" />
+                </setting>
+                <setting type="leaf" name="Длительность записи">
+                        <param type="custom" category="Main" name="Recorder.Timer.Duration" />
+                </setting>
                 <setting type="leaf" name="Регулярность записи">
                         <param type="select" category="Main" name="Recorder.Timer.Repeat">
                                 <item name="однажды"    value="0" />
@@ -306,9 +311,13 @@
                                 <item name="включена"   value="1" />
                         </param>
                 </setting>
-                <!-- изменить пин-код должен быть здесь -->
+                <setting type="leaf" name="Изменить ПИН-код">
+                        <param type="custom" category="Main" name="Security.Protection.PIN" />
+                </setting>
         </setting>
-        <!-- дата и время должны быть здесь -->
+        <setting type="leaf" name="Дата и время">
+                <param type="custom" category="" name="DateTime" />
+        </setting>
         <setting type="node" name="Прочие настройки">
                 <setting type="leaf" name="Отключ-е подсветки">
                         <param type="select" category="Main" name="Display.Backlight.Auto_turn_off">
@@ -318,7 +327,7 @@
                                 <item name="1 минута"       value="3" />
                         </param>
                 </setting>
-                <setting type="leaf" name="Светодиоды уровня и кнопок">
+                <setting type="leaf" name="Подсветка кнопок">
                         <param type="select" category="Main" name="Recorder.Enable_LEDs">
                                 <item name="отключены"  value="0" />
                                 <item name="включены"   value="1" />

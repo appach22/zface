@@ -92,6 +92,8 @@ void ZAllSettings::getParameter(QXmlStreamReader & _xml, ZSettingsNode * _parent
     {
         QPair<int, int> range = QPair<int, int>(attrs.value("min").toString().toInt(), attrs.value("max").toString().toInt());
         ZValueParameter * param = new ZValueParameter(category, name, _parentNode->name, range, attrs.value("unit").toString());
+        if (attrs.hasAttribute("step"))
+            param->step = attrs.value("step").toString().toInt();
         ZSettingWidget * setting = new ZSettingWidget(paramContainer);
         setting->setData(param);
         _parentNode->SetWidget(setting);
@@ -137,6 +139,7 @@ void ZAllSettings::getParameter(QXmlStreamReader & _xml, ZSettingsNode * _parent
             customWidget = new ZTimerDurationDialog(setting);
         else if (name == "Security.Protection.PIN")
             customWidget = new ZPinCode(setting);
+        customWidget->setObjectName("customWidget");
         setting->setData(param, customWidget);
         _parentNode->SetWidget(setting);
         parameter = param;

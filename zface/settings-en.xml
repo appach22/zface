@@ -11,7 +11,7 @@
         <setting type="leaf" name="Monitor">
                 <param type="select" category="Main" name="Mixer.Output">
                         <item name="analog output"          value="0" />
-                        <item name="loudspeaker/headphones" value="1" />
+                        <item name="speaker/headphones"     value="1" />
                         <item name="digital output"         value="2" />
                 </param>
         </setting>
@@ -98,17 +98,17 @@
                 </setting>
                 <setting type="leaf" name="LF (dB)">
                         <param type="select" category="Filters" name="EQ_filter.LF_db">
-                            <item name="-12"        value="-12" />
-                            <item name="-9"         value="-9" />
-                            <item name="-6"         value="-6" />
-                            <item name="-3"         value="-3" />
-                            <item name="0"          value="0" />
-                            <item name="1"          value="1" />
-                            <item name="2"          value="2" />
-                            <item name="3"          value="3" />
-                            <item name="4"          value="4" />
-                            <item name="5"          value="5" />
-                            <item name="6"          value="6" />
+                            <item name="-12 dB"        value="-12" />
+                            <item name="-9 dB"         value="-9" />
+                            <item name="-6 dB"         value="-6" />
+                            <item name="-3 dB"         value="-3" />
+                            <item name="0 dB"          value="0" />
+                            <item name="1 dB"          value="1" />
+                            <item name="2 dB"          value="2" />
+                            <item name="3 dB"          value="3" />
+                            <item name="4 dB"          value="4" />
+                            <item name="5 dB"          value="5" />
+                            <item name="6 dB"          value="6" />
                         </param>
                 </setting>
                 <setting type="leaf" name="HF (kHz)">
@@ -117,17 +117,17 @@
 
                 <setting type="leaf" name="HF (dB)">
                         <param type="select" category="Filters" name="EQ_filter.HF_db">
-                            <item name="-12"        value="-12" />
-                            <item name="-9"         value="-9" />
-                            <item name="-6"         value="-6" />
-                            <item name="-3"         value="-3" />
-                            <item name="0"          value="0" />
-                            <item name="1"          value="1" />
-                            <item name="2"          value="2" />
-                            <item name="3"          value="3" />
-                            <item name="4"          value="4" />
-                            <item name="5"          value="5" />
-                            <item name="6"          value="6" />
+                            <item name="-12 dB"        value="-12" />
+                            <item name="-9 dB"         value="-9" />
+                            <item name="-6 dB"         value="-6" />
+                            <item name="-3 dB"         value="-3" />
+                            <item name="0 dB"          value="0" />
+                            <item name="1 dB"          value="1" />
+                            <item name="2 dB"          value="2" />
+                            <item name="3 dB"          value="3" />
+                            <item name="4 dB"          value="4" />
+                            <item name="5 dB"          value="5" />
+                            <item name="6 dB"          value="6" />
                         </param>
                 </setting>
         </setting>
@@ -259,7 +259,7 @@
                         <param type="value" category="Main" name="Recorder.Acoustic.Stop_threshold" min="0" max="72" step="1" unit="dB" />
                 </setting>
                 <setting type="leaf" name="Stop delay">
-                        <param type="value" category="Main" name="Recorder.Acoustic.Start_delay" min="500" max="10000" step="500" unit="s" />
+                        <param type="value" category="Main" name="Recorder.Acoustic.Stop_delay" min="500" max="10000" step="500" unit="ms" />
                 </setting>
         </setting>
         <setting type="node" name="Recorder timer">
@@ -269,7 +269,12 @@
                                 <item name="enabled"    value="1" />
                         </param>
                 </setting>
-                <!-- время старта и длительность записи должны быть здесь -->
+                <setting type="leaf" name="Start time">
+                        <param type="custom" category="Main" name="Recorder.Timer.Start_time" />
+                </setting>
+                <setting type="leaf" name="Recording duration">
+                        <param type="custom" category="Main" name="Recorder.Timer.Duration" />
+                </setting>
                 <setting type="leaf" name="Schedule">
                         <param type="select" category="Main" name="Recorder.Timer.Repeat">
                                 <item name="once"       value="0" />
@@ -300,15 +305,19 @@
                                 <item name="2 min"      value="3" />
                         </param>
                 </setting>
-                <setting type="leaf" name="PIN-code protection">
+                <setting type="leaf" name="PIN code protection">
                         <param type="select" category="Main" name="Security.Protection.Enabled">
                                 <item name="disabled"   value="0" />
                                 <item name="enabled"    value="1" />
                         </param>
                 </setting>
-                <!-- изменить пин-код должен быть здесь -->
+                <setting type="leaf" name="Change PIN code">
+                        <param type="custom" category="Main" name="Security.Protection.PIN" />
+                </setting>
         </setting>
-        <!-- дата и время должны быть здесь -->
+        <setting type="leaf" name="Date and time">
+                <param type="custom" category="" name="DateTime" />
+        </setting>
         <setting type="node" name="Other settings">
                 <setting type="leaf" name="Screen backlights">
                         <param type="select" category="Main" name="Display.Backlight.Auto_turn_off">
@@ -318,7 +327,7 @@
                                 <item name="1 min"      value="3" />
                         </param>
                 </setting>
-                <setting type="leaf" name="Signal and buttons LEDs">
+                <setting type="leaf" name="Buttons LEDs">
                         <param type="select" category="Main" name="Recorder.Enable_LEDs">
                                 <item name="disabled"   value="0" />
                                 <item name="enabled"    value="1" />
