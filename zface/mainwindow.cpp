@@ -47,6 +47,7 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
     ui->pages->setCurrentWidget(ui->mainPage);
+    ui->statusPages->setCurrentWidget(ui->mainStatus);
     ui->headerLabel->hide();
     ui->sd->setStyleSheet("background-image: url(:/all/res/storage.png);"
                           "background-repeat: repeat-n;"
@@ -310,6 +311,7 @@ void MainWindow::processMainPage(QKeyEvent * event)
             while (ui->mixerView->rootIndex().isValid())
                 ui->mixerView->setRootIndex(ui->mixerView->rootIndex().parent());
             ui->pages->setCurrentWidget(ui->mixerPage);
+            ui->headerLabel->setText(trUtf8("Выбор линий"));
             ui->mixerView->setEditFocus(true);
             // Чтобы элемент сразу выделился
             ui->mixerView->setCurrentIndex(mixer.index(0, 0, ui->mixerView->rootIndex()));

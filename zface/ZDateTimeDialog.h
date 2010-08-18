@@ -13,7 +13,7 @@ namespace Ui {
 class ZDateTimeDialog : public ZCustomWidget {
     Q_OBJECT
 public:
-    ZDateTimeDialog(QWidget *parent = 0);
+    ZDateTimeDialog(QWidget *parent = 0, const QString & _header = "");
     ~ZDateTimeDialog();
 
     QString getValue();

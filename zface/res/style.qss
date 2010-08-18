@@ -267,6 +267,8 @@ QSpinBox::focus {
     color: black;
 }
 
+/*, #dateTimeHeaderLabel*/
+
 #headerLabel {
     background-color: black;
     color: white;

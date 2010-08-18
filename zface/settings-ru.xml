@@ -8,7 +8,7 @@
                         <item name="цифровой вход"    value="3" />
                 </param>
         </setting>
-        <setting type="leaf" name="Выход воспроизвед-я">
+        <setting type="leaf" name="Выход воспроизведения">
                 <param type="select" category="Main" name="Mixer.Output">
                         <item name="аналоговый выход"   value="0" />
                         <item name="динамик/наушники" value="1" />
@@ -20,21 +20,21 @@
                         <item name="отключен"   value="0" />
                         <item name="включен"    value="1" />
                 </param>
-        </setting>
+        </setting>-->
         <setting type="leaf" name="Канал на динамике">
                 <param type="select" category="Main" name="Mixer.Channels_to_speaker">
                         <item name="микс"        value="0" />
                         <item name="левый"  value="1" />
                         <item name="правый" value="2" />
                 </param>
-        </setting>-->
-        <setting type="leaf" name="Режим анал-го входа">
+        </setting>
+        <setting type="leaf" name="Режим аналог-го входа">
                 <param type="select" category="Main" name="Mixer.Input.Analog.Mode">
                         <item name="микрофонный"        value="0" />
                         <item name="линейный"           value="1" />
                 </param>
         </setting>
-        <setting type="leaf" name="Сигнал анал-го входа">
+        <setting type="leaf" name="Сигнал аналог-го входа">
                 <param type="select" category="Main" name="Mixer.Input.Analog.Signal_kind">
                         <item name="дифференциальный"   value="0" />
                         <item name="асимметричный"      value="1" />
@@ -43,7 +43,7 @@
     </mixer>
 
     <filters>
-        <setting type="node" name="Широкополосный фильтр">
+        <setting type="node" name="Широкополосн. фильтр">
                 <setting type="leaf" name="Состояние">
                         <param type="select" category="Filters" name="Broadband_filter.Enabled">
                                 <item name="отключен"   value="0" />
@@ -131,7 +131,7 @@
                         </param>
                 </setting>
         </setting>
-        <setting type="node" name="Фильтр импульсн. помех">
+        <setting type="node" name="Фильтр импульс. помех">
                 <setting type="leaf" name="Состояние">
                         <param type="select" category="Filters" name="Declicker_filter.Enabled">
                                 <item name="отключен"   value="0" />
@@ -200,7 +200,7 @@
     </filters>
 
     <settings>
-        <setting type="node" name="Парметры аудио">
+        <setting type="node" name="Параметры аудио">
                 <setting type="leaf" name="Частота дискретизации">
                         <param type="select" category="Main" name="Recorder.Sample_rate">
                                 <item name="8 кГц"      value="0" />
@@ -297,7 +297,7 @@
                 </setting>
         </setting>
         <setting type="node" name="Безопасность">
-                <setting type="leaf" name="Автоблок-ка кнопок">
+                <setting type="leaf" name="Автоблокировка кнопок">
                         <param type="select" category="Main" name="Security.Keyboard_lock.Auto_lock">
                                 <item name="отключена"  value="0" />
                                 <item name="30 секунд"  value="1" />
@@ -319,7 +319,7 @@
                 <param type="custom" category="" name="DateTime" />
         </setting>
         <setting type="node" name="Прочие настройки">
-                <setting type="leaf" name="Отключ-е подсветки">
+                <setting type="leaf" name="Отключение подсветки">
                         <param type="select" category="Main" name="Display.Backlight.Auto_turn_off">
                                 <item name="не отключается" value="0" />
                                 <item name="15 секунд"      value="1" />
@@ -333,7 +333,7 @@
                                 <item name="включены"   value="1" />
                         </param>
                 </setting>
-                <setting type="leaf" name="Режим подключ-я USB">
+                <setting type="leaf" name="Режим подключения USB">
                         <param type="select" category="Main" name="USB.Connected_OS">
                                 <item name="Кард-ридер"     value="0" />
                                 <item name="Web-интерфейс"  value="1" />

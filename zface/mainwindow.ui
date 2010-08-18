@@ -2043,7 +2043,7 @@ padding-right: 3px;</string>
        <string notr="true"/>
       </property>
       <property name="currentIndex">
-       <number>0</number>
+       <number>2</number>
       </property>
       <widget class="QWidget" name="mainStatus">
        <property name="styleSheet">
@@ -2413,14 +2413,14 @@ padding-right: 3px;</string>
         <item>
          <layout class="QVBoxLayout" name="verticalLayout_2">
           <property name="spacing">
-           <number>5</number>
+           <number>4</number>
           </property>
           <item>
            <widget class="QProgressBar" name="gainRecLeftProgress">
             <property name="maximumSize">
              <size>
               <width>16777215</width>
-              <height>10</height>
+              <height>11</height>
              </size>
             </property>
             <property name="styleSheet">
@@ -2439,10 +2439,16 @@ padding-right: 3px;</string>
           </item>
           <item>
            <widget class="QProgressBar" name="gainRecRightProgress">
+            <property name="minimumSize">
+             <size>
+              <width>0</width>
+              <height>0</height>
+             </size>
+            </property>
             <property name="maximumSize">
              <size>
               <width>16777215</width>
-              <height>10</height>
+              <height>11</height>
              </size>
             </property>
             <property name="maximum">

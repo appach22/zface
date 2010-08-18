@@ -40,6 +40,7 @@ FORMS += mainwindow.ui \
     ZPinCode.ui
 RESOURCES += images.qrc
 LIBS += ../zkbd/libzkbd.a
+# TRANSLATIONS += res/qt_ru.ts
 target.path += $$[DESTDIR]/usr/bin
 
 # target.files += $TARGET

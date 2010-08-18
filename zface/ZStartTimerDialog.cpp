@@ -1,12 +1,13 @@
 #include "ZStartTimerDialog.h"
 #include "ui_ZDateTimeDialog.h"
 
-ZStartTimerDialog::ZStartTimerDialog(QWidget *parent) :
+ZStartTimerDialog::ZStartTimerDialog(QWidget *parent, const QString & _header) :
     ZCustomWidget(parent),
     ui(new Ui::ZDateTimeDialog)
 {
     ui->setupUi(this);
     ui->timeEdit->hide();
+    ui->dateTimeHeaderLabel->setText(_header);
     ui->dateTimeEdit->installEventFilter(this);
     ui->dateTimeEdit->setMaximumDate(QDate(2037, 12, 31));
     ui->dateTimeEdit->setMinimumDate(QDate(2010, 1, 1));

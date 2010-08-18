@@ -42,6 +42,9 @@ int main(int argc, char *argv[])
 #if defined(QT_KEYPAD_NAVIGATION)
     a.setNavigationMode(Qt::NavigationModeKeypadDirectional/*NavigationModeKeypadTabOrder*/);
 #endif
+    QTranslator qtTranslator;
+    qtTranslator.load("qt_" + QLocale::system().name(), QLibraryInfo::location(QLibraryInfo::TranslationsPath));
+    a.installTranslator(&qtTranslator);
 //    QPalette palette;
 //    palette.setColor(QPalette::Window, QColor(14, 23, 38));
 //    palette.setColor(QPalette::WindowText, Qt::white);

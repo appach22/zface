@@ -132,11 +132,11 @@ void ZAllSettings::getParameter(QXmlStreamReader & _xml, ZSettingsNode * _parent
         ZSettingWidget * setting = new ZSettingWidget(paramContainer);
         ZCustomWidget * customWidget;
         if (name == "DateTime")
-            customWidget = new ZDateTimeDialog(setting);
+            customWidget = new ZDateTimeDialog(setting, _parentNode->name);
         else if (name == "Recorder.Timer.Start_time")
-            customWidget = new ZStartTimerDialog(setting);
+            customWidget = new ZStartTimerDialog(setting, _parentNode->name);
         else if (name == "Recorder.Timer.Duration")
-            customWidget = new ZTimerDurationDialog(setting);
+            customWidget = new ZTimerDurationDialog(setting, _parentNode->name);
         else if (name == "Security.Protection.PIN")
             customWidget = new ZPinCode(setting);
         customWidget->setObjectName("customWidget");

@@ -20,14 +20,14 @@
                         <item name="disabled"   value="0" />
                         <item name="enabled"    value="1" />
                 </param>
-        </setting>
-        <setting type="leaf" name="Loudspeaker/headphones channels">
+        </setting>-->
+        <setting type="leaf" name="Speaker/headphones channels">
                 <param type="select" category="Main" name="Mixer.Channels_to_speaker">
                         <item name="mix/stereo"             value="0" />
                         <item name="left"                   value="1" />
                         <item name="right"                  value="2" />
                 </param>
-        </setting>-->
+        </setting>
         <setting type="leaf" name="Analog input mode">
                 <param type="select" category="Main" name="Mixer.Input.Analog.Mode">
                         <item name="microphone"             value="0" />

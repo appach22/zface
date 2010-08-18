@@ -1,12 +1,13 @@
 #include "ZTimerDurationDialog.h"
 #include "ui_ZDateTimeDialog.h"
 
-ZTimerDurationDialog::ZTimerDurationDialog(QWidget *parent) :
+ZTimerDurationDialog::ZTimerDurationDialog(QWidget *parent, const QString & _header) :
     ZCustomWidget(parent),
     ui(new Ui::ZDateTimeDialog)
 {
     ui->setupUi(this);
     ui->dateTimeEdit->hide();
+    ui->dateTimeHeaderLabel->setText(_header);
     ui->timeEdit->installEventFilter(this);
     ui->timeEdit->setDisplayFormat("hh:mm");
     ui->timeEdit->setMaximumTime(QTime(10, 0, 0, 0));

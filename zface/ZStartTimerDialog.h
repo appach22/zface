@@ -14,7 +14,7 @@ namespace Ui {
 class ZStartTimerDialog : public ZCustomWidget {
     Q_OBJECT
 public:
-    ZStartTimerDialog(QWidget *parent = 0);
+    ZStartTimerDialog(QWidget *parent = 0, const QString & _header = "");
     ~ZStartTimerDialog();
 
     QString getValue();

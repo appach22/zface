@@ -9,14 +9,16 @@
 
 
 #include <QDebug>
+#include <QMessageBox>
 
 
-ZDateTimeDialog::ZDateTimeDialog(QWidget *parent) :
+ZDateTimeDialog::ZDateTimeDialog(QWidget *parent, const QString & _header) :
     ZCustomWidget(parent),
     ui(new Ui::ZDateTimeDialog)
 {
     ui->setupUi(this);
     ui->timeEdit->hide();
+    ui->dateTimeHeaderLabel->setText(_header);
     ui->dateTimeEdit->installEventFilter(this);
     ui->dateTimeEdit->setMaximumDate(QDate(2037, 12, 31));
     ui->dateTimeEdit->setMinimumDate(QDate(2010, 1, 1));
@@ -69,24 +71,21 @@ bool ZDateTimeDialog::eventFilter(QObject *, QEvent *event)
             tv.tv_usec = 0;
             settimeofday(&tv, NULL);
 
-            int fd = open("/dev/rtc", O_WRONLY, 0);
-            if(fd < 0)
+            int fd = open("/dev/rtc0", O_WRONLY);
+            if (fd < 0)
             {
-                fd = open("/dev/rtc0", O_WRONLY, 0);
-                if(fd < 0)
-                        ; // TODO: log error
-                else
-                {
-                    struct tm *tm;
+                QMessageBox::critical(this, "", trUtf8("Не удалось установить время!"), QMessageBox::Ok, QMessageBox::Ok);
+                return true;
+            }
+            else
+            {
+                time_t secs;
+                secs = ui->dateTimeEdit->dateTime().toTime_t();
 
-                    unsigned int secs;
-                    secs = tv.tv_sec + ((tv.tv_usec > 500000) ? 1 : 0);
+                struct tm * tm = gmtime(&secs);
+                ioctl(fd, RTC_SET_TIME, tm);
 
-                    tm = gmtime((time_t*)&secs);
-                    ioctl(fd, RTC_SET_TIME, tm);
-
-                    ::close(fd);
-                }
+                ::close(fd);
             }
 
             QCoreApplication::sendEvent(this, event);
