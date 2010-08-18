@@ -127,6 +127,7 @@ private slots:
 
 public slots:
     void virtualKeyboardPressed();
+    void currentPageChanged(int _page);
 
 };
 

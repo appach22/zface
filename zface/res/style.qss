@@ -266,3 +266,8 @@ QSpinBox::focus {
 #customWidget {
     color: black;
 }
+
+#headerLabel {
+    background-color: black;
+    color: white;
+}

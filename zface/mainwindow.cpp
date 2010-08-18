@@ -47,6 +47,7 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
     ui->pages->setCurrentWidget(ui->mainPage);
+    ui->headerLabel->hide();
     ui->sd->setStyleSheet("background-image: url(:/all/res/storage.png);"
                           "background-repeat: repeat-n;"
                           "background-position: center;");
@@ -292,12 +293,14 @@ void MainWindow::processMainPage(QKeyEvent * event)
                 rootIndex = ui->filesView->rootIndex();
                 ui->filesView->setCurrentIndex(files.index(0, 0, rootIndex));
                 ui->pages->setCurrentWidget(ui->browserPage);
+                ui->headerLabel->setText(trUtf8("Просмотр SD-карты"));
                 ui->filesView->setEditFocus(true);
             }
             break;
         case Qt::Key_Up :
             {
                 ui->pages->setCurrentWidget(ui->utilitiesPage);
+                ui->headerLabel->setText(trUtf8("Утилиты"));
                 ui->utilitiesList->setCurrentRow(0);
                 ui->utilitiesList->setEditFocus(true);
             }
@@ -323,9 +326,11 @@ void MainWindow::processMainPage(QKeyEvent * event)
             ui->settingsView->setCurrentIndex(settings.index(0, 0, ui->settingsView->rootIndex()));
             currentView = ui->settingsView;
             currentPage = ui->settingsPage;
+            ui->headerLabel->setText(trUtf8("Настройки"));
             break;
         case Qt::Key_Left :
             ui->pages->setCurrentWidget(ui->filtersAndPresetsPage);
+            ui->headerLabel->setText(trUtf8("Фильтры"));
             ui->filtersAndPresetsList->setCurrentRow(0);
             ui->filtersAndPresetsList->setEditFocus(true);
             break;
@@ -344,6 +349,7 @@ void MainWindow::processBrowserPage(QKeyEvent * event)
                 SetWatcher(ui->filesView->currentIndex());
                 ui->filesView->setRootIndex(ui->filesView->currentIndex());
                 ui->filesView->setCurrentIndex(ui->filesView->rootIndex().child(0, 0));
+                ui->headerLabel->setText(ui->filesView->rootIndex().data(Qt::DisplayRole).toString());
                 files.refresh(ui->filesView->rootIndex());
                 ui->filesView->setEditFocus(true);
             }
@@ -383,6 +389,8 @@ void MainWindow::processBrowserPage(QKeyEvent * event)
             {
                 ui->filesView->setCurrentIndex(ui->filesView->rootIndex());
                 ui->filesView->setRootIndex(ui->filesView->rootIndex().parent());
+                if (ui->filesView->rootIndex().isValid())
+                    ui->headerLabel->setText(trUtf8("Просмотр SD-карты"));
                 SetWatcher(ui->filesView->rootIndex());
                 files.refresh(ui->filesView->rootIndex());
                 ui->filesView->setEditFocus(true);
@@ -421,6 +429,7 @@ void MainWindow::processSettingsPage(QKeyEvent * event, QListView * view)
                     {
                         view->setRootIndex(view->currentIndex());
                         view->setCurrentIndex(ind);
+                        ui->headerLabel->setText(view->rootIndex().data(Qt::DisplayRole).toString());
                     }
                 }
                 else
@@ -443,12 +452,23 @@ void MainWindow::processSettingsPage(QKeyEvent * event, QListView * view)
                 {
                     view->setRootIndex(ind.parent());
                     view->setCurrentIndex(ind);
+                    if (ind.parent().isValid())
+                        ui->headerLabel->setText(view->rootIndex().parent().data(Qt::DisplayRole).toString());
+                    else
+                    {
+                        if (view == ui->filtersView)
+                            ui->headerLabel->setText(trUtf8("Фильтры"));
+                        else
+                            ui->headerLabel->setText(trUtf8("Настройки"));
+                    }
+
                 }
                 else
                 {
                     if (view == ui->filtersView)
                     {
                         ui->pages->setCurrentWidget(ui->filtersAndPresetsPage);
+                        ui->headerLabel->setText(trUtf8("Фильтры"));
                         ui->filtersAndPresetsList->setEditFocus(true);
                     }
                     else
@@ -504,6 +524,7 @@ void MainWindow::processUtilitiesPage(QKeyEvent * event)
                 if (log.open(QIODevice::ReadOnly))
                 {
                     ui->pages->setCurrentWidget(ui->logsPage);
+                    ui->headerLabel->setText(ui->utilitiesList->currentItem()->text());
                     //ui->logsBrowser->setSource(QUrl());
                     ui->logsBrowser->setPlainText(QString(log.readAll()));
                     ui->logsBrowser->setEditFocus(true);
@@ -516,6 +537,7 @@ void MainWindow::processUtilitiesPage(QKeyEvent * event)
             else if (ui->utilitiesList->currentRow() == 4)
             {
                 ui->pages->setCurrentWidget(ui->logsPage);
+                ui->headerLabel->setText(ui->utilitiesList->currentItem()->text());
                 QString ip = "";
                 QList<QNetworkAddressEntry> ips = QNetworkInterface::interfaceFromName("eth0").addressEntries();
                 if (ips.count())
@@ -568,6 +590,7 @@ void MainWindow::processFiltersAndPresetsPage(QKeyEvent * event)
                 }
                 ui->presetsList->sortItems();
                 ui->pages->setCurrentWidget(ui->presetsPage);
+                ui->headerLabel->setText(trUtf8("Пресеты"));
                 ui->presetsList->setCurrentRow(0);
                 ui->presetsList->scrollToTop();
                 ui->presetsList->setEditFocus(true);
@@ -577,6 +600,7 @@ void MainWindow::processFiltersAndPresetsPage(QKeyEvent * event)
                 doRenamePreset = false;
                 ui->presetNewNameLabel->setText("");
                 ui->pages->setCurrentWidget(ui->presetNamePage);
+                ui->headerLabel->setText(trUtf8("Имя пресета"));
                 ui->pushButton_36->setFocus();
             }
             break;
@@ -589,6 +613,7 @@ void MainWindow::processPresetsPage(QKeyEvent * event)
     {
         case Qt::Key_Escape :
             ui->pages->setCurrentWidget(ui->filtersAndPresetsPage);
+            ui->headerLabel->setText(trUtf8("Фильтры"));
             ui->filtersAndPresetsList->setEditFocus(true);
             break;
         case Qt::Key_Select :
@@ -689,6 +714,7 @@ void MainWindow::processPresetNamePage(QKeyEvent * event)
         {
             ui->pages->setCurrentWidget(ui->filtersAndPresetsPage);
             ui->filtersAndPresetsList->setEditFocus(true);
+            ui->headerLabel->setText(trUtf8("Фильтры"));
         }
     }
 }
@@ -700,6 +726,7 @@ void MainWindow::processLogsBrowserPage(QKeyEvent * event)
         case Qt::Key_Escape :
         case Qt::Key_Select :
             ui->pages->setCurrentWidget(ui->utilitiesPage);
+            ui->headerLabel->setText(trUtf8("Утилиты"));
             ui->utilitiesList->setEditFocus(true);
             break;
 //        case Qt::Key_Up :
@@ -953,7 +980,6 @@ void MainWindow::paramChanged(QString _param, QString _value)
 //                                                           "background-repeat: repeat-n;");
 //                     break;
 //        }
-
     }
 
     else if (_param == "Recorder.State")
@@ -1283,10 +1309,11 @@ void MainWindow::virtualKeyboardPressed()
             showMessage(QMessageBox::Critical, trUtf8("Не удалось получить список пресетов! Код ошибки ") + QString("%1.").arg(res));
             return;
         }
-        if (QMessageBox::Yes == QMessageBox::warning(this, "", trUtf8("Пресет с именем ") + name + trUtf8(" уже существует. Перезаписать?"),
-                                                     QMessageBox::Yes | QMessageBox::No, QMessageBox::No))
+        QString nameBase64 = name.toUtf8().toBase64().replace('/', '-');
+        if (!presets.contains(nameBase64) || (presets.contains(nameBase64) && QMessageBox::Yes == QMessageBox::warning(this, "", trUtf8("Пресет с именем ") + name + trUtf8(" уже существует. Перезаписать?"),
+                                                                              QMessageBox::Yes | QMessageBox::No, QMessageBox::No)))
         {
-            res = zdbus->savePreset(name.toUtf8().toBase64().replace('/', '-'));
+            res = zdbus->savePreset(nameBase64);
             if (res)
                 showMessage(QMessageBox::Critical, trUtf8("Не удалось сохранить пресет! Код ошибки ") + QString("%1.").arg(res));
             else
@@ -1313,3 +1340,10 @@ void MainWindow::doScreenshot()
         qDebug() << "Error saving screenshot!";
 }
 
+void MainWindow::currentPageChanged(int _page)
+{
+    if (_page == 0 || _page == 9 || _page == 10 || _page == 11)
+        ui->headerLabel->hide();
+    else
+        ui->headerLabel->show();
+}

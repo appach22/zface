@@ -165,31 +165,27 @@ void ZSettingWidget::keyPressEvent(QKeyEvent * event)
             else
                 qDebug() << "Error setting parameter: " << data->category << data->name << value;
             break;
-        case Qt::Key_Down :
-            if (type == Value)
+        case Qt::Key_Left :
+            if (type == Select)
+                buttons->button(0)->setFocus();
+            else if (type == Value)
             {
                 ZValueParameter * param = dynamic_cast<ZValueParameter *>(data);
                 if (progress->value() - param->step >= param->range.first)
                     progress->setValue(progress->value() - param->step);
             }
             break;
-        case Qt::Key_Up :
-            if (type == Value)
-            {
-                ZValueParameter * param = dynamic_cast<ZValueParameter *>(data);
-                if (progress->value() + param->step <= param->range.second)
-                    progress->setValue(progress->value() + param->step);
-            }
-            break;
-        case Qt::Key_Left :
-            if (type == Select)
-                buttons->button(0)->setFocus();
-            break;
         case Qt::Key_Right :
             if (type == Select)
             {
                 int count = buttons->buttons().count();
                 buttons->button(count - 1)->setFocus();
+            }
+            else if (type == Value)
+            {
+                ZValueParameter * param = dynamic_cast<ZValueParameter *>(data);
+                if (progress->value() + param->step <= param->range.second)
+                    progress->setValue(progress->value() + param->step);
             }
             break;
     }
