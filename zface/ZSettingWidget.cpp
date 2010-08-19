@@ -1,6 +1,7 @@
 #include <QtGui/QVBoxLayout>
 #include <QCoreApplication>
 #include <QStylePainter>
+#include <QMessageBox>
 
 #include "ZSettingWidget.h"
 #include "ZParamDelegate.h"
@@ -150,6 +151,10 @@ void ZSettingWidget::keyPressEvent(QKeyEvent * event)
             else if (type == Value)
                 value = progress->value();
 
+            // Проверяем сохраняемое значение
+            if (!checkValue(data->name, value))
+                return;
+
             // Сохраняем значение параметра
             if (zdbus->setParameter(data->category, data->name, value))
             {
@@ -250,3 +255,95 @@ void ZSettingWidget::setValue(int _value)
     else
         customProcessor->setValue(_value);
 }
+
+bool ZSettingWidget::checkValue(const QString & _param, int _value)
+{
+    if (_param == "Recorder.Acoustic.Start_threshold")
+    {
+        if (_value <= allValues["Recorder.Acoustic.Stop_threshold"])
+        {
+            QMessageBox::warning(this, "", trUtf8("Порог старта должен быть больше порога стопа."), QMessageBox::Ok, QMessageBox::Ok);
+            return false;
+        }
+    }
+    else if (_param == "Recorder.Acoustic.Stop_threshold")
+    {
+        if (_value >= allValues["Recorder.Acoustic.Start_threshold"])
+        {
+            QMessageBox::warning(this, "", trUtf8("Порог стопа должен быть меньше порога старта."), QMessageBox::Ok, QMessageBox::Ok);
+            return false;
+        }
+    }
+    else if (_param == "Recorder.Sample_size")
+    {
+        if (_value == 1 && allValues["Recorder.Compression"] == 1)
+        {
+            QMessageBox::warning(this, "", trUtf8("Разрядность 24 бита не поддерживается для сжатия μ-закон."), QMessageBox::Ok, QMessageBox::Ok);
+            return false;
+        }
+    }
+    else if (_param == "Recorder.Compression")
+    {
+        if (_value == 1 && allValues["Recorder.Sample_size"] == 1)
+        {
+            QMessageBox::warning(this, "", trUtf8("Сжатие μ-закон не поддерживается для разрядности 24 бита."), QMessageBox::Ok, QMessageBox::Ok);
+            return false;
+        }
+    }
+    else if (_param == "Broadband_filter.Enabled")
+    {
+        if (_value == 1 && allValues["ReferenceNoise_filter.Enabled"] == 1)
+        {
+            QMessageBox::warning(this, "", trUtf8("Сначала выключите Стерео фильтр."), QMessageBox::Ok, QMessageBox::Ok);
+            return false;
+        }
+        else if (_value == 1 && allValues["Voice_changer_filter.Enabled"] == 1)
+        {
+            QMessageBox::warning(this, "", trUtf8("Сначала выключите Морфер."), QMessageBox::Ok, QMessageBox::Ok);
+            return false;
+        }
+
+    }
+    else if (_param == "ReferenceNoise_filter.Enabled")
+    {
+        if (_value == 1 && allValues["Broadband_filter.Enabled"] == 1)
+        {
+            QMessageBox::warning(this, "", trUtf8("Сначала выключите Широкополосный фильтр."), QMessageBox::Ok, QMessageBox::Ok);
+            return false;
+        }
+        else if (_value == 1 && allValues["Voice_changer_filter.Enabled"] == 1)
+        {
+            QMessageBox::warning(this, "", trUtf8("Сначала выключите Морфер."), QMessageBox::Ok, QMessageBox::Ok);
+            return false;
+        }
+
+    }
+    else if (_param == "Declicker_filter.Enabled"     ||
+             _param == "EQ_filter.Enabled"            ||
+             _param == "HarmonicReject_filter.Enabled"||
+             _param == "LevelEnhancement_filter.Enabled")
+    {
+        qDebug() << _value << allValues["Voice_changer_filter.Enabled"];
+        if (_value == 1 && allValues["Voice_changer_filter.Enabled"] == 1)
+        {
+            QMessageBox::warning(this, "", trUtf8("Сначала выключите Морфер."), QMessageBox::Ok, QMessageBox::Ok);
+            return false;
+        }
+    }
+    else if (_param == "Voice_changer_filter.Enabled")
+    {
+        if (_value == 1)
+            if (allValues["Broadband_filter.Enabled"]       == 1 ||
+                allValues["Declicker_filter.Enabled"]       == 1 ||
+                allValues["EQ_filter.Enabled"]              == 1 ||
+                allValues["HarmonicReject_filter.Enabled"]  == 1 ||
+                allValues["LevelEnhancement_filter.Enabled"]== 1 ||
+                allValues["ReferenceNoise_filter.Enabled"]  == 1)
+        {
+            QMessageBox::warning(this, "", trUtf8("Сначала выключите все фильтры."), QMessageBox::Ok, QMessageBox::Ok);
+            return false;
+        }
+    }
+    return true;
+}
+

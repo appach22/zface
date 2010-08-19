@@ -884,6 +884,8 @@ void MainWindow::paramChanged(QString _param, QString _value)
     settings.setValueByName(_param, value);
     mixer.setValueByName(_param, value);
     filters.setValueByName(_param, value);
+    if (ui->pages->currentWidget() == ui->settingsPage || ui->pages->currentWidget() == ui->filtersPage)
+        this->update();
 
     if (_param == "Mixer.Input")
     {

@@ -33,7 +33,7 @@ public:
 
     QString getValueByName(const QString & _name);
     void setValueByName(const QString & _name, int _value);
-    void setNodeEnabled(const QString & _name, bool _enabled);
+    //void setNodeEnabled(const QString & _name, bool _enabled);
 
 private:
     ZSettingsNode * nodeFromIndex(const QModelIndex & index) const;

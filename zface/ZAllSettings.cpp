@@ -144,10 +144,10 @@ void ZAllSettings::getParameter(QXmlStreamReader & _xml, ZSettingsNode * _parent
         _parentNode->SetWidget(setting);
         parameter = param;
     }
-    if (attrs.hasAttribute("id"))
-        parameter->id = attrs.value("id").toString().toInt();
-    if (attrs.hasAttribute("dependsOn"))
-    {
-        QStringList deps = attrs.value("dependsOn").toString().split(",");
-    }
+//    if (attrs.hasAttribute("id"))
+//        parameter->id = attrs.value("id").toString().toInt();
+//    if (attrs.hasAttribute("dependsOn"))
+//    {
+//        QStringList deps = attrs.value("dependsOn").toString().split(",");
+//    }
 }

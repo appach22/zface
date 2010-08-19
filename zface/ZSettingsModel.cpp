@@ -102,11 +102,11 @@ void ZSettingsModel::setValueByName(const QString & _name, int _value)
         valueByName(_name, *rootNode, SetValue, _value);
 }
 
-void ZSettingsModel::setNodeEnabled(const QString & _name, bool _enabled)
-{
-    if (rootNode)
-        valueByName(_name, *rootNode, SetEnabled, static_cast<int>(_enabled));
-}
+//void ZSettingsModel::setNodeEnabled(const QString & _name, bool _enabled)
+//{
+//    if (rootNode)
+//        valueByName(_name, *rootNode, SetEnabled, static_cast<int>(_enabled));
+//}
 
 
 void ZSettingsModel::valueByName(const QString & _name, ZSettingsNode * _root, NodeActions _action, int _value)
@@ -116,7 +116,6 @@ void ZSettingsModel::valueByName(const QString & _name, ZSettingsNode * _root, N
     if (!_root)
         return;
 
-//    if ()
     if (!_root->children.count())
     {
         if (_root->widget)

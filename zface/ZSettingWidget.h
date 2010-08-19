@@ -51,6 +51,8 @@ private slots:
 
 private:
 
+    bool checkValue(const QString & _param, int _value);
+
     QButtonGroup * buttons;
     QScrollArea * scroll;
     QWidget * progressContainer;

@@ -125,6 +125,7 @@ void ZDbus::receiveGain(const QString, const QString _gain, const QString _value
 
 void ZDbus::receiveParam(const QString, const QString _param, const QString _value)
 {
+    allValues[_param] = _value.toInt();
     emit paramChanged(_param, _value);
 }
 

@@ -11,6 +11,10 @@
     color: white;
 }
 
+QLabel#qt_msgbox_label {
+    color: black;
+}
+
 #mainPage {
     background-image: url(:/all/res/main_menu.png);
     background-repeat: repeat-n;

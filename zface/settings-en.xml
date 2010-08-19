@@ -217,7 +217,7 @@
                 <setting type="leaf" name="Compression">
                         <param type="select" category="Main" name="Recorder.Compression">
                                 <item name="PCM"        value="0" />
-                                <item name="muLaw"      value="1" />
+                                <item name="μ-law"      value="1" />
                         </param>
                 </setting>
                 <setting type="leaf" name="Break audio into fragments">
