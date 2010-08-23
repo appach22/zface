@@ -290,8 +290,13 @@ void MainWindow::processMainPage(QKeyEvent * event)
             break;
         case Qt::Key_Down :
             {
-                ui->filesView->setRootIndex(files.index("/tmp/sound"));
-                rootIndex = ui->filesView->rootIndex();
+                rootIndex = files.index("/tmp/sound");
+                if (!rootIndex.isValid())
+                {
+                    showMessage(QMessageBox::Warning, trUtf8("Ошибка просмотра SD-карты!"));
+                    break;
+                }
+                ui->filesView->setRootIndex(rootIndex);
                 ui->filesView->setCurrentIndex(files.index(0, 0, rootIndex));
                 ui->pages->setCurrentWidget(ui->browserPage);
                 ui->headerLabel->setText(trUtf8("Просмотр SD-карты"));
@@ -1041,8 +1046,11 @@ void MainWindow::paramChanged(QString _param, QString _value)
         {
             ui->cardStatusPages->setCurrentWidget(ui->cardInfoPage);
             rootIndex = files.index("/tmp/sound");
-            ui->filesView->setRootIndex(rootIndex);
-            SetWatcher(rootIndex);
+            if (rootIndex.isValid())
+            {
+                ui->filesView->setRootIndex(rootIndex);
+                SetWatcher(rootIndex);
+            }
             currentSDState = SDOK;
         }
         else if (value == 2 && currentSDState != NotConnected)
@@ -1050,8 +1058,11 @@ void MainWindow::paramChanged(QString _param, QString _value)
             ui->cardErrorLabel->setText(trUtf8("Идет\nформатир-е..."));
             ui->cardStatusPages->setCurrentWidget(ui->cardErrorPage);
             rootIndex = files.index("/tmp/sound");
-            ui->filesView->setRootIndex(rootIndex);
-            SetWatcher(rootIndex);
+            if (rootIndex.isValid())
+            {
+                ui->filesView->setRootIndex(rootIndex);
+                SetWatcher(rootIndex);
+            }
             currentSDState = SDOK;
         }
     }

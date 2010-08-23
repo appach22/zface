@@ -158,6 +158,13 @@ void ZSettingWidget::keyPressEvent(QKeyEvent * event)
             // Сохраняем значение параметра
             if (zdbus->setParameter(data->category, data->name, value))
             {
+                // Если изменили режим USB - перезагружаемся
+                if (data->name == "USB.Connected_OS")
+                {
+                    sync();
+                    QProcess::execute("/sbin/reboot");
+                    // Сюда попасть не должны
+                }
                 // Если значение успешно сохранено - обновляем Gui
                 if (type == Select)
                 {
@@ -343,6 +350,11 @@ bool ZSettingWidget::checkValue(const QString & _param, int _value)
             QMessageBox::warning(this, "", trUtf8("Сначала выключите все фильтры."), QMessageBox::Ok, QMessageBox::Ok);
             return false;
         }
+    }
+    else if (_param == "USB.Connected_OS")
+    {
+        if (QMessageBox::No == QMessageBox::question(this, "", trUtf8("Для изменения этого параметра необходима перезагрузка. Перезагрузить устройство?"), QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes))
+            return false;
     }
     return true;
 }
