@@ -57,6 +57,8 @@ MainWindow::MainWindow(QWidget *parent)
 //                                    "background-position: center;");
     ui->recording->hide();
 
+    //this->setFont(QFont("DejaVu", 12, QFont::Bold, false));
+
 #if defined(Q_OS_WIN)
     QFile file("../res/style.qss");
 #elif defined(Q_WS_QWS)
@@ -176,6 +178,9 @@ MainWindow::MainWindow(QWidget *parent)
     gainTimer = new QTimer(this);
     connect(gainTimer, SIGNAL(timeout()), SLOT(hideGain()));
 
+    connect(&accuTimer, SIGNAL(timeout()), SLOT(blinkAccu()));
+    accuBlink = false;
+
     message = 0;
     messageTimer.setSingleShot(true);
     messageTimer.setInterval(3000);
@@ -184,6 +189,9 @@ MainWindow::MainWindow(QWidget *parent)
     confirmMessage = new QMessageBox(this);
     confirmMessage->setStandardButtons(QMessageBox::Yes | QMessageBox::No);
     confirmMessage->setDefaultButton(QMessageBox::No);
+
+    lastRewindTime = QTime::currentTime();
+    rewindDelta = 5;
 }
 
 MainWindow::~MainWindow()
@@ -545,11 +553,31 @@ void MainWindow::processUtilitiesPage(QKeyEvent * event)
             {
                 ui->pages->setCurrentWidget(ui->logsPage);
                 ui->headerLabel->setText(ui->utilitiesList->currentItem()->text());
-                QString ip = "";
+                QString ip_eth = "", ip_usb = "";
                 QList<QNetworkAddressEntry> ips = QNetworkInterface::interfaceFromName("eth0").addressEntries();
                 if (ips.count())
-                    ip = ips[0].ip().toString();
-                ui->logsBrowser->setText(trUtf8("IP-адрес устройства: ") + ip);
+                    ip_eth = ips[0].ip().toString();
+                ui->logsBrowser->setText(trUtf8("IP-адреса устройства:\n"));
+                ips = QNetworkInterface::interfaceFromName("usb0").addressEntries();
+                if (ips.count())
+                    ip_usb = ips[0].ip().toString();
+                int serial = 0;
+                QString version("");
+                QFile ver("/etc/fwdef/ReadOnly/version");
+                if (ver.open(QIODevice::ReadOnly))
+                {
+                    version = ver.readAll();
+                    ver.close();
+                }
+                zdbus->getParameter("Main", "Serial_number", &serial);
+                ui->logsBrowser->setHtml(trUtf8("<b>Текущая дата:</b><br>") + QDate::currentDate().toString(Qt::SystemLocaleShortDate) + "<hr>" +
+                                         trUtf8("<b>Серийный номер:</b><br>") + QString("%1<hr>").arg(serial, 8, 10, QChar('0')) +
+                                         trUtf8("<b>Версия прошивки:</b><br>") + version + "<hr>" +
+                                         trUtf8("<b>IP-адреса устройства:</b><br>") + "Ethernet: " + ip_eth + "<br>USB: " + ip_usb + "<hr>" +
+                                         trUtf8("<b>Запись:</b><br>") + mixer.getValueByName("Mixer.Input") + "<br>" +
+                                         settings.getValueByName("Recorder.Sample_size") + ", " + settings.getValueByName("Recorder.Sample_rate") + "<br>" +
+                                         settings.getValueByName("Recorder.Compression") + ", " + settings.getValueByName("Recorder.Channels") + "<hr>" +
+                                         trUtf8("<b>Воспроизведение:</b><br>") + mixer.getValueByName("Mixer.Output"));
                 ui->logsBrowser->setEditFocus(true);
                 break;
             }
@@ -753,6 +781,21 @@ void MainWindow::processParameterPage(QKeyEvent * event)
     }
 }
 
+int MainWindow::getRewindDelta()
+{
+    if (lastRewindTime.msecsTo(QTime::currentTime()) < 250)
+    {
+        if (++rewindDelta > currentFileInfo.duration / 10)
+            rewindDelta = currentFileInfo.duration / 10;
+        if (rewindDelta < 5)
+            rewindDelta = 5;
+    }
+    else
+        rewindDelta = 5;
+    lastRewindTime = QTime::currentTime();
+    return rewindDelta;
+}
+
 void MainWindow::processPlayPage(QKeyEvent * event)
 {
     switch (event->key())
@@ -766,10 +809,10 @@ void MainWindow::processPlayPage(QKeyEvent * event)
             processFileOps();
             break;
         case Qt:: Key_Left:
-            zdbus->sendPlayEvent("Rewind", 5);
+            zdbus->sendPlayEvent("Rewind", getRewindDelta());
             break;
         case Qt::Key_Right :
-            zdbus->sendPlayEvent("FastForward", 5);
+            zdbus->sendPlayEvent("FastForward", getRewindDelta());
             break;
     }
 }
@@ -998,14 +1041,28 @@ void MainWindow::paramChanged(QString _param, QString _value)
             case RecStopped :
             case RecStoppedForced :
                 ui->recording->hide();
-                ui->recordingWidget->setStyleSheet("background-image: none");
+                if (accuTimer.isActive())
+                {
+                    accuTimer.stop();
+                    ui->AGCwidget->setStyleSheet("background-image: url(:/all/res/acoustic_start.png);"
+                                                 "background-repeat: repeat-n;");
+                }
                 break;
             case RecStarted :
+                ui->recordingDurationLabel->setText("0:00:00");
+                ui->recording->show();
+                break;
             case RecStartedAccu :
                 ui->recordingDurationLabel->setText("0:00:00");
                 ui->recording->show();
-                ui->recordingWidget->setStyleSheet("background-image: url(:/all/res/record_16x16.png);"
-                                                   "background-repeat: repeat-n;");
+                accuTimer.stop();
+                ui->AGCwidget->setStyleSheet("background-image: url(:/all/res/acoustic_start.png);"
+                                             "background-repeat: repeat-n;");
+                break;
+            case RecWaitingAccu :
+                ui->recording->hide();
+                accuBlink = false;
+                accuTimer.start(500);
                 break;
         }
     }
@@ -1014,7 +1071,7 @@ void MainWindow::paramChanged(QString _param, QString _value)
     {
         if (value)
             ui->AGCwidget->setStyleSheet("background-image: url(:/all/res/acoustic_start.png);"
-                                             "background-repeat: repeat-n;");
+                                         "background-repeat: repeat-n;");
         else
             ui->AGCwidget->setStyleSheet("background-image: none;");
     }
@@ -1361,4 +1418,14 @@ void MainWindow::currentPageChanged(int _page)
         ui->headerLabel->hide();
     else
         ui->headerLabel->show();
+}
+
+void MainWindow::blinkAccu()
+{
+    if (accuBlink)
+        ui->AGCwidget->setStyleSheet("background-image: url(:/all/res/acoustic_start.png);"
+                                     "background-repeat: repeat-n;");
+    else
+        ui->AGCwidget->setStyleSheet("background-image: none;");
+    accuBlink = !accuBlink;
 }

@@ -85,6 +85,10 @@ private:
     QProcess externalCommand;
     bool doRenamePreset;
     int clockCounter;
+    QTime lastRewindTime;
+    int rewindDelta;
+    QTimer accuTimer;
+    bool accuBlink;
 
     QWidget * beforeLockWidget;
     QWidget * activeWindow;
@@ -109,6 +113,8 @@ private:
 
     void showMessage(QMessageBox::Icon _type, const QString & _message);
 
+    int getRewindDelta();
+
 private slots:
     void updateTime();
     void hideGain();
@@ -124,6 +130,7 @@ private slots:
     void setLocked1();
     //void backlightTurnOff();
     void doScreenshot();
+    void blinkAccu();
 
 public slots:
     void virtualKeyboardPressed();

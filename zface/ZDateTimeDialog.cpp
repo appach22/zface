@@ -44,7 +44,7 @@ void ZDateTimeDialog::changeEvent(QEvent *e)
 QString ZDateTimeDialog::getValue()
 {
     ui->dateTimeEdit->setDateTime(QDateTime::currentDateTime());
-    return ui->dateTimeEdit->date().toString(Qt::DefaultLocaleShortDate);
+    return ui->dateTimeEdit->date().toString(Qt::SystemLocaleShortDate);
 }
 
 void ZDateTimeDialog::setValue(int)
@@ -66,6 +66,8 @@ bool ZDateTimeDialog::eventFilter(QObject *, QEvent *event)
     {
         if (static_cast<QKeyEvent *>(event)->key() == Qt::Key_Select)
         {
+            unlink("/etc/timestamp");
+
             timeval tv;
             tv.tv_sec = ui->dateTimeEdit->dateTime().toTime_t();
             tv.tv_usec = 0;
