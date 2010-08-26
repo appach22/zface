@@ -103,7 +103,7 @@ MainWindow::MainWindow(QWidget *parent)
     zdbus->getParameter("Temp", "Security.Keyboard_lock.Active", &val);
     zdbus->getParameter("Temp", "Mixer.Headset.Connected", &val);
     zdbus->getParameter("Main", "Mixer.Channels_to_speaker", &val);
-    zdbus->getParameter("Main", "Mixer.Through_channel", &val);
+    zdbus->getParameter("Temp", "Mixer.Through_channel", &val);
     zdbus->getParameter("Main", "Recorder.Acoustic.Enabled", &val);
 
     settingsRoot = mixerRoot = filtersRoot = 0;
@@ -1020,18 +1020,18 @@ void MainWindow::paramChanged(QString _param, QString _value)
 
     else if (_param == "Mixer.Channels_to_speaker")
     {
-//        switch (value)
-//        {
-//            case 0 : ui->channels2spkWidget->setStyleSheet("background-image: url(:/all/res/left.png);"
-//                                                           "background-repeat: repeat-n;");
-//                     break;
-//            case 1 : ui->channels2spkWidget->setStyleSheet("background-image: url(:/all/res/right.png);"
-//                                                           "background-repeat: repeat-n;");
-//                     break;
-//            case 2 : ui->channels2spkWidget->setStyleSheet("background-image: url(:/all/res/stereo.png);"
-//                                                           "background-repeat: repeat-n;");
-//                     break;
-//        }
+        switch (value)
+        {
+            case 0 : ui->channels2spkWidget->setStyleSheet("background-image: url(:/all/res/left.png);"
+                                                           "background-repeat: repeat-n;");
+                     break;
+            case 1 : ui->channels2spkWidget->setStyleSheet("background-image: url(:/all/res/right.png);"
+                                                           "background-repeat: repeat-n;");
+                     break;
+            case 2 : ui->channels2spkWidget->setStyleSheet("background-image: url(:/all/res/stereo.png);"
+                                                           "background-repeat: repeat-n;");
+                     break;
+        }
     }
 
     else if (_param == "Recorder.State")

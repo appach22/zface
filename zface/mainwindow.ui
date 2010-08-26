@@ -80,7 +80,7 @@
         <number>1</number>
        </property>
        <item>
-        <widget class="QWidget" name="recordingWidget" native="true">
+        <widget class="QWidget" name="channels2spkWidget" native="true">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Fixed" vsizetype="Ignored">
            <horstretch>0</horstretch>
@@ -128,7 +128,7 @@
         </widget>
        </item>
        <item>
-        <widget class="QWidget" name="timerWidget" native="true">
+        <widget class="QWidget" name="PINwidget" native="true">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Fixed" vsizetype="Ignored">
            <horstretch>0</horstretch>
@@ -176,7 +176,7 @@
         </widget>
        </item>
        <item>
-        <widget class="QWidget" name="PINwidget" native="true">
+        <widget class="QWidget" name="timerWidget" native="true">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Fixed" vsizetype="Ignored">
            <horstretch>0</horstretch>
@@ -243,7 +243,7 @@
        <string notr="true"/>
       </property>
       <property name="currentIndex">
-       <number>6</number>
+       <number>0</number>
       </property>
       <widget class="QWidget" name="mainPage">
        <layout class="QGridLayout" name="gridLayout_8">
@@ -393,7 +393,7 @@
          </spacer>
         </item>
         <item row="3" column="0">
-         <widget class="QWidget" name="channels2spkWidget" native="true">
+         <widget class="QWidget" name="tmpWidget" native="true">
           <property name="sizePolicy">
            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
             <horstretch>0</horstretch>
@@ -810,6 +810,7 @@ p, li { white-space: pre-wrap; }
 &lt;table border=&quot;0&quot; style=&quot;-qt-table-type: root; margin-top:4px; margin-bottom:4px; margin-left:4px; margin-right:4px;&quot;&gt;
 &lt;tr&gt;
 &lt;td style=&quot;border: none;&quot;&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'Liberation Sans';&quot;&gt;&lt;/p&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'Liberation Sans';&quot;&gt;&lt;/p&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'Verdana';&quot;&gt;&lt;/p&gt;
